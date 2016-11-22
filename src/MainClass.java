@@ -25,14 +25,14 @@ class TaskQueryStock extends TimerTask
             StockInfoProviderSina provider = new StockInfoProviderSina();
             ArrayList<Integer> codeList = new ArrayList<Integer>();
             codeList.add(603020);
-            codeList.add(603309);
+//            codeList.add(603309);
             Timer timer = new Timer();
             provider.GetStockInfoByCode(codeList);
         }
         catch (Exception ex)
         {
             Utils.Log(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 }
-

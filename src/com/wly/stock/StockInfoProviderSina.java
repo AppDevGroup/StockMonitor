@@ -1,6 +1,8 @@
 package com.wly.stock;
 
 import com.wly.common.Utils;
+import sun.nio.cs.UTF_32LE;
+import sun.security.ssl.Debug;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,12 +12,30 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Deque;
 
 /**
  * Created by Administrator on 2016/11/22.
  */
 public class StockInfoProviderSina implements IStockInfoProvider
 {
+    public enum eInfoIdx
+    {
+        Name,
+        PriceInit,
+        PriceLastDay,
+        PriceNew,
+        PriceMax,
+        PriceMin,
+        PriceBuy,
+        PriceSell,
+        TradeTotalCount,
+        TradeTotalMoney,
+        TradeInfoStart,
+    }
+
+    private  static final int TradeInfoCount = 5;
+
     @Override
     public StockInfo GetStockInfoByCode(int code) throws Exception
     {
@@ -46,10 +66,10 @@ public class StockInfoProviderSina implements IStockInfoProvider
             switch (plate)
             {
                 case PlateSH:
-                    prefix = "sh";
+                    prefix = StockUtils.PrefixSH;
                     break;
                 case PlateSZ:
-                    prefix = "sz";
+                    prefix = StockUtils.PrefixSZ;
                     break;
             }
 
@@ -77,10 +97,67 @@ public class StockInfoProviderSina implements IStockInfoProvider
         String strTmp;
         while((strTmp = bufferedReader.readLine()) != null)
         {
+            GetStockInfoByString(strTmp);
             sb.append(strTmp);
             sb.append("\n");
         }
         System.out.println(sb.toString());
         return null;
+    }
+
+    ///var hq_str_sh603020="爱普股份,22.820,22.790,23.380,23.440,22.710,23.370,23.380,6680397,154655134.000,5200,23.370,8000,23.360,9700,23.350,1000,
+    /// 23.340,4300,23.330,43600,23.380,6900,23.400,6100,23.410,14300,23.420,17900,23.430,2016-11-22,14:44:09,00";
+    static  public StockInfo GetStockInfoByString(String str)
+    {
+        //Utils.Log(str);
+        String[] strListTmp;
+        String strTmp;
+        strListTmp = str.split("=");
+        if(strListTmp[1].length() <= 3)
+        {
+            Utils.Log("error info: "+str);
+            return null;
+        }
+
+        strTmp = strListTmp[0];
+        String codeInfo = strTmp.substring(11);
+        int code = Integer.parseInt(codeInfo.substring(2));
+        String[] infoList = strListTmp[1].substring(1, strListTmp[1].length()-1).split(",");
+       // Utils.Log("get info  : "+code+" "+infoList[0]+" "+infoList[3]);
+
+        StockInfo info = new StockInfo();
+        info.code = code;
+        info.name = infoList[eInfoIdx.Name.ordinal()];
+        info.priceInit = Float.parseFloat(infoList[eInfoIdx.PriceInit.ordinal()]);
+        info.priceLastDay = Float.parseFloat(infoList[eInfoIdx.PriceLastDay.ordinal()]);
+        info.priceNew = Float.parseFloat(infoList[eInfoIdx.PriceNew.ordinal()]);
+        info.priceMax =  Float.parseFloat(infoList[eInfoIdx.PriceMax.ordinal()]);
+        info.priceMin =  Float.parseFloat(infoList[eInfoIdx.PriceMin.ordinal()]);
+        info.priceBuy = Float.parseFloat(infoList[eInfoIdx.PriceBuy.ordinal()]);
+        info.priceSell = Float.parseFloat(infoList[eInfoIdx.PriceSell.ordinal()]);
+        info.tradeCount = Long.parseLong(infoList[eInfoIdx.TradeTotalCount.ordinal()]);
+        info.tradeMoney = Float.parseFloat(infoList[eInfoIdx.TradeTotalMoney.ordinal()]);
+
+        int i;
+        StockInfo.TradeInfo tradeInfo;
+        int startIdx = eInfoIdx.TradeInfoStart.ordinal();
+        for(i=0; i<TradeInfoCount; ++i)
+        {
+            tradeInfo = new StockInfo.TradeInfo();
+            tradeInfo.amount = Long.parseLong(infoList[startIdx+2*i]);
+            tradeInfo.price = Float.parseFloat(infoList[startIdx+2*i+1]);
+            info.buyInfo.add(tradeInfo);
+        }
+
+        startIdx = eInfoIdx.TradeInfoStart.ordinal()+2*TradeInfoCount;
+        for(i=0; i<TradeInfoCount; ++i)
+        {
+            tradeInfo = new StockInfo.TradeInfo();
+            tradeInfo.amount = Long.parseLong(infoList[startIdx+2*i]);
+            tradeInfo.price = Float.parseFloat(infoList[startIdx+2*i+1]);
+            info.sellInfo.add(tradeInfo);
+        }
+        System.out.println(info.toString());
+        return  info;
     }
 }

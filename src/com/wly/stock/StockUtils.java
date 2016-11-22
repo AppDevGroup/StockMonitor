@@ -5,6 +5,8 @@ package com.wly.stock;
  */
 public class StockUtils
 {
+    static public String PrefixSH = "sh";
+    static public String PrefixSZ = "sz";
     static public  eStockPlate GetPlateByCode(int code)
     {
         eStockPlate plate = eStockPlate.None;
