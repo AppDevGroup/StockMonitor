@@ -39,12 +39,12 @@ public class StockInfo
         int i;
         for(i=sellInfo.size()-1; i>= 0; --i)
         {
-            sb.append(String.format("Sell%d: %.2f %d\n", i, sellInfo.get(i).price, sellInfo.get(i).amount));
+            sb.append(String.format("Sell%d: %.2f %d\n", i+1, sellInfo.get(i).price, sellInfo.get(i).amount));
         }
         sb.append("------------------\n");
         for(i=0; i<buyInfo.size(); ++i)
         {
-            sb.append(String.format("Sell%d: %.2f %d\n", i, buyInfo.get(i).price, buyInfo.get(i).amount));
+            sb.append(String.format("Sell%d: %.2f %d\n", i+1, buyInfo.get(i).price, buyInfo.get(i).amount));
         }
         return  sb.toString();
     }
