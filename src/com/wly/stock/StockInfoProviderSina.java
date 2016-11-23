@@ -95,14 +95,13 @@ public class StockInfoProviderSina implements IStockInfoProvider
         sb.delete( 0, sb.length() );
         //string
         String strTmp;
+        ArrayList<StockInfo> infoList = new ArrayList<StockInfo>();
         while((strTmp = bufferedReader.readLine()) != null)
         {
+            infoList.add(GetStockInfoByString(strTmp));
             GetStockInfoByString(strTmp);
-            sb.append(strTmp);
-            sb.append("\n");
         }
-        System.out.println(sb.toString());
-        return null;
+        return infoList;
     }
 
     ///var hq_str_sh603020="爱普股份,22.820,22.790,23.380,23.440,22.710,23.370,23.380,6680397,154655134.000,5200,23.370,8000,23.360,9700,23.350,1000,
@@ -157,7 +156,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
             tradeInfo.price = Float.parseFloat(infoList[startIdx+2*i+1]);
             info.sellInfo.add(tradeInfo);
         }
-        System.out.println(info.toString());
+        //System.out.println(info.toString());
         return  info;
     }
 }
