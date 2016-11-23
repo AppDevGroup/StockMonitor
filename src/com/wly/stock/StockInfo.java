@@ -14,7 +14,7 @@ public class StockInfo
         public long amount;
     }
 
-    public int code;
+    public String code;
     public String name;
     public float priceInit;
     public float priceLastDay;
@@ -31,7 +31,7 @@ public class StockInfo
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("Code:%d Name:%s\n", this.code, name));
+        sb.append(String.format("Code:%s Name:%s\n", this.code, name));
         sb.append(String.format("Init:%.2f Last:%.2f\n", this.priceInit, this.priceLastDay));
         sb.append(String.format("Max :%.2f Min :%.2f\n", this.priceMax, this.priceMin));
         sb.append(String.format("Num :%d Rmb :%.2f\n", this.tradeCount, this.tradeMoney));

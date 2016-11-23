@@ -18,10 +18,11 @@ import java.util.TimerTask;
 public class MainClass {
     static  public  void main(String[] agrs) throws Exception
     {
-        Utils.Log("start!");
         Init();
         Timer timer = new Timer();
-        timer.schedule(new TaskQueryStock(), 0, 2000 );
+        timer.schedule(new TaskQueryStock(), 0, 2000);
+        //InsertPolicy();
+        //StockUtils.DoTradeSell(1, 603020, 22.18f, 300);
     }
 
     static  private void Init()
@@ -36,6 +37,13 @@ public class MainClass {
         {
                 Utils.LogException(ex);
         }
+    }
+
+    static private void InsertPolicy()
+    {
+        DataBaseManager dbMgr = DataBaseManager.GetInstance();
+        dbMgr.ExecuteUpdate("insert into policy_step (code, price_init, price_unit, price_last, step_unit)" +
+                "values('603515', 46.50, 0.50, 46.50, 200)");
     }
 
     static  public  void PrccessStockInfo(ArrayList<StockInfo> ArrayList)

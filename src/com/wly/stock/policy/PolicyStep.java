@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class PolicyStep
 {
     public int id;
-    public int code;
+    public  String code;
     public  float priceInit;
     public  float priceUnit;
     public  float priceLast;
@@ -23,7 +23,7 @@ public class PolicyStep
 
     public  void PrcessPrice(StockInfo stockInfo)
     {
-        System.out.println(stockInfo.toString());
+       // System.out.println(stockInfo.toString());
         if(stockInfo.priceNew> priceLast+priceUnit)
         {
             StockUtils.DoTradeSell(id, code, stockInfo.priceNew, stepUnit);
@@ -40,6 +40,7 @@ public class PolicyStep
 
     public  void UpdateLastPrice(float price)
     {
+        Utils.Log("UpdateLastPrice:"+code+" "+price);
         try {
             DataBaseManager dbMgr = DataBaseManager.GetInstance();
             final String UpdateFormat = "update policy_step SET price_last = %.2f WHERE id = %d";
@@ -51,7 +52,7 @@ public class PolicyStep
         }
     }
 
-    static public HashMap<Integer, PolicyStep> PolicyStepHashMap = new HashMap<Integer, PolicyStep>();
+    static public HashMap<String, PolicyStep> PolicyStepHashMap = new HashMap<String, PolicyStep>();
 
     static public  void Init()
     {
@@ -62,7 +63,7 @@ public class PolicyStep
             while (rs.next()) {
                 policyStep = new PolicyStep();
                 policyStep.id = rs.getInt(1);
-                policyStep.code = rs.getInt(2);
+                policyStep.code = rs.getString(2);
                 policyStep.priceInit = rs.getFloat(3);
                 policyStep.priceUnit = rs.getFloat(4);
                 policyStep.priceLast = rs.getFloat(5);
@@ -80,7 +81,7 @@ public class PolicyStep
 
     public String toString()
     {
-       final String StrDescFormat = "PolicyStep: id=%d code=%d priceInit=%.2f priceUnit=%.2f priceLast=%.2f stepUnit=%d ";
+       final String StrDescFormat = "PolicyStep: id=%d code=%s priceInit=%.2f priceUnit=%.2f priceLast=%.2f stepUnit=%d ";
         return String.format(StrDescFormat, id, code, priceInit, priceUnit, priceLast, stepUnit);
     }
 }

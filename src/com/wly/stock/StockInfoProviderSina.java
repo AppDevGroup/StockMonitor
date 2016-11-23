@@ -37,7 +37,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
     private  static final int TradeInfoCount = 5;
 
     @Override
-    public StockInfo GetStockInfoByCode(int code) throws Exception
+    public StockInfo GetStockInfoByCode(String code) throws Exception
     {
         String UrlFormat = "http://hq.sinajs.cn/list=sh%d";
         String urlstr = String.format(UrlFormat, code);
@@ -51,11 +51,11 @@ public class StockInfoProviderSina implements IStockInfoProvider
     }
 
     @Override
-    public ArrayList<StockInfo> GetStockInfoByCode(ArrayList<Integer> codeList) throws Exception
+    public ArrayList<StockInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception
     {
         StringBuilder sb = new StringBuilder("http://hq.sinajs.cn/list=");
         int i;
-        int code;
+        String code;
         String prefix;
         eStockPlate plate = eStockPlate.None;
         for(i=0; i<codeList.size(); ++i)
@@ -120,7 +120,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
 
         strTmp = strListTmp[0];
         String codeInfo = strTmp.substring(11);
-        int code = Integer.parseInt(codeInfo.substring(2));
+        String code = codeInfo.substring(2);
         String[] infoList = strListTmp[1].substring(1, strListTmp[1].length()-1).split(",");
        // Utils.Log("get info  : "+code+" "+infoList[0]+" "+infoList[3]);
 

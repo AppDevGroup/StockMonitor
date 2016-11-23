@@ -1,22 +1,29 @@
 package com.wly.stock;
 
 import com.wly.common.Utils;
+import com.wly.database.DataBaseManager;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.StringJoiner;
 
 /**
  * Created by Administrator on 2016/11/22.
  */
 public class StockUtils
 {
-    static public ArrayList<Integer> QueryCodeList = new ArrayList<Integer>();
+    static public ArrayList<String> QueryCodeList = new ArrayList<String>();
 
-    static public String PrefixSH = "sh";
-    static public String PrefixSZ = "sz";
-    static public  eStockPlate GetPlateByCode(int code)
+    static public final String PrefixSH = "sh";
+    static public final String PrefixSZ = "sz";
+    static public final float FeeRate = 0.00025f;
+    static public final float ChangeUnit = 0.045f; //上证每100股 0.45
+    static public final float StampTaxRate = 0.001f; //交易印花税 交易总额的千分之一
+
+    static public  eStockPlate GetPlateByCode(String codeStr)
     {
         eStockPlate plate = eStockPlate.None;
+        int code = Integer.parseInt(codeStr);
         switch (code/100000)
         {
             case 6:
@@ -32,14 +39,78 @@ public class StockUtils
         return  plate;
     }
 
-    static  public  void DoTradeSell(int policyId, int code, float price, int num)
+    static  public  void DoTradeSell(int policyId, String code, float price, int num)
     {
-        Utils.Log(String.format("DoTradeSell %d %.2f %d\n", code, price, num));
+        //佣金万分之五（5元起） 上证过户费0.35每100股 向上去整精确到分 印花税千分之一精确到分向上取整
+        float amount = price*num;
+        float counterFee = GetCountFee(amount, num);    //佣金
+        float transferFee = GetTransferFee(code, amount, num);
+        float stampTax = GetStampTax(amount);
+        float remain = amount-counterFee-transferFee-stampTax;
+        Utils.Log(String.format("DoTradeBuy %s %.2f %d %.2f %.2f %.2f %.2f\n", code, price, num, amount, counterFee, transferFee, stampTax));
+        Utils.Log("remain: "+remain);
+        final String InsterFormat = "INSERT INTO trade_book (code, trade_flag, price, number, counter_fee, transfer_fee, stamp_tax, time) " +
+                "                                  VALUES('%s', 1, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
+        String sqlstr = String.format(InsterFormat, code, price, num, counterFee, transferFee, stampTax, Utils.GetTimestampNow().toString());
+        Utils.Log(sqlstr);
+        DataBaseManager.GetInstance().ExecuteUpdate(sqlstr);
     }
 
-    static  public  void DoTradeBuy(int policyId,int code, float price, int num)
+    static  public  void DoTradeBuy(int policyId, String code, float price, int num)
     {
-        Utils.Log(String.format("DoTradeBuy %d %.2f %d\n", code, price, num));
+        //佣金万分之五（5元起）
+        float amount = price*num;
+        float counterFee = GetCountFee(amount, num);    //佣金
+        float transferFee = GetTransferFee(code, amount, num);
+        Utils.Log(String.format("DoTradeBuy %s %.2f %d %.2f %.2f %.2f\n", code, price, num, amount, counterFee, transferFee));
+        Utils.Log("cost: "+(amount+counterFee+transferFee));
+
+        final String InsterFormat = "INSERT INTO trade_book (code, trade_flag, price, number, counter_fee, transfer_fee, time) " +
+                "                                  VALUES('%s', 0, %.2f, %d, %.2f, %.2f, '%s')";
+        String sqlstr = String.format(InsterFormat, code, price, num, counterFee, transferFee, Utils.GetTimestampNow().toString());
+        Utils.Log(sqlstr);
+        DataBaseManager.GetInstance().ExecuteUpdate(sqlstr);
+    }
+
+    static public float TrimValueFloor(float val)
+    {
+        return (float)Math.floor((double)(val*100))/100;
+    }
+
+    static public float TrimValueRound(float val)
+    {
+        return (float)Math.round((double)(val*100))/100;
+    }
+
+    //佣金计算 万分之五（5元起）
+    //买卖都收
+    static public float GetCountFee(float amount, int num)
+    {
+        float counterFee = StockUtils.TrimValueRound(amount*FeeRate);    //佣金
+        counterFee = counterFee <= 5f ?5f:counterFee;
+        return counterFee;
+    }
+
+    ///过户费 上证过户费0.035每100股 向下取整精确到分
+    ///买卖都收
+    static public float GetTransferFee(String code, float amount, int num)
+    {
+        float transferFee = 0f;
+        eStockPlate plate = StockUtils.GetPlateByCode(code);
+        switch (plate)
+        {
+            case PlateSH:
+                transferFee = StockUtils.TrimValueFloor(num/100*ChangeUnit);
+                break;
+        }
+        return transferFee;
+    }
+
+    //印花税 交易金额千分之一精确到分向上取整
+    //卖出时收取
+    static public float GetStampTax(float amount)
+    {
+        return TrimValueRound(StampTaxRate * amount);
     }
 }
 
