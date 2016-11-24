@@ -23,16 +23,17 @@ public class PolicyStep
 
     public  void PrcessPrice(StockInfo stockInfo)
     {
-       // System.out.println(stockInfo.toString());
+        System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceUnit:%.2f priceNew:%.2f",
+                code, priceLast, priceUnit, stockInfo.priceNew));
         if(stockInfo.priceNew> priceLast+priceUnit)
         {
-            StockUtils.DoTradeSell(id, code, stockInfo.priceNew, stepUnit);
+            StockUtils.DoTradeSell(id, code, priceLast+priceUnit, stepUnit);
             priceLast = priceLast+priceUnit;
             UpdateLastPrice(priceLast);
         }
         else if(stockInfo.priceNew < priceLast-priceUnit)
         {
-            StockUtils.DoTradeBuy(id, code, stockInfo.priceNew, stepUnit);
+            StockUtils.DoTradeBuy(id, code, priceLast-priceUnit, stepUnit);
             priceLast = priceLast-priceUnit;
             UpdateLastPrice(priceLast);
         }
