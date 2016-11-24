@@ -41,9 +41,9 @@ public class MainClass {
 
     static private void InsertPolicy()
     {
-        DataBaseManager dbMgr = DataBaseManager.GetInstance();
-        dbMgr.ExecuteUpdate("insert into policy_step (code, price_init, price_unit, price_last, step_unit)" +
-                "values('603515', 46.50, 0.50, 46.50, 200)");
+        //DataBaseManager dbMgr = DataBaseManager.GetInstance();
+        //dbMgr.ExecuteUpdate("insert into policy_step (code, price_init, price_unit, price_last, step_unit)" +
+        //        "values('603515', 46.50, 0.50, 46.50, 200)");
     }
 
     static  public  void PrccessStockInfo(ArrayList<StockInfo> ArrayList)

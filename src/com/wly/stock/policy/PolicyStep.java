@@ -41,6 +41,12 @@ public class PolicyStep
     public  void UpdateLastPrice(float price)
     {
         Utils.Log("UpdateLastPrice:"+code+" "+price);
+
+        if(price< 0.01f)
+        {
+            return;
+        }
+
         try {
             DataBaseManager dbMgr = DataBaseManager.GetInstance();
             final String UpdateFormat = "update policy_step SET price_last = %.2f WHERE id = %d";
@@ -72,6 +78,7 @@ public class PolicyStep
                 Utils.Log(policyStep.toString());
                 PolicyStepHashMap.put(policyStep.code, policyStep);
             }
+            dbMgr.Reset();
         }
         catch (Exception ex)
         {

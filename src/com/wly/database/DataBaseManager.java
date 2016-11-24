@@ -33,6 +33,10 @@ public class DataBaseManager
     private String psw;
     private DataSource ds;
 
+    private ResultSet rs = null;
+    private  Connection con = null;
+    private Statement stmt = null;
+
     public  void Init(String jdbcUrl, String acct, String psw)
     {
         this.jdbcUrl = jdbcUrl;
@@ -53,10 +57,11 @@ public class DataBaseManager
     public ResultSet ExecuteQuery(String sqlstr)
     {
         ResultSet rs = null;
+        Connection con = null;
         try
         {
-            Connection con = ds.getConnection();
-            Statement stmt = con.createStatement();
+            con = ds.getConnection();
+            stmt = con.createStatement();
             rs = stmt.executeQuery(sqlstr);
         }
         catch (Exception ex)
@@ -71,11 +76,13 @@ public class DataBaseManager
     public  int ExecuteUpdate(String sqlstr)
     {
         int ret = 0;
+        Connection con = null;
         try
         {
-            Connection con = ds.getConnection();
-            Statement stmt = con.createStatement();
+            con = ds.getConnection();
+            stmt = con.createStatement();
             ret = stmt.executeUpdate(sqlstr);
+            Reset();
         }
         catch (Exception ex)
         {
@@ -84,5 +91,47 @@ public class DataBaseManager
         }
 
         return ret;
+    }
+
+    public  void Reset()
+    {
+        if(rs != null)
+        {
+            try
+            {
+                rs.close();
+                rs = null;
+            }
+            catch (Exception ex)
+            {
+                Utils.LogException(ex);
+            }
+        }
+
+        if(stmt != null)
+        {
+            try
+            {
+                stmt.close();
+                stmt = null;
+            }
+            catch (Exception ex)
+            {
+                Utils.LogException(ex);
+            }
+        }
+
+        if(con != null)
+        {
+            try
+            {
+                con.close();
+                con = null;
+            }
+            catch (Exception ex)
+            {
+                Utils.LogException(ex);
+            }
+        }
     }
 }
