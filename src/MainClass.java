@@ -1,6 +1,7 @@
+import com.mysql.jdbc.ExceptionInterceptor;
 import com.mysql.jdbc.Util;
 import com.wly.common.Utils;
-import com.wly.database.DataBaseManager;
+import com.wly.database.DBPool;
 import com.wly.stock.StockInfo;
 import com.wly.stock.StockInfoProviderSina;
 import com.wly.stock.StockUtils;
@@ -21,29 +22,24 @@ public class MainClass {
         Init();
         Timer timer = new Timer();
         timer.schedule(new TaskQueryStock(), 0, 2000);
-        //InsertPolicy();
-        //StockUtils.DoTradeSell(1, 603020, 22.18f, 300);
+
+//        Thread thread = new Thread(new TaskUpdatePolicy());
+//        thread.start();
     }
 
     static  private void Init()
     {
         try
         {
-            DataBaseManager dbMgr = DataBaseManager.GetInstance();
-            dbMgr.Init("jdbc:mysql://sql6.freesqldatabase.com/sql6145865", "sql6145865", "Rj4ABJv2H9");
+            DBPool dbPool = DBPool.GetInstance();
+            dbPool.Init("jdbc:mysql://sql6.freesqldatabase.com/sql6145865", "sql6145865", "Rj4ABJv2H9");
+
             PolicyStep.Init();
         }
         catch (Exception ex)
         {
                 Utils.LogException(ex);
         }
-    }
-
-    static private void InsertPolicy()
-    {
-        //DataBaseManager dbMgr = DataBaseManager.GetInstance();
-        //dbMgr.ExecuteUpdate("insert into policy_step (code, price_init, price_unit, price_last, step_unit)" +
-        //        "values('603515', 46.50, 0.50, 46.50, 200)");
     }
 
     static  public  void PrccessStockInfo(ArrayList<StockInfo> ArrayList)
@@ -75,5 +71,24 @@ class TaskQueryStock extends TimerTask
         {
             Utils.LogException(ex);
         }
+    }
+}
+
+class TaskUpdatePolicy implements Runnable
+{
+    @Override
+    public void run()
+    {
+        try {
+            Utils.Log("TaskUpdatePolicy");
+            Thread.sleep(1000);
+            final String UpdateFormat = "update policy_step SET price_last = %.2f WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync(String.format(UpdateFormat, 45.49, 10005));
+        }
+        catch(Exception ex)
+        {
+            Utils.LogException(ex);
+        }
+        Utils.Log("TaskUpdatePolicy end");
     }
 }

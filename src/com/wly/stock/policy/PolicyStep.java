@@ -2,7 +2,8 @@ package com.wly.stock.policy;
 
 import com.mysql.jdbc.Util;
 import com.wly.common.Utils;
-import com.wly.database.DataBaseManager;
+import com.wly.database.DBPool;
+import com.wly.database.DBQuery;
 import com.wly.stock.StockInfo;
 import com.wly.stock.StockUtils;
 
@@ -52,9 +53,8 @@ public class PolicyStep
         }
 
         try {
-            DataBaseManager dbMgr = DataBaseManager.GetInstance();
             final String UpdateFormat = "update policy_step SET price_last = %.2f WHERE id = %d";
-            int ret = dbMgr.ExecuteUpdate (String.format(UpdateFormat, price, id));
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, price, id));
         }
         catch (Exception ex)
         {
@@ -67,9 +67,10 @@ public class PolicyStep
     static public  void Init()
     {
         try {
-            DataBaseManager dbMgr = DataBaseManager.GetInstance();
-            ResultSet rs = dbMgr.ExecuteQuery("select * from policy_step");
+            DBPool dbPool = DBPool.GetInstance();
+            DBQuery dbQuery = dbPool.ExecuteQuerySync("select * from policy_step");
             PolicyStep policyStep;
+            ResultSet rs = dbQuery.resultSet;
             while (rs.next()) {
                 policyStep = new PolicyStep();
                 policyStep.id = rs.getInt(1);
@@ -82,7 +83,8 @@ public class PolicyStep
                 Utils.Log(policyStep.toString());
                 PolicyStepHashMap.put(policyStep.code, policyStep);
             }
-            dbMgr.Reset();
+            //dbMgr.Reset();
+            dbQuery.Close();
         }
         catch (Exception ex)
         {

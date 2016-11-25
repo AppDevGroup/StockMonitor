@@ -1,7 +1,7 @@
 package com.wly.stock;
 
 import com.wly.common.Utils;
-import com.wly.database.DataBaseManager;
+import com.wly.database.DBPool;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -52,8 +52,7 @@ public class StockUtils
         final String InsterFormat = "INSERT INTO trade_book (code, trade_flag, price, number, counter_fee, transfer_fee, stamp_tax, time) " +
                 "                                  VALUES('%s', 1, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
         String sqlstr = String.format(InsterFormat, code, price, num, counterFee, transferFee, stampTax, Utils.GetTimestampNow().toString());
-        Utils.Log(sqlstr);
-        DataBaseManager.GetInstance().ExecuteUpdate(sqlstr);
+        DBPool.GetInstance().ExecuteNoQuerySqlAsync (sqlstr);
     }
 
     static  public  void DoTradeBuy(int policyId, String code, float price, int num)
@@ -68,8 +67,7 @@ public class StockUtils
         final String InsterFormat = "INSERT INTO trade_book (code, trade_flag, price, number, counter_fee, transfer_fee, time) " +
                 "                                  VALUES('%s', 0, %.2f, %d, %.2f, %.2f, '%s')";
         String sqlstr = String.format(InsterFormat, code, price, num, counterFee, transferFee, Utils.GetTimestampNow().toString());
-        Utils.Log(sqlstr);
-        DataBaseManager.GetInstance().ExecuteUpdate(sqlstr);
+        DBPool.GetInstance().ExecuteNoQuerySqlAsync(sqlstr);
     }
 
     static public float TrimValueFloor(float val)
