@@ -39,15 +39,10 @@ public class StockInfoProviderSina implements IStockInfoProvider
     @Override
     public StockInfo GetStockInfoByCode(String code) throws Exception
     {
-        String UrlFormat = "http://hq.sinajs.cn/list=sh%d";
-        String urlstr = String.format(UrlFormat, code);
-        URL url = new URL(urlstr);
-        URLConnection urlConnection = url.openConnection();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "GB2312"));
-        String readStr = bufferedReader.readLine();
-        System.out.println(readStr);
-        String s2 = new String(readStr.getBytes("GBK"),"utf-8");
-        return null;
+        ArrayList<String> queryList = new ArrayList<>();
+        queryList.add(code);
+        ArrayList<StockInfo> retList = GetStockInfoByCode(queryList);
+        return  retList.get(0);
     }
 
     @Override

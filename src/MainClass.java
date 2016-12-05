@@ -2,6 +2,7 @@ import com.mysql.jdbc.ExceptionInterceptor;
 import com.mysql.jdbc.Util;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
+import com.wly.log.LogManager;
 import com.wly.stock.StockInfo;
 import com.wly.stock.StockInfoProviderSina;
 import com.wly.stock.StockUtils;
@@ -31,10 +32,13 @@ public class MainClass {
     {
         try
         {
+            LogManager.GetInstance().Init();
+
             DBPool dbPool = DBPool.GetInstance();
             dbPool.Init("jdbc:mysql://sql6.freesqldatabase.com/sql6145865", "sql6145865", "Rj4ABJv2H9");
 
             PolicyStep.Init();
+            LogManager.GetInstance().GetLogger().info("Init Complete!");
         }
         catch (Exception ex)
         {

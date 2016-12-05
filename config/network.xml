@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network>
+	<acceptor>
+		<item id="1" name="server" port="3344"/>
+	</acceptor>
+	<connector>
+		<item id="1" name="client" adress="127.0.0.1" port="1234"/>
+	</connector>
+</network>
