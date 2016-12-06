@@ -1,15 +1,16 @@
 package com.wly.network;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 
 /**
  * Created by Administrator on 2016/12/6.
@@ -19,8 +20,8 @@ public class Acceptor extends ChannelInitializer<SocketChannel>
     private ConfigAcceptor m_conf;
     private boolean m_isOpen;
 
-    EventLoopGroup bossGroup;
-    EventLoopGroup workerGroup;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
 
     public Acceptor(ConfigAcceptor conf)
     {
@@ -54,23 +55,25 @@ public class Acceptor extends ChannelInitializer<SocketChannel>
             serverBootstrap.group(bossGroup, workerGroup);
             serverBootstrap.localAddress(new InetSocketAddress(m_conf.port));
             serverBootstrap.childHandler(this);
-            ChannelFuture channelFuture = serverBootstrap.bind();//.sync();
-            channelFuture.addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if(channelFuture.isSuccess())
-                    {
-                        System.out.println("Server bind Succ: "+m_conf.port);
-                     //   bossGroup.shutdownGracefully();
-                     //   workerGroup.shutdownGracefully();
-                        m_isOpen = true;
-                    }
-                    else
-                    {
-                        channelFuture.cause().printStackTrace();
-                    }
-                }
-            });
+            serverBootstrap.bind().sync();
+            System.out.println("Server bind Succ: "+m_conf.port);
+//            ChannelFuture channelFuture = serverBootstrap.bind();
+//            channelFuture.addListener(new ChannelFutureListener() {
+//                @Override
+//                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+//                    if(channelFuture.isSuccess())
+//                    {
+//                        System.out.println("Server bind Succ: "+m_conf.port);
+//                     //   bossGroup.shutdownGracefully();
+//                     //   workerGroup.shutdownGracefully();
+//                        m_isOpen = true;
+//                    }
+//                    else
+//                    {
+//                        channelFuture.cause().printStackTrace();
+//                    }
+//                }
+//            });
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -87,6 +90,19 @@ public class Acceptor extends ChannelInitializer<SocketChannel>
     protected void initChannel(SocketChannel socketChannel) throws Exception
     {
         System.out.println("Get New Client");
-        socketChannel.close();
+        ChannelPipeline cp = socketChannel.pipeline();
+        cp.addLast(new StringDecoder(Charset.defaultCharset()));
+        cp.addLast(new StringEncoder(Charset.defaultCharset()));
+        cp.addLast(new TestServerHandle());
+    }
+
+    static public class TestServerHandle extends SimpleChannelInboundHandler<String>
+    {
+        @Override
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception
+        {
+            System.out.println("TestServerHandle handle message: "+s);
+            channelHandlerContext.writeAndFlush("wirte test server");
+        }
     }
 }

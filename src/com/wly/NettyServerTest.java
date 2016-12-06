@@ -44,6 +44,8 @@ public class NettyServerTest
 //        {
 //            ex.printStackTrace();
 //        }
+
+        System.out.println("Init Finish!");
     }
 
     static public class ChannelInitHandle extends ChannelInitializer<SocketChannel>

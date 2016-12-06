@@ -51,6 +51,7 @@ public class NetworkManager
             nodeList = xmlDoc.selectNodes("/network/connector/item");
             for (Node node : nodeList) {
                 connectorConfList.add(ConfigConnector.GetConfigByXmlElement((Element)node));
+                StartConnector(ConfigConnector.GetConfigByXmlElement((Element)node));
             }
         }
         catch (Exception ex)
@@ -67,6 +68,7 @@ public class NetworkManager
 
     public  void StartConnector(ConfigConnector conf)
     {
-
+        Connector connector = new Connector(conf);
+        connector.Start();
     }
 }
