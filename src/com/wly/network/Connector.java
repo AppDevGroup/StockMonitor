@@ -61,8 +61,18 @@ public class Connector extends ChannelInitializer<SocketChannel>
     {
         System.out.println("Connector initChannel");
         ChannelPipeline cp = socketChannel.pipeline();
-        cp.addLast(new StringDecoder(Charset.defaultCharset()));
-        cp.addLast(new TestHandle());
+        try
+        {
+            for (String clsName : m_conf.handleList)
+            {
+                Class cls = Class.forName(clsName);
+                cp.addLast((ChannelHandler) cls.newInstance());
+            }
+        }
+        catch (ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException: "+ex.getMessage());
+        }
     }
 
     static public class TestHandle extends SimpleChannelInboundHandler<String>

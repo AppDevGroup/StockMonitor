@@ -87,13 +87,22 @@ public class Acceptor extends ChannelInitializer<SocketChannel>
     }
 
     @Override
-    protected void initChannel(SocketChannel socketChannel) throws Exception
-    {
+    protected void initChannel(SocketChannel socketChannel) throws Exception {
         System.out.println("Get New Client");
         ChannelPipeline cp = socketChannel.pipeline();
-        cp.addLast(new StringDecoder(Charset.defaultCharset()));
-        cp.addLast(new StringEncoder(Charset.defaultCharset()));
-        cp.addLast(new TestServerHandle());
+        try
+        {
+            for (String clsName : m_conf.handleList)
+            {
+                Class cls = Class.forName(clsName);
+                cp.addLast((ChannelHandler) cls.newInstance());
+            }
+        }
+        catch (ClassNotFoundException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        socketChannel.writeAndFlush("hello from TestServerHandle\n");
     }
 
     static public class TestServerHandle extends SimpleChannelInboundHandler<String>
@@ -101,6 +110,7 @@ public class Acceptor extends ChannelInitializer<SocketChannel>
         @Override
         protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception
         {
+            System.out.println(this.getClass());
             System.out.println("TestServerHandle handle message: "+s);
             channelHandlerContext.writeAndFlush("wirte test server");
         }
