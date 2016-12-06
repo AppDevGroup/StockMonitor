@@ -6,8 +6,14 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/12/5.
@@ -26,24 +32,26 @@ public class NetworkManager
         return s_instance;
     }
 
+    private ArrayList<ConfigConnector> connectorConfList = new ArrayList<>();
+    private ArrayList<ConfigAcceptor> acceptorConfList = new ArrayList<>();
+
     public void Init(String config)
     {
-
-    }
-
-    public void StartAcceptor(ConfigServer conf)
-    {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-
         try {
-            ServerBootstrap serverBootstrap = new ServerBootstrap();
-            serverBootstrap.channel(NioServerSocketChannel.class);
-            serverBootstrap.group(bossGroup, workerGroup);
-            serverBootstrap.localAddress(new InetSocketAddress(conf.port));
-            serverBootstrap.childHandler(new NettyServerTest.ChannelInitHandle());
-            ChannelFuture cf = serverBootstrap.bind().sync();
-            System.out.println("listen on: "+conf.port);
+            SAXReader saxReader = new SAXReader();
+            Document xmlDoc = saxReader.read(config);
+            List<Node> nodeList;
+
+            nodeList = xmlDoc.selectNodes("/network/acceptor/item");
+            for (Node node : nodeList) {
+                acceptorConfList.add(ConfigAcceptor.GetConfigByXmlElement((Element)node));
+                StartAcceptor(ConfigAcceptor.GetConfigByXmlElement((Element)node));
+            }
+
+            nodeList = xmlDoc.selectNodes("/network/connector/item");
+            for (Node node : nodeList) {
+                connectorConfList.add(ConfigConnector.GetConfigByXmlElement((Element)node));
+            }
         }
         catch (Exception ex)
         {
@@ -51,7 +59,13 @@ public class NetworkManager
         }
     }
 
-    public  void StartConnector(ConfigClient conf)
+    public void StartAcceptor(ConfigAcceptor conf)
+    {
+        Acceptor accpt = new Acceptor(conf);
+        accpt.Start();
+    }
+
+    public  void StartConnector(ConfigConnector conf)
     {
 
     }

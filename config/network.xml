@@ -2,6 +2,7 @@
 <network>
 	<acceptor>
 		<item id="1" name="server" port="3344"/>
+		<item id="2" name="server2" port="3345"/>
 	</acceptor>
 	<connector>
 		<item id="1" name="client" adress="127.0.0.1" port="1234"/>
