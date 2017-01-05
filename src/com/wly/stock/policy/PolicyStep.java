@@ -26,6 +26,11 @@ public class PolicyStep
     {
         float change = stockInfo.priceNew-stockInfo.priceLastDay;
         float changeRatio = change/stockInfo.priceLastDay;
+        if(stockInfo.priceNew < 0.1f)
+        {
+            Utils.Log("error price for :"+stockInfo.code+" price: "+stockInfo.priceNew);
+            return;
+        }
 
         System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceUnit:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
                 code, priceLast, priceUnit, stockInfo.priceNew, change, changeRatio*100));
