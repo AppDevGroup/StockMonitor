@@ -1,13 +1,18 @@
 package com.wly.network;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.string.StringDecoder;
+import sun.security.ssl.Debug;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 
 /**
@@ -68,6 +73,11 @@ public class Connector extends ChannelInitializer<SocketChannel>
                 Class cls = Class.forName(clsName);
                 cp.addLast((ChannelHandler) cls.newInstance());
             }
+
+            if(m_conf.id == 2)
+            {
+                SendHttpRequest(socketChannel);
+            }
         }
         catch (ClassNotFoundException ex)
         {
@@ -81,6 +91,41 @@ public class Connector extends ChannelInitializer<SocketChannel>
         protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception
         {
             System.out.println("handle message: "+s);
+        }
+    }
+
+    static public class TestHttpHandle extends SimpleChannelInboundHandler<HttpObject>
+    {
+        @Override
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, HttpObject content) throws Exception
+        {
+            System.out.println("get response!");
+            //ByteBuf buf = content.content();
+            //System.out.println(buf.toString(io.netty.util.CharsetUtil.UTF_8));
+        }
+    }
+
+    private void SendHttpRequest(SocketChannel socketChannel)
+    {
+        try
+        {
+            URI uri = new URI("http://"+m_conf.adress+"/");
+            String msg = "Are you ok?";
+            DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET,
+                    uri.toASCIIString(), Unpooled.wrappedBuffer(msg.getBytes("UTF-8")));
+
+            // 构建http请求
+            request.headers().set(HttpHeaders.Names.HOST, m_conf.adress);
+            request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+            request.headers().set(HttpHeaders.Names.CONTENT_LENGTH, request.content().readableBytes());
+            // 发送http请求
+            socketChannel.write(request);
+            socketChannel.flush();
+            System.out.println("write request!");
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
 }

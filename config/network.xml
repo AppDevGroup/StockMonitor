@@ -6,7 +6,11 @@
 			<handle class="io.netty.handler.codec.string.StringEncoder"/>
 			<handle class="com.wly.network.Acceptor$TestServerHandle"/>
 		</item>>
-		<item id="2" name="server2" port="3345" handle=""/>
+		<item id="2" name="server2" port="8180">
+			<handle class="io.netty.handler.codec.http.HttpRequestDecoder"/>
+			<handle class="io.netty.handler.codec.http.HttpResponseEncoder"/>
+			<handle class="com.wly.network.Acceptor$TestHttpServerHandle"/>
+		</item>
 	</acceptor>
 	<connector>
 	</connector>

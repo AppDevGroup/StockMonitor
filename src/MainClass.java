@@ -35,7 +35,7 @@ public class MainClass {
             LogManager.GetInstance().Init();
 
             DBPool dbPool = DBPool.GetInstance();
-            dbPool.Init("jdbc:mysql://sql6.freesqldatabase.com/sql6145865", "sql6145865", "Rj4ABJv2H9");
+            dbPool.Init("jdbc:mysql://db4free.net/wuly", "wuliangyue7", "wly19870120");
 
             PolicyStep.Init();
             LogManager.GetInstance().GetLogger().info("Init Complete!");

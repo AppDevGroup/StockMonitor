@@ -8,5 +8,10 @@
 			<handle class="io.netty.handler.codec.string.StringEncoder"/>
 			<handle class="com.wly.network.Connector$TestHandle"/>
 		</item>
+		<item id="2" name="client" adress="127.0.0.1" port="8180">
+			<handle class="io.netty.handler.codec.http.HttpRequestEncoder"/>
+			<handle class="io.netty.handler.codec.http.HttpResponseDecoder"/>
+			<handle class="com.wly.network.Connector$TestHttpHandle"/>
+		</item>
 	</connector>
 </network>

@@ -6,8 +6,15 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.http.*;
+
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
+import static io.netty.handler.codec.http.HttpResponseStatus.OK;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
@@ -110,9 +117,25 @@ public class Acceptor extends ChannelInitializer<SocketChannel>
         @Override
         protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception
         {
-            System.out.println(this.getClass());
             System.out.println("TestServerHandle handle message: "+s);
             channelHandlerContext.writeAndFlush("wirte test server");
+        }
+    }
+
+    static public class TestHttpServerHandle extends SimpleChannelInboundHandler<HttpRequest>
+    {
+        @Override
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception
+        {
+            System.out.println("TestHttpServerHandle handle message: "+httpRequest.uri()+" "+httpRequest.method().name()+" "+httpRequest.headers().size());
+
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer("I am ok"
+                    .getBytes()));
+            response.headers().set(CONTENT_TYPE, "text/plain");
+            response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
+            response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+            channelHandlerContext.write(response);
+            channelHandlerContext.flush();
         }
     }
 }
