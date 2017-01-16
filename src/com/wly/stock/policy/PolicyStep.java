@@ -34,8 +34,10 @@ public class PolicyStep
             return;
         }
 
-        System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceUnit:%.2f buyOffset:%+.2f sellOffset:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
-                code, priceLast, priceUnit,buyOffset, sellOffset , stockInfo.priceNew, change, changeRatio*100 ));
+        float priceBuy = priceLast-priceUnit+buyOffset;
+        float priceSell = priceLast+priceUnit+sellOffset;
+        System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceBuy:%.2f priceSell:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
+                code, priceLast, priceBuy, priceSell, stockInfo.priceNew, change, changeRatio*100 ));
         if(stockInfo.priceNew> priceLast+priceUnit+sellOffset)
         {
             StockUtils.DoTradeSell(id, code, priceLast+priceUnit, stepUnit);
