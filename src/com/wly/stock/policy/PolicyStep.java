@@ -21,6 +21,8 @@ public class PolicyStep
     public  float priceUnit;
     public  float priceLast;
     public  int stepUnit;
+    public float buyOffset;
+    public float sellOffset;
 
     public  void PrcessPrice(StockInfo stockInfo)
     {
@@ -32,15 +34,15 @@ public class PolicyStep
             return;
         }
 
-        System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceUnit:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
-                code, priceLast, priceUnit, stockInfo.priceNew, change, changeRatio*100));
-        if(stockInfo.priceNew> priceLast+priceUnit)
+        System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceUnit:%.2f buyOffset:%+.2f sellOffset:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
+                code, priceLast, priceUnit,buyOffset, sellOffset , stockInfo.priceNew, change, changeRatio*100 ));
+        if(stockInfo.priceNew> priceLast+priceUnit+sellOffset)
         {
             StockUtils.DoTradeSell(id, code, priceLast+priceUnit, stepUnit);
             priceLast = priceLast+priceUnit;
             UpdateLastPrice(priceLast);
         }
-        else if(stockInfo.priceNew < priceLast-priceUnit)
+        else if(stockInfo.priceNew < priceLast-priceUnit+buyOffset)
         {
             StockUtils.DoTradeBuy(id, code, priceLast-priceUnit, stepUnit);
             priceLast = priceLast-priceUnit;
@@ -78,12 +80,14 @@ public class PolicyStep
             ResultSet rs = dbQuery.resultSet;
             while (rs.next()) {
                 policyStep = new PolicyStep();
-                policyStep.id = rs.getInt(1);
-                policyStep.code = rs.getString(2);
-                policyStep.priceInit = rs.getFloat(3);
-                policyStep.priceUnit = rs.getFloat(4);
-                policyStep.priceLast = rs.getFloat(5);
-                policyStep.stepUnit = rs.getInt(6);
+                policyStep.id = rs.getInt("id");
+                policyStep.code = rs.getString("code");
+                policyStep.priceInit = rs.getFloat("price_init");
+                policyStep.priceUnit = rs.getFloat("price_unit");
+                policyStep.priceLast = rs.getFloat("price_last");
+                policyStep.stepUnit = rs.getInt("step_unit");
+                policyStep.buyOffset = rs.getFloat("buy_offset");
+                policyStep.sellOffset = rs.getFloat("sell_offset");
                 StockUtils.QueryCodeList.add(policyStep.code);
                 Utils.Log(policyStep.toString());
                 PolicyStepHashMap.put(policyStep.code, policyStep);
