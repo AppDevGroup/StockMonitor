@@ -38,6 +38,13 @@ public class StockInfo
         return GetChange()/priceLastDay*100;
     }
 
+    public String toDesc()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Code:%s Name:%s Price: %.2f change;%.2f ratio:%.2f%%", this.code, name, priceNew, GetChange(), GetRatio()));
+        return sb.toString();
+    }
+
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
