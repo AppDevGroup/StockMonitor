@@ -20,23 +20,50 @@ public class StockUtils
     static public final float ChangeUnit = 0.045f; //上证每100股 0.45
     static public final float StampTaxRate = 0.001f; //交易印花税 交易总额的千分之一
 
-    static public  eStockPlate GetPlateByCode(String codeStr)
+    static public  final String[]  SpecialCodeSH = new String[]{"000001"};
+    static public  final String[]  SpecialCodeSZ = new String[]{""};
+
+    static public eStockPlate GetPlateByCode(String codeStr)
     {
         eStockPlate plate = eStockPlate.None;
         int code = Integer.parseInt(codeStr);
-        switch (code/100000)
+
+        int i;
+        for (i = 0; i < SpecialCodeSH.length; ++i)
         {
-            case 6:
-            case 7:
+            if(SpecialCodeSH[i].equals(codeStr))
+            {
                 plate = eStockPlate.PlateSH;
-                break;
-            case 3:
-            case 0:
-                plate = eStockPlate.PlateSZ;
-                break;
+                return  plate;
+            }
         }
 
-        return  plate;
+        for (i = 0; i < SpecialCodeSZ.length; ++i)
+        {
+            if(SpecialCodeSZ[i].equals(codeStr))
+            {
+                plate = eStockPlate.PlateSZ;
+                return  plate;
+            }
+        }
+
+
+        if (plate == eStockPlate.None)
+        {
+            switch (code / 100000)
+            {
+                case 6:
+                case 7:
+                    plate = eStockPlate.PlateSH;
+                    break;
+                case 3:
+                case 0:
+                    plate = eStockPlate.PlateSZ;
+                    break;
+            }
+        }
+
+        return plate;
     }
 
     static  public  void DoTradeSell(int policyId, String code, float price, int num)
