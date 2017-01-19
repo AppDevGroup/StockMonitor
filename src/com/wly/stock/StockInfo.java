@@ -1,7 +1,6 @@
 package com.wly.stock;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/11/22.
@@ -17,7 +16,7 @@ public class StockInfo
     public String code;
     public String name;
     public float priceInit;
-    public float priceLastDay;
+    public float priceLast;
     public float priceNew;
     public float priceMax;
     public float priceMin;
@@ -30,12 +29,12 @@ public class StockInfo
 
     public float GetChange()
     {
-        return  priceNew-priceLastDay;
+        return  priceNew- priceLast;
     }
 
     public float GetRatio()
     {
-        return GetChange()/priceLastDay*100;
+        return GetChange()/ priceLast *100;
     }
 
     public String toDesc()
@@ -49,7 +48,7 @@ public class StockInfo
     {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("Code:%s Name:%s\n", this.code, name));
-        sb.append(String.format("Init:%.2f Last:%.2f\n", this.priceInit, this.priceLastDay));
+        sb.append(String.format("Init:%.2f Last:%.2f\n", this.priceInit, this.priceLast));
         sb.append(String.format("Max :%.2f Min :%.2f\n", this.priceMax, this.priceMin));
         sb.append(String.format("Num :%d Rmb :%.2f\n", this.tradeCount, this.tradeMoney));
         sb.append(String.format("Trade Price: %.2f change;%.2f ratio:%.2f%%\n", this.priceNew, GetChange(), GetRatio()));

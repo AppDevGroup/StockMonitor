@@ -1,18 +1,12 @@
 package com.wly.stock;
 
 import com.wly.common.Utils;
-import sun.nio.cs.UTF_32LE;
-import sun.security.ssl.Debug;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Deque;
 
 /**
  * Created by Administrator on 2016/11/22.
@@ -123,7 +117,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
         info.code = code;
         info.name = infoList[eInfoIdx.Name.ordinal()];
         info.priceInit = Float.parseFloat(infoList[eInfoIdx.PriceInit.ordinal()]);
-        info.priceLastDay = Float.parseFloat(infoList[eInfoIdx.PriceLastDay.ordinal()]);
+        info.priceLast = Float.parseFloat(infoList[eInfoIdx.PriceLastDay.ordinal()]);
         info.priceNew = Float.parseFloat(infoList[eInfoIdx.PriceNew.ordinal()]);
         info.priceMax =  Float.parseFloat(infoList[eInfoIdx.PriceMax.ordinal()]);
         info.priceMin =  Float.parseFloat(infoList[eInfoIdx.PriceMin.ordinal()]);

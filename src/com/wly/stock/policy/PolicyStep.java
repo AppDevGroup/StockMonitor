@@ -1,6 +1,5 @@
 package com.wly.stock.policy;
 
-import com.mysql.jdbc.Util;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
@@ -26,8 +25,8 @@ public class PolicyStep
 
     public  void PrcessPrice(StockInfo stockInfo)
     {
-        float change = stockInfo.priceNew-stockInfo.priceLastDay;
-        float changeRatio = change/stockInfo.priceLastDay;
+        float change = stockInfo.priceNew-stockInfo.priceLast;
+        float changeRatio = change/stockInfo.priceLast;
         if(stockInfo.priceNew < 0.1f)
         {
             Utils.Log("error price for :"+stockInfo.code+" price: "+stockInfo.priceNew);
@@ -36,18 +35,30 @@ public class PolicyStep
 
         float priceBuy = priceLast-priceUnit+buyOffset;
         float priceSell = priceLast+priceUnit+sellOffset;
+
         System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceBuy:%.2f priceSell:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
                 code, priceLast, priceBuy, priceSell, stockInfo.priceNew, change, changeRatio*100 ));
+
+        float offset;
+        int unitCount;
+
         if(stockInfo.priceNew> priceSell)
         {
-            StockUtils.DoTradeSell(id, code, priceSell, stepUnit);
-            priceLast = priceLast+priceUnit;
+            //doSell
+            offset = stockInfo.priceNew - priceLast;
+            unitCount = (int)((offset-sellOffset)/priceUnit);
+            StockUtils.DoTrade(id, code, 1, stockInfo.priceNew-0.01f, stepUnit*unitCount);
+            priceLast = priceLast+priceUnit*unitCount;
             UpdateLastPrice(priceLast);
         }
         else if(stockInfo.priceNew < priceBuy)
         {
-            StockUtils.DoTradeBuy(id, code, priceBuy, stepUnit);
-            priceLast = priceLast-priceUnit;
+            //doBuy
+            offset = priceLast-stockInfo.priceNew;
+            unitCount = (int)((offset+buyOffset)/priceUnit);
+
+            StockUtils.DoTrade(id, code, 0, stockInfo.priceNew+0.01f, stepUnit*unitCount);
+            priceLast = priceLast-stepUnit*unitCount;
             UpdateLastPrice(priceLast);
         }
     }

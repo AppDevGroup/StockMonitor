@@ -66,6 +66,19 @@ public class StockUtils
         return plate;
     }
 
+    static public  void DoTrade(int policyId, String code, int tradeFlag, float price, int num)
+    {
+        //buy
+        if(tradeFlag == 0)
+        {
+            DoTradeBuy(policyId, code, price, num);
+        }
+        else
+        {
+            DoTradeSell(policyId, code, price, num);
+        }
+    }
+
     static  public  void DoTradeSell(int policyId, String code, float price, int num)
     {
         //佣金万分之五（5元起） 上证过户费0.35每100股 向上去整精确到分 印花税千分之一精确到分向上取整
