@@ -3,12 +3,12 @@
 	<acceptor>
 	</acceptor>
 	<connector>
-		<item id="1" name="client" adress="127.0.0.1" port="3344">
-			<handle class="io.netty.handler.codec.string.StringDecoder"/>
-			<handle class="io.netty.handler.codec.string.StringEncoder"/>
-			<handle class="com.wly.network.Connector$TestHandle"/>
-		</item>
-		<item id="2" name="client" adress="127.0.0.1" port="8180">
+		<!--<item id="1" name="client" adress="www.baidu.com" port="443">-->
+			<!--<handle class="io.netty.handler.codec.string.StringDecoder"/>-->
+			<!--<handle class="io.netty.handler.codec.string.StringEncoder"/>-->
+			<!--<handle class="com.wly.network.Connector$TestHandle"/>-->
+		<!--</item>-->
+		<item id="2" name="client" adress="www.baidu.com" port="80">
 			<handle class="io.netty.handler.codec.http.HttpRequestEncoder"/>
 			<handle class="io.netty.handler.codec.http.HttpResponseDecoder"/>
 			<handle class="com.wly.network.Connector$TestHttpHandle"/>

@@ -1,17 +1,10 @@
 package com.wly.network;
 
-import com.wly.NettyServerTest;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
