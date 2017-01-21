@@ -1,16 +1,12 @@
-import com.mysql.jdbc.ExceptionInterceptor;
-import com.mysql.jdbc.Util;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.log.LogManager;
-import com.wly.stock.StockInfo;
+import com.wly.stock.StockMarketInfo;
 import com.wly.stock.StockInfoProviderSina;
 import com.wly.stock.StockUtils;
 import com.wly.stock.policy.PolicyStep;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,7 +42,7 @@ public class MainClass
         }
     }
 
-    static public void PrccessStockInfo(ArrayList<StockInfo> ArrayList)
+    static public void PrccessStockInfo(ArrayList<StockMarketInfo> ArrayList)
     {
         int i;
         PolicyStep policyStep;

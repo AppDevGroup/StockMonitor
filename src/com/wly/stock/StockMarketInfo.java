@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Administrator on 2016/11/22.
  */
-public class StockInfo
+public class StockMarketInfo
 {
     static public  class TradeInfo
     {

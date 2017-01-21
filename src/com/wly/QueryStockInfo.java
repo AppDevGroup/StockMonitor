@@ -1,10 +1,7 @@
 package com.wly;
 
-import com.mysql.jdbc.Util;
 import com.wly.common.Utils;
-import com.wly.stock.StockInfo;
 import com.wly.stock.StockInfoProviderSina;
-import com.wly.stock.StockUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;

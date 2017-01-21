@@ -3,7 +3,7 @@ package com.wly.stock.policy;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
-import com.wly.stock.StockInfo;
+import com.wly.stock.StockMarketInfo;
 import com.wly.stock.StockUtils;
 
 import java.sql.ResultSet;
@@ -23,13 +23,13 @@ public class PolicyStep
     public float buyOffset;
     public float sellOffset;
 
-    public  void PrcessPrice(StockInfo stockInfo)
+    public  void PrcessPrice(StockMarketInfo stockMarketInfo)
     {
-        float change = stockInfo.priceNew-stockInfo.priceLast;
-        float changeRatio = change/stockInfo.priceLast;
-        if(stockInfo.priceNew < 0.1f)
+        float change = stockMarketInfo.priceNew- stockMarketInfo.priceLast;
+        float changeRatio = change/ stockMarketInfo.priceLast;
+        if(stockMarketInfo.priceNew < 0.1f)
         {
-            Utils.Log("error price for :"+stockInfo.code+" price: "+stockInfo.priceNew);
+            Utils.Log("error price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
             return;
         }
 
@@ -37,27 +37,27 @@ public class PolicyStep
         float priceSell = priceLast+priceUnit+sellOffset;
 
         System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceBuy:%.2f priceSell:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
-                code, priceLast, priceBuy, priceSell, stockInfo.priceNew, change, changeRatio*100 ));
+                code, priceLast, priceBuy, priceSell, stockMarketInfo.priceNew, change, changeRatio*100 ));
 
         float offset;
         int unitCount;
 
-        if(stockInfo.priceNew> priceSell)
+        if(stockMarketInfo.priceNew> priceSell)
         {
             //doSell
-            offset = stockInfo.priceNew - priceLast;
+            offset = stockMarketInfo.priceNew - priceLast;
             unitCount = (int)((offset-sellOffset)/priceUnit);
-            StockUtils.DoTrade(id, code, 1, stockInfo.priceNew-0.01f, stepUnit*unitCount);
+            StockUtils.DoTrade(id, code, 1, stockMarketInfo.priceNew-0.01f, stepUnit*unitCount);
             priceLast = priceLast+priceUnit*unitCount;
             UpdateLastPrice(priceLast);
         }
-        else if(stockInfo.priceNew < priceBuy)
+        else if(stockMarketInfo.priceNew < priceBuy)
         {
             //doBuy
-            offset = priceLast-stockInfo.priceNew;
+            offset = priceLast- stockMarketInfo.priceNew;
             unitCount = (int)((offset+buyOffset)/priceUnit);
 
-            StockUtils.DoTrade(id, code, 0, stockInfo.priceNew+0.01f, stepUnit*unitCount);
+            StockUtils.DoTrade(id, code, 0, stockMarketInfo.priceNew+0.01f, stepUnit*unitCount);
             priceLast = priceLast-stepUnit*unitCount;
             UpdateLastPrice(priceLast);
         }

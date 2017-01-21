@@ -7,6 +7,6 @@ import java.util.ArrayList;
  */
 public interface IStockInfoProvider
 {
-    StockInfo GetStockInfoByCode(String code) throws Exception;
-    ArrayList<StockInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception;
+    StockMarketInfo GetStockInfoByCode(String code) throws Exception;
+    ArrayList<StockMarketInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception;
 }
