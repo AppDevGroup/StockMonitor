@@ -1,31 +1,23 @@
 package com.wly.stock.eastmoney;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wly.common.Utils;
-import com.wly.stock.StockMarketInfo;
 import com.wly.stock.common.*;
 import org.apache.http.*;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.fluent.Executor;
-import org.apache.http.client.fluent.Form;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.fluent.Response;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 /**
  * Created by Administrator on 2017/1/21.
  */
@@ -62,12 +54,22 @@ public class TradeEastmoneyImpl implements ITradeInterface
             // Bind custom cookie store to the local context
 
             CloseableHttpResponse response = httpclient.execute(httpPost, localContext);
-            System.out.println(Utils.GetResponseFull(response));
+            String retStr = Utils.GetResponseContent(response);
+            System.out.println(retStr);
+            JsonObject jsonObject = new JsonParser().parse(retStr).getAsJsonObject();
+            int stat = jsonObject.get("Status").getAsInt();
+            if(stat != 0)
+            {
+                System.out.println("login failed! "+jsonObject.get("Message").getAsString());
+                return;
+            }
+            JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
+            System.out.println("userName: "+jsonDataArray.get(0).getAsJsonObject().get("khmc").getAsString());
 
-            String urlAssets = "https://jy.xzsec.com/Search/GetStockList";
-            httpPost = new HttpPost(urlAssets);
-            response = httpclient.execute(httpPost, localContext);
-            System.out.println(Utils.GetResponseFull(response));
+//            String urlAssets = "https://jy.xzsec.com/Search/GetStockList";
+//            httpPost = new HttpPost(urlAssets);
+//            response = httpclient.execute(httpPost, localContext);
+//            System.out.println(Utils.GetResponseFull(response));
         }
         catch (Exception ex)
         {

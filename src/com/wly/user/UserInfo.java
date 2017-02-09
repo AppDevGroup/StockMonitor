@@ -18,8 +18,19 @@ public class UserInfo
 
     public ITradeInterface tradeInterface;
 
+    public static void main(String[] args)
+    {
+        UserInfo uInfo = new UserInfo();
+        uInfo.Login("5434060016607212", "1252312332");
+    }
+
     public UserInfo()
     {
         tradeInterface = new TradeEastmoneyImpl();
+    }
+
+    public void Login(String name, String psw)
+    {
+        tradeInterface.Login(name, psw);
     }
 }
