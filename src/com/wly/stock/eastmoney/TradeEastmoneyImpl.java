@@ -1,5 +1,6 @@
 package com.wly.stock.eastmoney;
 
+import com.wly.common.Utils;
 import com.wly.stock.StockMarketInfo;
 import com.wly.stock.common.*;
 import org.apache.http.*;
@@ -34,7 +35,13 @@ public class TradeEastmoneyImpl implements ITradeInterface
     public final String LoginPage = "/Login/Authentication";
     public final String GetStockList = "/Search/GetStockList";
 
-    private CookieStore cookieStore;
+    private  HttpClientContext localContext;
+
+    public TradeEastmoneyImpl()
+    {
+        localContext = new HttpClientContext();
+        localContext.setCookieStore(new BasicCookieStore());
+    }
 
     //5406001660721212
     public void Login(String acct, String psw)
@@ -52,24 +59,15 @@ public class TradeEastmoneyImpl implements ITradeInterface
             params.add(new BasicNameValuePair("type", "Z"));
             httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            HttpClientContext localContext = HttpClientContext.create();
             // Bind custom cookie store to the local context
 
-            cookieStore = new BasicCookieStore();
-            localContext.setCookieStore(cookieStore);
             CloseableHttpResponse response = httpclient.execute(httpPost, localContext);
-            printResponse(response);
-            List<Cookie> cookieList = cookieStore.getCookies();
-            int i;
-            for (i = 0; i < cookieList.size(); ++i)
-            {
-                System.out.println(cookieList.get(i).getName() + " " + cookieList.get(i).getValue());
-            }
+            System.out.println(Utils.GetResponseFull(response));
 
             String urlAssets = "https://jy.xzsec.com/Search/GetStockList";
             httpPost = new HttpPost(urlAssets);
             response = httpclient.execute(httpPost, localContext);
-            printResponse(response);
+            System.out.println(Utils.GetResponseFull(response));
         }
         catch (Exception ex)
         {
@@ -77,24 +75,10 @@ public class TradeEastmoneyImpl implements ITradeInterface
         }
     }
 
-    public void doTrade(StockMarketInfo stockMarketInfo, int trade_flag, float price, float count)
+    @Override
+    public float GetRmbAsset()
     {
-
-    }
-
-    public void getStockList()
-    {
-
-    }
-
-    public List<TradeSeq> getTradeListToday()
-    {
-        return null;
-    }
-
-    public List<TradeSeq> GetTrandListHis(String dayStart, String dayEnd)
-    {
-        return null;
+        return 0;
     }
 
     @Override
@@ -119,26 +103,5 @@ public class TradeEastmoneyImpl implements ITradeInterface
     public List<StockAsset> GetAssetList()
     {
         return null;
-    }
-
-    public static void printResponse(HttpResponse httpResponse)
-            throws ParseException, IOException
-    {
-        // 获取响应消息实体
-        HttpEntity entity = httpResponse.getEntity();
-        // 响应状态
-        System.out.println("status:" + httpResponse.getStatusLine());
-        System.out.println("headers:");
-        HeaderIterator iterator = httpResponse.headerIterator();
-        while (iterator.hasNext()) {
-            System.out.println("\t" + iterator.next());
-        }
-        // 判断响应实体是否为空
-        if (entity != null) {
-            String responseString = EntityUtils.toString(entity);
-            System.out.println("response length:" + responseString.length());
-            System.out.println("response content:"
-                    + responseString.replace("\r\n", ""));
-        }
     }
 }
