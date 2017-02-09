@@ -55,6 +55,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
 
             CloseableHttpResponse response = httpclient.execute(httpPost, localContext);
             String retStr = Utils.GetResponseContent(response);
+            //{"Message":null,"Status":0,"Data":[{"khmc":"张三","Date":"20170209","Time":"142154","Syspm1":"1234545656","Syspm2":"1234","Syspm3":"","Syspm_ex":""}]}
             System.out.println(retStr);
             JsonObject jsonObject = new JsonParser().parse(retStr).getAsJsonObject();
             int stat = jsonObject.get("Status").getAsInt();
