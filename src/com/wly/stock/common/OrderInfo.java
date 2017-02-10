@@ -11,6 +11,7 @@ public class OrderInfo
 
     public int id;
     public String code;
+    public String name;
     public  int tradeFlag;
     public int count;
     public float orderPrice;    //订单价格
@@ -20,7 +21,7 @@ public class OrderInfo
     @Override
     public String toString()
     {
-        final String strFormat = "id=%s code=%s tradeFlag=%s count=%d orderPrice=%.2f dealPrice=%.2f orderStat=%d\n";
-        return String.format(strFormat, id, code, tradeFlag, count, orderPrice, dealPrice, orderStat);
+        final String strFormat = "id=%s code=%s name=%s tradeFlag=%s count=%d orderPrice=%.2f dealPrice=%.2f orderStat=%d\n";
+        return String.format(strFormat, id, code, name, tradeFlag, count, orderPrice, dealPrice, orderStat);
     }
 }

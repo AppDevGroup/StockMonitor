@@ -43,12 +43,12 @@ public class Utils
 
         HeaderIterator iterator = httpResponse.headerIterator();
         while (iterator.hasNext()) {
-            sb.append("\t" + iterator.next());
+            sb.append("\t" + iterator.next()+"\n");
         }
         // 判断响应实体是否为空
         if (entity != null) {
             String responseString = EntityUtils.toString(entity);
-            sb.append("response length:" + responseString.length());
+            sb.append("response length:" + responseString.length()+"\n");
             sb.append("response content:"
                     + responseString.replace("\r\n", ""));
         }
