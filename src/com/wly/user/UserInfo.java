@@ -3,6 +3,7 @@ package com.wly.user;
 import com.wly.stock.StockConst;
 import com.wly.stock.common.*;
 import com.wly.stock.eastmoney.TradeEastmoneyImpl;
+import com.wly.stock.policy.PolicyStep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class UserInfo
     public String name;
     public List<Asset> assets = new ArrayList<>();
     public List<OrderInfo> orderList = new ArrayList<>();
+    public List<PolicyStep> policySteps = new ArrayList<>();
 
     public ITradeInterface tradeInterface;
 
@@ -29,8 +31,8 @@ public class UserInfo
         orderInfo.code = "601288";
         orderInfo.name = "农业银行";
         orderInfo.count = 100;
-        orderInfo.orderPrice = 3.00f;
-        orderInfo.tradeFlag = StockConst.TradeBuy;
+        orderInfo.orderPrice = 3.0f;
+        orderInfo.tradeFlag = StockConst.TradeSell;
         uInfo.DoOrder(orderInfo);
     }
 

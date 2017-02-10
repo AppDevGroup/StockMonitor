@@ -1,9 +1,8 @@
 package com.wly.stock;
 
 import com.wly.common.Utils;
-import org.apache.log4j.BasicConfigurator;
+import com.wly.stock.common.StockPriceMonitor;
 
-import java.util.Timer;
 import java.util.TimerTask;
 
 /**
@@ -13,18 +12,35 @@ public class GetStockDesc
 {
     static public void main(String[] args)
     {
-        BasicConfigurator.configure();
-
         if(args.length == 0)
         {
             Utils.Log("please input stock code");
             return;
         }
 
-        Timer timer = new Timer();
-        QueryStockDescInfo task = new QueryStockDescInfo();
-        task.codes = args;
-        timer.schedule(task, 0, 2000);
+        StockMarketInfoManager stockMarketInfoManager = StockMarketInfoManager.GetInstance();
+        stockMarketInfoManager.StockInfoProvider(new StockInfoProviderSina());
+        int i;
+        for(i=0; i<args.length; ++i)
+        {
+            stockMarketInfoManager.AddMonitor(new StockPriceMonitorDesc(args[i]));
+        }
+
+        stockMarketInfoManager.Start();
+    }
+}
+
+class StockPriceMonitorDesc extends StockPriceMonitor
+{
+    public StockPriceMonitorDesc(String code)
+    {
+        this.code = code;
+    }
+
+    @Override
+    public void OnNewPirce(StockMarketInfo stockMarketInfo)
+    {
+        Utils.Log(stockMarketInfo.toDesc());
     }
 }
 
