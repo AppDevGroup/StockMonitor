@@ -58,7 +58,7 @@ public class PolicyStep
             unitCount = (int)((offset+buyOffset)/priceUnit);
 
             StockUtils.DoTrade(id, code, 0, stockMarketInfo.priceNew+0.01f, stepUnit*unitCount);
-            priceLast = priceLast-stepUnit*unitCount;
+            priceLast = priceLast-priceUnit*unitCount;
             UpdateLastPrice(priceLast);
         }
     }
