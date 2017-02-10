@@ -134,7 +134,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             CloseableHttpResponse response = httpclient.execute(httpPost, localContext);
             String retStr = Utils.GetResponseContent(response);
             //{"Message":null,"Status":0,"Data":[{"RMBZzc":"1.73","Zzc":"1.73","Zxsz":"0.73","Kyzj":"1.73","Kqzj":"1.00","Djzj":"0.00","Zjye":"1.00","Money_type":"RMB","Drckyk":null,"Ljyk":null}]}
-
+            System.out.println(retStr);
             JsonObject jsonObject = new JsonParser().parse(retStr).getAsJsonObject();
             int stat = jsonObject.get("Status").getAsInt();
             if(stat != 0)
@@ -187,7 +187,11 @@ public class TradeEastmoneyImpl implements ITradeInterface
                 System.out.println("DoOrder failed! "+jsonObject.get("Message").getAsString());
                 return;
             }
-////            System.out.println("userName: "+jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
+
+            JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
+            orderInfo.platId = jsonDataArray.get(0).getAsJsonObject().get("Wtbh").getAsString();
+            orderInfo.orderStat = OrderInfo.OderStat_Order;
+//            System.out.println("userName: "+jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
 //
            // System.out.println(retStr);
             return;
@@ -215,34 +219,5 @@ public class TradeEastmoneyImpl implements ITradeInterface
     public List<StockAsset> GetAssetList()
     {
         return null;
-    }
-
-    public static void enableSSL(DefaultHttpClient httpclient) {
-
-        // 调用ssl
-
-        try {
-
-            SSLContext sslcontext = SSLContext.getInstance("TLS");
-
-           // sslcontext.init(null, new TrustManager[]{truseAllManager}, null);
-
-            @SuppressWarnings("deprecation")
-
-            SSLSocketFactory sf = new SSLSocketFactory(sslcontext);
-
-            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-            Scheme https = new Scheme("https", sf, 443);
-
-            httpclient.getConnectionManager().getSchemeRegistry()
-
-                    .register(https);
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        }
     }
 }

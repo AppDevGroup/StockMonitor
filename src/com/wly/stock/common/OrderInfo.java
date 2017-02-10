@@ -5,9 +5,9 @@ package com.wly.stock.common;
  */
 public class OrderInfo
 {
-    public final int OderStat_None = 0;
-    public final int OderStat_Order = 1; //下单
-    public final int OderStat_Deal = 2;  //已成交
+    static public final int OderStat_None = 0;
+    static public final int OderStat_Order = 1; //下单
+    static public final int OderStat_Deal = 2;  //已成交
 
     public int id;
     public String code;
@@ -16,7 +16,8 @@ public class OrderInfo
     public int count;
     public float orderPrice;    //订单价格
     public float dealPrice;     //成交价格
-    public int orderStat;   //订单状态
+    public String platId;       //交易平台id
+    public int orderStat = OderStat_None;   //订单状态
 
     @Override
     public String toString()
