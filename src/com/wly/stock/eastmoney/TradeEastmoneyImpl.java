@@ -162,6 +162,8 @@ public class TradeEastmoneyImpl implements ITradeInterface
     {
         try
         {
+            orderInfo.orderStat = OrderInfo.OderStat_None;
+
             final String OrderUrl = "/Trade/SubmitTrade?validatekey=";
             HttpPost httpPost = new HttpPost(RootUrl + OrderUrl+validatekey);
 

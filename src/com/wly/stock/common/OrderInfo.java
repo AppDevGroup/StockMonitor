@@ -5,9 +5,10 @@ package com.wly.stock.common;
  */
 public class OrderInfo
 {
-    static public final int OderStat_None = 0;
-    static public final int OderStat_Order = 1; //下单
-    static public final int OderStat_Deal = 2;  //已成交
+    static public final int OderStat_None = 0; //未知状态
+    static public final int OderStat_Ready = 1; //预备状态
+    static public final int OderStat_Order = 2; //下单
+    static public final int OderStat_Deal = 3;  //已成交
 
     public int id;
     public String code;
