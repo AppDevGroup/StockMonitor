@@ -51,6 +51,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
     public final String LoginPage = "/Login/Authentication";
     public final String GetStockList = "/Search/GetStockList";
 
+    private String platUserName;
     private String validatekey;
     private  HttpClientContext localContext;
 
@@ -88,16 +89,16 @@ public class TradeEastmoneyImpl implements ITradeInterface
                 System.out.println("login failed! "+jsonObject.get("Message").getAsString());
                 return;
             }
-            BasicClientCookie cookie = new BasicClientCookie("eastmoney_txzq_zjzh", URLEncoder.encode(new BASE64Encoder().encode((acct+"|").getBytes())));
-//            cookie.s
-            localContext.getCookieStore().addCookie(new BasicClientCookie("eastmoney_txzq_zjzh", URLEncoder.encode(new BASE64Encoder().encode((acct+"|").getBytes()))));
-            JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
-            System.out.println("userName: "+jsonDataArray.get(0).getAsJsonObject().get("khmc").getAsString());
 
-//            String urlAssets = "https://jy.xzsec.com/Search/GetStockList";
-//            httpPost = new HttpPost(urlAssets);
-//            response = httpclient.execute(httpPost, localContext);
-//            System.out.println(Utils.GetResponseFull(response));
+            Cookie cookieTmp = localContext.getCookieStore().getCookies().get(0);
+            BasicClientCookie cookie = new BasicClientCookie("eastmoney_txzq_zjzh", URLEncoder.encode(new BASE64Encoder().encode((acct+"|").getBytes())));
+            cookie.setPath(cookieTmp.getPath());
+            cookie.setDomain(cookieTmp.getDomain());
+            cookie.setExpiryDate(cookieTmp.getExpiryDate());
+            localContext.getCookieStore().addCookie(cookie);
+            JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
+            platUserName = jsonDataArray.get(0).getAsJsonObject().get("khmc").getAsString();
+            System.out.println("userName: "+platUserName);
 
             final String PageBuy = "/Trade/Buy";
             HttpGet httpGet = new HttpGet(RootUrl + PageBuy);
@@ -145,7 +146,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             money = jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
 //            System.out.println("userName: "+jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
 
-//            System.out.println(Utils.GetResponseFull(response));
+            System.out.println(retStr);
             return true;
         }
         catch (Exception ex)
@@ -163,9 +164,6 @@ public class TradeEastmoneyImpl implements ITradeInterface
         {
             final String OrderUrl = "/Trade/SubmitTrade?validatekey=";
             HttpPost httpPost = new HttpPost(RootUrl + OrderUrl+validatekey);
-//            HttpHost proxHost = new HttpHost("127.0.0.1", 8888);
-//            RequestConfig requestConfig = RequestConfig.custom().setProxy(proxHost).build();
-//            httpPost.setConfig(requestConfig);
 
             //stockCode=601288&price=3.00&amount=100&tradeType=B&zqmc=%E5%86%9C%E4%B8%9A%E9%93%B6%E8%A1%8C
             List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -176,23 +174,12 @@ public class TradeEastmoneyImpl implements ITradeInterface
             params.add(new BasicNameValuePair("zqmc", orderInfo.name));
             httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
-            // Bind custom cookie store to the local context
-            CookieStore cookieStore = localContext.getCookieStore();
-            HttpClientContext localContext1 = new HttpClientContext();
-            localContext1.setCookieStore(cookieStore);
-//            List<Cookie> cookieList = cookieStore.getCookies();
-//            int i;
-//            for(i=0; i<cookieList.size(); ++i)
-//            {
-//                System.out.println(cookieList.get(i).getName()+"====="+cookieList.get(i).getValue());
-//            }
-
             CloseableHttpClient httpclient = HttpClients.createDefault();
-            CloseableHttpResponse response = httpclient.execute(httpPost, localContext1);
+            CloseableHttpResponse response = httpclient.execute(httpPost, localContext);
 //            System.out.println(Utils.GetResponseFull(response));
             String retStr = Utils.GetResponseContent(response);
             System.out.println("orderResponse: " + retStr);
-            //{"Message":null,"Status":0,"Data":[{"RMBZzc":"1.73","Zzc":"1.73","Zxsz":"0.73","Kyzj":"1.73","Kqzj":"1.00","Djzj":"0.00","Zjye":"1.00","Money_type":"RMB","Drckyk":null,"Ljyk":null}]}
+            //{"Message":null,"Status":0,"Data":[{"Wtbh":"324917"}]}
             JsonObject jsonObject = new JsonParser().parse(retStr).getAsJsonObject();
             int stat = jsonObject.get("Status").getAsInt();
             if(stat != 0)

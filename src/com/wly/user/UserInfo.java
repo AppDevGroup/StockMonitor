@@ -1,5 +1,6 @@
 package com.wly.user;
 
+import com.wly.stock.StockConst;
 import com.wly.stock.common.*;
 import com.wly.stock.eastmoney.TradeEastmoneyImpl;
 
@@ -21,7 +22,16 @@ public class UserInfo
     public static void main(String[] args)
     {
         UserInfo uInfo = new UserInfo();
-        uInfo.Login("5434060016607212", "1252312332");
+        uInfo.Login("53423406001660721234", "12235aw3s3212");
+        uInfo.FillUserAsset();
+
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.code = "601288";
+        orderInfo.name = "农业银行";
+        orderInfo.count = 100;
+        orderInfo.orderPrice = 3.00f;
+        orderInfo.tradeFlag = StockConst.TradeBuy;
+        uInfo.DoOrder(orderInfo);
     }
 
     public UserInfo()
@@ -33,4 +43,6 @@ public class UserInfo
     {
         tradeInterface.Login(name, psw);
     }
+    public  void FillUserAsset(){tradeInterface.FillUserAsset(this);}
+    public  void DoOrder(OrderInfo orderInfo){ tradeInterface.DoOrder(orderInfo);}
 }
