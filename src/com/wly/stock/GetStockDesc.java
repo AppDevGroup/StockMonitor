@@ -20,13 +20,16 @@ public class GetStockDesc
 
         StockMarketInfoManager stockMarketInfoManager = StockMarketInfoManager.GetInstance();
         stockMarketInfoManager.StockInfoProvider(new StockInfoProviderSina());
+        StockPriceMonitorManager stockPriceMonitorManager = StockPriceMonitorManager.GetInstance();
         int i;
         for(i=0; i<args.length; ++i)
         {
-            stockMarketInfoManager.AddMonitor(new StockPriceMonitorDesc(args[i]));
+            stockPriceMonitorManager.AddMonitor(new StockPriceMonitorDesc(args[i]));
+            stockMarketInfoManager.AddMonitorCode (args[i]);
         }
 
         stockMarketInfoManager.Start();
+        stockPriceMonitorManager.Start();
     }
 }
 

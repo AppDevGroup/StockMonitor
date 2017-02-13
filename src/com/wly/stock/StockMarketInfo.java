@@ -37,6 +37,25 @@ public class StockMarketInfo
         return GetChange()/ priceLast *100;
     }
 
+    public  void CopyFrom(StockMarketInfo src)
+    {
+        this.code = src.code;
+        this.name = src.name;
+        this.priceInit = src.priceInit;
+        this.priceLast = src.priceLast;
+        this.priceNew = src.priceNew;
+        this.priceMax = src.priceMax;
+        this.priceMin = src.priceMin;
+        this.priceBuy = src.priceBuy;
+        this.priceSell = src.priceSell;
+        this.tradeCount = src.tradeCount;
+        this.tradeMoney = src.tradeMoney;
+        this.buyInfo.clear();
+        this.buyInfo.addAll(src.buyInfo);
+        this.sellInfo.clear();
+        this.sellInfo.addAll(src.sellInfo);
+    }
+
     public String toDesc()
     {
         StringBuilder sb = new StringBuilder();
