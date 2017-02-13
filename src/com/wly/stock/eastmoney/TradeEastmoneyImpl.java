@@ -51,6 +51,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
     public final String LoginPage = "/Login/Authentication";
     public final String GetStockList = "/Search/GetStockList";
 
+    private UserInfo userInfo;
     private String platUserName;
     private String validatekey;
     private  HttpClientContext localContext;
@@ -59,6 +60,12 @@ public class TradeEastmoneyImpl implements ITradeInterface
     {
         localContext = new HttpClientContext();
         localContext.setCookieStore(new BasicCookieStore());
+    }
+
+    @Override
+    public void SetUserInfo(UserInfo userInfo)
+    {
+        this.userInfo = userInfo;
     }
 
     //5406001660721212
@@ -118,7 +125,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
     }
 
     @Override
-    public boolean FillUserAsset(UserInfo userInfo)
+    public boolean UpdateUserAsset()
     {
         float money = 0;
         try
@@ -143,8 +150,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
                 return false;
             }
             JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
-            money = jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
-//            System.out.println("userName: "+jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
+            userInfo.rmbAsset.activeAmount = jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
 
             System.out.println(retStr);
             return true;
@@ -195,6 +201,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
 
             JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
             orderInfo.platOrderId = jsonDataArray.get(0).getAsJsonObject().get("Wtbh").getAsString();
+
 //            System.out.println("userName: "+jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
 //
            // System.out.println(retStr);
@@ -270,6 +277,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             JsonObject newOrderInfo;
             OrderInfo orderInfo;
             int orderStat;
+            boolean needUpdateAsset = false;
             for(i=0; i<jsonDataArray.size(); ++i)
             {
                 newOrderInfo = jsonDataArray.get(i).getAsJsonObject();
@@ -280,8 +288,20 @@ public class TradeEastmoneyImpl implements ITradeInterface
                     if(newOrderInfo.get("Wtbh").equals(orderInfo.platOrderId) && orderStat != orderInfo.GetStat())
                     {
                         orderInfo.SetStat(orderStat);
+                        if((orderStat == OrderInfo.OderStat_Order && orderInfo.tradeFlag == StockConst.TradeBuy)
+                            ||(orderStat == OrderInfo.OderStat_Cancel && orderInfo.tradeFlag == StockConst.TradeBuy)
+                                ||(orderStat == OrderInfo.OderStat_Deal && orderInfo.tradeFlag == StockConst.TradeBuy)
+                                ||(orderStat == OrderInfo.OderStat_Half && orderInfo.tradeFlag == StockConst.TradeBuy))
+                        {
+                            needUpdateAsset = true;
+                        }
                     }
                 }
+            }
+
+            if(needUpdateAsset)
+            {
+                userInfo.UpdateUserAsset();
             }
         }
         catch (Exception ex)

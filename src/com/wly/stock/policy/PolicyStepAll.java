@@ -1,12 +1,16 @@
 package com.wly.stock.policy;
 
 import com.wly.common.Utils;
+import com.wly.database.DBPool;
 import com.wly.stock.StockConst;
 import com.wly.stock.StockMarketInfo;
 import com.wly.stock.StockUtils;
 import com.wly.stock.common.OrderInfo;
 import com.wly.user.Asset;
 import com.wly.user.UserInfo;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2017/2/13.
@@ -30,6 +34,10 @@ public class PolicyStepAll extends PolicyBase
     public int policyStat;    //策略状态
     public  float priceLast;    //最新交易价格
 
+    public String buyOrderId;
+    public String sellOrderId;
+    public String lastDate;
+
     private OrderInfo sellOrder;    //买入订单
     private float buyLastPrice;     //买入成交更新参考价格
     private OrderInfo buyOrder;     //卖出订单
@@ -51,6 +59,11 @@ public class PolicyStepAll extends PolicyBase
         if(!stockMarketInfo.code.equals(code))
         {
             Utils.Log(String.format("code mismatch! policyCode=%s stockMarketInfo code=%s", code, stockMarketInfo.code));
+            return;
+        }
+
+        if(policyStat == PolicyStat_None)
+        {
             return;
         }
 
@@ -152,7 +165,7 @@ public class PolicyStepAll extends PolicyBase
                 if(stockMarketInfo.TestDeal(StockConst.TradeBuy, tradePrice, tradeCount))
                 {
                     tradeFee = userInfo.tradeInterface.CacuTradeFee(StockConst.TradeBuy, code, tradePrice, tradeCount);
-                    if(userInfo.rmbAsset.activeCount >= tradePrice*tradeCount+tradeFee)
+                    if(userInfo.rmbAsset.activeAmount >= tradePrice*tradeCount+tradeFee)
                     {
                         buyOrder = userInfo.DoTrade(code, StockConst.TradeBuy, tradePrice, tradeCount);
                         buyLastPrice = priceLast - priceUnit * unitCount;
@@ -160,7 +173,7 @@ public class PolicyStepAll extends PolicyBase
                     else
                     {
                         System.out.println(String.format("Money not enough for buy code=%s price=%.2f count=%d need=%.2f current=%.2f",
-                                code, tradePrice, tradeCount, tradePrice*tradeCount+tradeFee, userInfo.rmbAsset.activeCount));
+                                code, tradePrice, tradeCount, tradePrice*tradeCount+tradeFee, userInfo.rmbAsset.activeAmount));
                     }
                 }
             }
@@ -194,13 +207,14 @@ public class PolicyStepAll extends PolicyBase
                 priceLast = buyLastPrice;
                 buyLastPrice = 0f;
             }
-
-            UpdateLastPrice();
+            StoreLastPrice();
+            StoreBuyOrderId("null");
 
             if(sellOrder != null)
             {
                 userInfo.RevokeOrder(sellOrder);
                 sellOrder = null;
+                StoreSellOrder("null");
             }
         }
     }
@@ -217,17 +231,64 @@ public class PolicyStepAll extends PolicyBase
 
             priceLast = sellLastPrice;
             sellLastPrice = 0f;
-            UpdateLastPrice();
+            StoreLastPrice();
+            StoreSellOrder("null");
 
             if(buyOrder != null)
             {
                 userInfo.RevokeOrder(buyOrder);
+                StoreBuyOrderId("null");
             }
         }
     }
 
-    private  void UpdateLastPrice()
+    private void StoreBuyOrderId(String buyId)
     {
-        //ToDo
+        try {
+            final String UpdateFormat = "update policy_step SET sellorder_id = %s WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, buyId, id));
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
+    }
+
+    private void StoreSellOrder(String sellId)
+    {
+        try {
+            final String UpdateFormat = "update policy_step SET buyorder_id = %s WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, sellId, id));
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
+    }
+
+    private void StorePolicyStat()
+    {
+        try {
+            final String UpdateFormat = "update policy_step SET policy_stat = %d WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, policyStat, id));
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
+    }
+
+    private  void StoreLastPrice()
+    {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
+            String date = df.format(new Date());// new Date()为获取当前系统时间
+            final String UpdateFormat = "update policy_step SET price_last = %.2f last_date=%s  WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, priceLast, date, id));
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
     }
 }

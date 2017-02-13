@@ -16,4 +16,6 @@ public class StockConst
 
     static public  final String RmbCode = "000000";
     static public  final String RmbName = "人民币";
+
+    static public final int Plat_DFCF = 1;
 }
