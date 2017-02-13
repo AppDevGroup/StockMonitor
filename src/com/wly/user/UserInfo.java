@@ -96,6 +96,7 @@ public class UserInfo
         orderInfo.code = code;
         orderInfo.tradeFlag = tradeFlag;
         orderInfo.count = count;
+        orderInfo.orderPrice = price;
 
         DoOrder(orderInfo);
         return orderInfo;
