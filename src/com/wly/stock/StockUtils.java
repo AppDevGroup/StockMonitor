@@ -2,6 +2,7 @@ package com.wly.stock;
 
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
+import com.wly.stock.common.eStockPlate;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -14,14 +15,9 @@ public class StockUtils
 {
     static public ArrayList<String> QueryCodeList = new ArrayList<String>();
 
-    static public final String PrefixSH = "sh";
-    static public final String PrefixSZ = "sz";
     static public final float FeeRate = 0.00025f;
     static public final float ChangeUnit = 0.045f; //上证每100股 0.45
     static public final float StampTaxRate = 0.001f; //交易印花税 交易总额的千分之一
-
-    static public  final String[]  SpecialCodeSH = new String[]{"000001"};
-    static public  final String[]  SpecialCodeSZ = new String[]{""};
 
     static public eStockPlate GetPlateByCode(String codeStr)
     {
@@ -29,18 +25,18 @@ public class StockUtils
         int code = Integer.parseInt(codeStr);
 
         int i;
-        for (i = 0; i < SpecialCodeSH.length; ++i)
+        for (i = 0; i < StockConst.SpecialCodeSH.length; ++i)
         {
-            if(SpecialCodeSH[i].equals(codeStr))
+            if(StockConst.SpecialCodeSH[i].equals(codeStr))
             {
                 plate = eStockPlate.PlateSH;
                 return  plate;
             }
         }
 
-        for (i = 0; i < SpecialCodeSZ.length; ++i)
+        for (i = 0; i < StockConst.SpecialCodeSZ.length; ++i)
         {
-            if(SpecialCodeSZ[i].equals(codeStr))
+            if(StockConst.SpecialCodeSZ[i].equals(codeStr))
             {
                 plate = eStockPlate.PlateSZ;
                 return  plate;
@@ -150,11 +146,4 @@ public class StockUtils
     {
         return TrimValueRound(StampTaxRate * amount);
     }
-}
-
-enum eStockPlate
-{
-    None,
-    PlateSH,
-    PlateSZ,
 }

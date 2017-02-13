@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mysql.fabric.xmlrpc.base.Array;
 import com.wly.common.Utils;
+import com.wly.database.DBPool;
 import com.wly.stock.StockConst;
+import com.wly.stock.StockUtils;
 import com.wly.stock.common.*;
 import com.wly.user.UserInfo;
 import org.apache.http.*;
@@ -40,6 +42,10 @@ public class TradeEastmoneyImpl implements ITradeInterface
     public final String OrderStat_WaitForCancel = "已报待撤";
     public final String OrderStat_Half = "部成";
     public final String OrderStat_Done = "成交";
+
+    public final float FeeRate = 0.00025f;  //券商交易费率万分之二点五
+    public final float ChangeUnit = 0.045f; //上证每100股 0.45
+    public final float StampTaxRate = 0.001f; //交易印花税 交易总额的千分之一
 
     public final String RootUrl = "https://jy.xzsec.com";
     public final String LoginPage = "/Login/Authentication";
@@ -297,6 +303,22 @@ public class TradeEastmoneyImpl implements ITradeInterface
         return null;
     }
 
+    @Override
+    public float CacuTradeFee(int tradeFlag, String code, float price, int count)
+    {
+        float tradeFeeTotal = 0f;
+
+        switch (tradeFlag)
+        {
+            case StockConst.TradeBuy:
+                tradeFeeTotal = CacuBuyFee(code, price, count);
+                break;
+            case StockConst.TradeSell:
+                tradeFeeTotal = CacuSellFee(code, price, count);
+        }
+        return tradeFeeTotal;
+    }
+
     private int GetStatByPlatStat(String str)
     {
         int stat = OrderInfo.OderStat_None;
@@ -319,5 +341,65 @@ public class TradeEastmoneyImpl implements ITradeInterface
                 break;
         }
         return  stat;
+    }
+
+    public  float CacuSellFee(String code, float price, int num)
+    {
+        //佣金万分之五（5元起） 上证过户费0.35每100股 向上去整精确到分 印花税千分之一精确到分向上取整
+        float amount = price*num;
+        float counterFee = GetCountFee(amount, num);    //佣金
+        float transferFee = GetTransferFee(code, amount, num);
+        float stampTax = GetStampTax(amount);
+        return counterFee+transferFee+stampTax;
+    }
+
+    public  float CacuBuyFee(String code, float price, int num)
+    {
+        //佣金万分之五（5元起）
+        float amount = price*num;
+        float counterFee = GetCountFee(amount, num);    //佣金
+        float transferFee = GetTransferFee(code, amount, num);
+        return counterFee+transferFee;
+    }
+
+    static public float TrimValueFloor(float val)
+    {
+        return (float)Math.floor((double)(val*100))/100;
+    }
+
+    static public float TrimValueRound(float val)
+    {
+        return (float)Math.round((double)(val*100))/100;
+    }
+
+    //佣金计算 万分之五（5元起）
+    //买卖都收
+    public float GetCountFee(float amount, int num)
+    {
+        float counterFee = StockUtils.TrimValueRound(amount*FeeRate);    //佣金
+        counterFee = counterFee <= 5f ?5f:counterFee;
+        return counterFee;
+    }
+
+    ///过户费 上证过户费0.035每100股 向下取整精确到分
+    ///买卖都收
+    public float GetTransferFee(String code, float amount, int num)
+    {
+        float transferFee = 0f;
+        eStockPlate plate = StockUtils.GetPlateByCode(code);
+        switch (plate)
+        {
+            case PlateSH:
+                transferFee = StockUtils.TrimValueFloor(num/100*ChangeUnit);
+                break;
+        }
+        return transferFee;
+    }
+
+    //印花税 交易金额千分之一精确到分向上取整
+    //卖出时收取
+    public float GetStampTax(float amount)
+    {
+        return TrimValueRound(StampTaxRate * amount);
     }
 }

@@ -79,7 +79,8 @@ public class PolicyStepAll extends PolicyBase
                 code, priceLast, priceBuy, priceSell, stockMarketInfo.priceNew, change, changeRatio*100 ));
 
         float offset;
-        int unitCount;
+        int unitCount, i, maxUnitCount;
+        int tradeCount;
 
         StockMarketInfo.TradeInfo sellTradeInfo;
         StockMarketInfo.TradeInfo buyTradeInfo;
@@ -104,10 +105,10 @@ public class PolicyStepAll extends PolicyBase
             //doSell
             offset = stockMarketInfo.priceNew - priceLast;
             unitCount = (int)((offset-sellOffset)/priceUnit);
-            unitCount = unitCount >= asset.activeCount?asset.activeCount:unitCount;
-            if(stockMarketInfo.TestDeal(StockConst.TradeSell, priceSell, stepUnit*unitCount))
+            tradeCount = stepUnit*unitCount >= asset.activeCount?asset.activeCount:stepUnit*unitCount;
+            if(stockMarketInfo.TestDeal(StockConst.TradeSell, priceSell, tradeCount))
             {
-                userInfo.DoTrade(code, StockConst.TradeSell, priceSell, stepUnit*unitCount);
+                userInfo.DoTrade(code, StockConst.TradeSell, priceSell, tradeCount);
                 priceLast = priceLast+priceUnit*unitCount;
                 //            UpdateLastPrice(priceLast);
             }
@@ -117,9 +118,10 @@ public class PolicyStepAll extends PolicyBase
             //doBuy
             offset = priceLast- stockMarketInfo.priceNew;
             unitCount = (int)((offset+buyOffset)/priceUnit);
-            if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceBuy, stepUnit*unitCount))
+            tradeCount = stepUnit*unitCount;
+            if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceBuy, tradeCount))
             {
-                userInfo.DoTrade(code, StockConst.TradeBuy, priceBuy, stepUnit * unitCount);
+                userInfo.DoTrade(code, StockConst.TradeBuy, priceBuy, tradeCount);
                 priceLast = priceLast - priceUnit * unitCount;
 //            UpdateLastPrice(priceLast);
             }

@@ -16,6 +16,7 @@ public class UserInfo
 {
     public String id;
     public String name;
+    public Asset rmbAsset;
     public List<Asset> assets = new ArrayList<>();
     public List<PolicyStep> policySteps = new ArrayList<>();
     private ArrayList<OrderInfo> orderInfos = new ArrayList<>();
@@ -41,6 +42,9 @@ public class UserInfo
 
     public UserInfo()
     {
+        rmbAsset = new Asset();
+        rmbAsset.code = StockConst.RmbCode;
+        rmbAsset.code = StockConst.RmbName;
         tradeInterface = new TradeEastmoneyImpl();
     }
 
