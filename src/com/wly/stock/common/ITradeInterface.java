@@ -14,7 +14,7 @@ public interface ITradeInterface
     boolean FillUserAsset(UserInfo userInfo);                //获取可用资金
     void DoOrder(OrderInfo orderInfo);                      //申请挂单
     void RevokeOrder(OrderInfo orderInfo);                  //撤销挂单
-    boolean CheckOrderState(ArrayList<OrderInfo> orderInfos);          //检查订单成交状态
+    void UpdateOrderStatus(ArrayList<OrderInfo> orderInfos);          //检查订单成交状态
     List<TradeBook> GetTradeHis();      //获取订单
     List<StockAsset> GetAssetList();    //获取持仓列表
 }

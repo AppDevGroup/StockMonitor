@@ -3,52 +3,44 @@ package com.wly.stock.eastmoney;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mysql.fabric.xmlrpc.base.Array;
 import com.wly.common.Utils;
 import com.wly.stock.StockConst;
 import com.wly.stock.common.*;
 import com.wly.user.UserInfo;
 import org.apache.http.*;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import org.apache.http.util.EncodingUtils;
-import org.apache.http.util.EntityUtils;
 import sun.misc.BASE64Encoder;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.net.URLEncoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2017/1/21.
  */
 public class TradeEastmoneyImpl implements ITradeInterface
 {
+    public final String OrderStat_Order = "已报";
+    public final String OrderStat_Cancle = "已撤";
+    public final String OrderStat_WaitForCancel = "已报待撤";
+    public final String OrderStat_Half = "部成";
+    public final String OrderStat_Done = "成交";
+
     public final String RootUrl = "https://jy.xzsec.com";
     public final String LoginPage = "/Login/Authentication";
     public final String GetStockList = "/Search/GetStockList";
@@ -164,7 +156,10 @@ public class TradeEastmoneyImpl implements ITradeInterface
     {
         try
         {
-            orderInfo.orderStat = OrderInfo.OderStat_None;
+            if(!orderInfo.platOrderId.equals(null))
+            {
+                return;
+            }
 
             final String OrderUrl = "/Trade/SubmitTrade?validatekey=";
             HttpPost httpPost = new HttpPost(RootUrl + OrderUrl+validatekey);
@@ -193,8 +188,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             }
 
             JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
-            orderInfo.platId = jsonDataArray.get(0).getAsJsonObject().get("Wtbh").getAsString();
-            orderInfo.orderStat = OrderInfo.OderStat_Order;
+            orderInfo.platOrderId = jsonDataArray.get(0).getAsJsonObject().get("Wtbh").getAsString();
 //            System.out.println("userName: "+jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
 //
            // System.out.println(retStr);
@@ -216,7 +210,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             String date = df.format(new Date());// new Date()为获取当前系统时间
 
             final String RevokeUrl = "/Trade/RevokeOrders?validatekey=";
-            String revokeId = "20170213_140266";String.format("%s_%s", date, orderInfo.platId);
+            String revokeId = "20170213_140266";String.format("%s_%s", date, orderInfo.platOrderId);
 
             HttpPost httpPost = new HttpPost(RootUrl + RevokeUrl + validatekey);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -236,7 +230,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
     }
 
     @Override
-    public boolean CheckOrderState(ArrayList<OrderInfo> orderInfos)
+    public void UpdateOrderStatus(ArrayList<OrderInfo> orderInfos)
     {
         try
         {
@@ -256,13 +250,39 @@ public class TradeEastmoneyImpl implements ITradeInterface
             // ]}
             String retStr = Utils.GetResponseContent(response);
             System.out.println(retStr);
+
+            JsonObject jsonObject = new JsonParser().parse(retStr).getAsJsonObject();
+            int stat = jsonObject.get("Status").getAsInt();
+            if(stat != 0)
+            {
+                System.out.println("UpdateOrderStatus failed! "+jsonObject.get("Message").getAsString());
+                return;
+            }
+
+            JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
+            int i,j;
+            JsonObject newOrderInfo;
+            OrderInfo orderInfo;
+            int orderStat;
+            for(i=0; i<jsonDataArray.size(); ++i)
+            {
+                newOrderInfo = jsonDataArray.get(i).getAsJsonObject();
+                orderStat =  GetStatByPlatStat(newOrderInfo.get("Wtzt").getAsString());
+                for(j=0; j<orderInfos.size(); ++j)
+                {
+                    orderInfo = orderInfos.get(j);
+                    if(newOrderInfo.get("Wtbh").equals(orderInfo.platOrderId) && orderStat != orderInfo.GetStat())
+                    {
+                        orderInfo.SetStat(orderStat);
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {
             System.out.print(ex.getMessage());
             ex.printStackTrace();
         }
-        return false;
     }
 
     @Override
@@ -275,5 +295,29 @@ public class TradeEastmoneyImpl implements ITradeInterface
     public List<StockAsset> GetAssetList()
     {
         return null;
+    }
+
+    private int GetStatByPlatStat(String str)
+    {
+        int stat = OrderInfo.OderStat_None;
+        switch (str)
+        {
+            case OrderStat_Order:
+                stat = OrderInfo.OderStat_Order;
+                break;
+            case OrderStat_Cancle:
+                stat = OrderInfo.OderStat_Cancel;
+                break;
+            case OrderStat_Half:
+                stat = OrderInfo.OderStat_Half;
+                break;
+            case OrderStat_WaitForCancel:
+                stat = OrderInfo.OderStat_WaitForCancel;
+                break;
+            case OrderStat_Done:
+                stat = OrderInfo.OderStat_Deal;
+                break;
+        }
+        return  stat;
     }
 }

@@ -67,6 +67,7 @@ public class UserInfo
             if(orderInfos.get(i).id == id)
             {
                 orderInfos.remove(i);
+                break;
             }
         }
     }
@@ -78,5 +79,5 @@ public class UserInfo
     public  void FillUserAsset(){tradeInterface.FillUserAsset(this);}
     public  void DoOrder(OrderInfo orderInfo){ tradeInterface.DoOrder(orderInfo);}
     public void RevokeOrder(OrderInfo orderInfo){tradeInterface.RevokeOrder(orderInfo);};
-    public void CheckOrderStatus(){tradeInterface.CheckOrderState(null);}
+    public void CheckOrderStatus(){tradeInterface.UpdateOrderStatus (orderInfos);}
 }

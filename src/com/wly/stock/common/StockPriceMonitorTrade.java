@@ -20,7 +20,7 @@ public class StockPriceMonitorTrade extends StockPriceMonitor
             return;
         }
 
-        if(orderInfo.orderStat != OrderInfo.OderStat_Ready)
+        if(orderInfo.GetStat() != OrderInfo.OderStat_Ready)
         {
             return;
         }
