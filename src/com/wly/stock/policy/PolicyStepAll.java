@@ -81,6 +81,8 @@ public class PolicyStepAll extends PolicyBase
         float offset;
         int unitCount, i, maxUnitCount;
         int tradeCount;
+        float tradePrice;
+        float tradeFee;
 
         StockMarketInfo.TradeInfo sellTradeInfo;
         StockMarketInfo.TradeInfo buyTradeInfo;
@@ -103,12 +105,22 @@ public class PolicyStepAll extends PolicyBase
         if(buyTradeInfo.price >= priceSell)
         {
             //doSell
-            offset = stockMarketInfo.priceNew - priceLast;
+            offset = buyTradeInfo.price - priceLast;
             unitCount = (int)((offset-sellOffset)/priceUnit);
             tradeCount = stepUnit*unitCount >= asset.activeCount?asset.activeCount:stepUnit*unitCount;
-            if(stockMarketInfo.TestDeal(StockConst.TradeSell, priceSell, tradeCount))
+            tradePrice = priceLast+unitCount*priceUnit+sellOffset;
+
+            if(stockMarketInfo.TestDeal(StockConst.TradeSell, tradePrice, tradeCount))
             {
-                userInfo.DoTrade(code, StockConst.TradeSell, priceSell, tradeCount);
+                userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
+                priceLast = priceLast+priceUnit*unitCount;
+                //            UpdateLastPrice(priceLast);
+            }
+            else if(unitCount > 1)
+            {
+                unitCount = unitCount-1;
+                tradePrice = priceLast+unitCount*priceUnit+sellOffset;
+                userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
                 priceLast = priceLast+priceUnit*unitCount;
                 //            UpdateLastPrice(priceLast);
             }
@@ -119,10 +131,21 @@ public class PolicyStepAll extends PolicyBase
             offset = priceLast- stockMarketInfo.priceNew;
             unitCount = (int)((offset+buyOffset)/priceUnit);
             tradeCount = stepUnit*unitCount;
-            if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceBuy, tradeCount))
+            tradePrice = priceLast-unitCount*priceUnit+buyOffset;
+            if(stockMarketInfo.TestDeal(StockConst.TradeBuy, tradePrice, tradeCount))
             {
-                userInfo.DoTrade(code, StockConst.TradeBuy, priceBuy, tradeCount);
-                priceLast = priceLast - priceUnit * unitCount;
+                tradeFee = userInfo.tradeInterface.CacuTradeFee(StockConst.TradeBuy, code, tradePrice, tradeCount);
+                if(userInfo.rmbAsset.activeCount >= tradePrice*tradeCount+tradeFee)
+                {
+                    userInfo.DoTrade(code, StockConst.TradeBuy, tradePrice, tradeCount);
+                    priceLast = priceLast - priceUnit * unitCount;
+                    //            UpdateLastPrice(priceLast);
+                }
+                else
+                {
+                    System.out.println(String.format("Money not enough for buy code=%s price=%.2f count=%d need=%.2f current=%.2f",
+                            code, tradePrice, tradeCount, tradePrice*tradeCount+tradeFee, userInfo.rmbAsset.activeCount));
+                }
 //            UpdateLastPrice(priceLast);
             }
         }
