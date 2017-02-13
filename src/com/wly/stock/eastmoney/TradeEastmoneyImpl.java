@@ -35,8 +35,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.net.URLEncoder;
 import java.util.regex.Matcher;
@@ -206,8 +208,60 @@ public class TradeEastmoneyImpl implements ITradeInterface
     }
 
     @Override
-    public boolean CheckOrderState(OrderInfo orderInfo)
+    public void RevokeOrder(OrderInfo orderInfo)
     {
+        try
+        {
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
+            String date = df.format(new Date());// new Date()为获取当前系统时间
+
+            final String RevokeUrl = "/Trade/RevokeOrders?validatekey=";
+            String revokeId = "20170213_140266";String.format("%s_%s", date, orderInfo.platId);
+
+            HttpPost httpPost = new HttpPost(RootUrl + RevokeUrl + validatekey);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("revokes", revokeId));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            CloseableHttpResponse response = httpclient.execute(httpPost, localContext);
+            String retStr = Utils.GetResponseContent(response);
+            System.out.println(retStr);
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean CheckOrderState(ArrayList<OrderInfo> orderInfos)
+    {
+        try
+        {
+            final String RevokeUrl = "/Search/GetOrdersData?validatekey=";
+            HttpPost httpPost = new HttpPost(RootUrl + RevokeUrl + validatekey);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("qqhs", "20"));
+            params.add(new BasicNameValuePair("wc", ""));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            CloseableHttpResponse response = httpclient.execute(httpPost, localContext);
+            //{"Message":null,"Status":0,"Data":[
+            // {"Wtsj":"105843","Zqdm":"601288","Zqmc":"农业银行","Mmsm":"证券买入","Mmlb":"B","Wtsl":"100","Wtzt":"已撤","Wtjg":"3.000","Cjsl":"0","Cjje":".00","Cjjg":"0.000000","Market":"HA","Wtbh":"135153","Gddm":"A296011296","Dwc":"","Qqhs":null,"Wtrq":"20170213","Wtph":"135153","Khdm":"720600166011","Khxm":"张三","Zjzh":"720600166011","Jgbm":"5406","Bpsj":"105843","Cpbm":"","Cpmc":"","Djje":".00","Cdsl":"100","Jyxw":"33392","Cdbs":"F","Czrq":"20170213","Wtqd":"9","Bzxx":"","Sbhtxh":"1430022816","Mmlb_ex":"B","Mmlb_bs":"B"},
+            // {"Wtsj":"110528","Zqdm":"601288","Zqmc":"农业银行","Mmsm":"证券买入","Mmlb":"B","Wtsl":"100","Wtzt":"已撤","Wtjg":"3.000","Cjsl":"0","Cjje":".00","Cjjg":"0.000000","Market":"HA","Wtbh":"140266","Gddm":"A296011296","Dwc":"","Qqhs":null,"Wtrq":"20170213","Wtph":"140266","Khdm":"720600166011","Khxm":"张三","Zjzh":"720600166011","Jgbm":"5406","Bpsj":"110528","Cpbm":"","Cpmc":"","Djje":".00","Cdsl":"100","Jyxw":"33392","Cdbs":"F","Czrq":"20170213","Wtqd":"9","Bzxx":"","Sbhtxh":"1430023595","Mmlb_ex":"B","Mmlb_bs":"B"},
+            // {"Wtsj":"111724","Zqdm":"601288","Zqmc":"农业银行","Mmsm":"证券买入","Mmlb":"B","Wtsl":"100","Wtzt":"已报","Wtjg":"3.000","Cjsl":"0","Cjje":".00","Cjjg":"0.000000","Market":"HA","Wtbh":"147719","Gddm":"A296011296","Dwc":"20170213|147719","Qqhs":null,"Wtrq":"20170213","Wtph":"147719","Khdm":"720600166011","Khxm":"张三","Zjzh":"720600166011","Jgbm":"5406","Bpsj":"111724","Cpbm":"","Cpmc":"","Djje":"305.01","Cdsl":"0","Jyxw":"33392","Cdbs":"F","Czrq":"20170213","Wtqd":"9","Bzxx":"","Sbhtxh":"1430024755","Mmlb_ex":"B","Mmlb_bs":"B"}
+            // ]}
+            String retStr = Utils.GetResponseContent(response);
+            System.out.println(retStr);
+        }
+        catch (Exception ex)
+        {
+            System.out.print(ex.getMessage());
+            ex.printStackTrace();
+        }
         return false;
     }
 

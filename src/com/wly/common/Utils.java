@@ -68,4 +68,10 @@ public class Utils
             return ex.getMessage();
         }
     }
+
+    public static volatile int IdIndex = 0;
+    static public int GetId()
+    {
+        return ++IdIndex;
+    }
 }

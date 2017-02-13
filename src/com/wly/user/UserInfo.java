@@ -1,5 +1,6 @@
 package com.wly.user;
 
+import com.wly.common.Utils;
 import com.wly.stock.StockConst;
 import com.wly.stock.common.*;
 import com.wly.stock.eastmoney.TradeEastmoneyImpl;
@@ -16,29 +17,58 @@ public class UserInfo
     public String id;
     public String name;
     public List<Asset> assets = new ArrayList<>();
-    public List<OrderInfo> orderList = new ArrayList<>();
     public List<PolicyStep> policySteps = new ArrayList<>();
+    private ArrayList<OrderInfo> orderInfos = new ArrayList<>();
 
     public ITradeInterface tradeInterface;
 
     public static void main(String[] args)
     {
         UserInfo uInfo = new UserInfo();
-        uInfo.Login("53423406001660721234", "12235aw3s3212");
-        uInfo.FillUserAsset();
+        uInfo.Login("514230600166072", "1251233321212");
+       // uInfo.FillUserAsset();
 
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.code = "601288";
         orderInfo.name = "农业银行";
         orderInfo.count = 100;
         orderInfo.orderPrice = 3.0f;
-        orderInfo.tradeFlag = StockConst.TradeSell;
-        uInfo.DoOrder(orderInfo);
+        orderInfo.tradeFlag = StockConst.TradeBuy;
+        //uInfo.DoOrder(orderInfo);
+//        uInfo.RevokeOrder(orderInfo);
+        uInfo.CheckOrderStatus();
     }
 
     public UserInfo()
     {
         tradeInterface = new TradeEastmoneyImpl();
+    }
+
+    public int AddOrder(OrderInfo orderInfo)
+    {
+        if(orderInfo.id == 0)
+        {
+            orderInfo.id = Utils.GetId();
+        }
+        orderInfos.add(orderInfo);
+        return orderInfo.id;
+    }
+
+    public void RemoveOrder(int id)
+    {
+        if(id == 0)
+        {
+            return;
+        }
+
+        int i;
+        for(i=0; i<orderInfos.size(); ++i)
+        {
+            if(orderInfos.get(i).id == id)
+            {
+                orderInfos.remove(i);
+            }
+        }
     }
 
     public void Login(String name, String psw)
@@ -47,4 +77,6 @@ public class UserInfo
     }
     public  void FillUserAsset(){tradeInterface.FillUserAsset(this);}
     public  void DoOrder(OrderInfo orderInfo){ tradeInterface.DoOrder(orderInfo);}
+    public void RevokeOrder(OrderInfo orderInfo){tradeInterface.RevokeOrder(orderInfo);};
+    public void CheckOrderStatus(){tradeInterface.CheckOrderState(null);}
 }
