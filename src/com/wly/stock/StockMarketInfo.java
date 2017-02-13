@@ -56,6 +56,43 @@ public class StockMarketInfo
         this.sellInfo.addAll(src.sellInfo);
     }
 
+    public boolean TestDeal(int tradeFlag, float price, int count)
+    {
+        int i;
+        TradeInfo tradeInfo;
+        boolean ret = false;
+        if(tradeFlag == StockConst.TradeSell)
+        {
+            int num = 0;
+            for(i=0; i<buyInfo.size(); ++i)
+            {
+                tradeInfo = buyInfo.get(i);
+                if(tradeInfo.price >= price)
+                {
+                    num += tradeInfo.amount;
+                }
+            }
+
+            ret = num >= count;
+        }
+        else if(tradeFlag == StockConst.TradeBuy)
+        {
+            int num = 0;
+            for(i=0; i<sellInfo.size(); ++i)
+            {
+                tradeInfo = sellInfo.get(i);
+                if(tradeInfo.price <= price)
+                {
+                    num += tradeInfo.amount;
+                }
+            }
+
+            ret = num >= count;
+        }
+
+        return  ret;
+    }
+
     public String toDesc()
     {
         StringBuilder sb = new StringBuilder();

@@ -5,7 +5,8 @@ package com.wly.user;
  */
 public class Asset
 {
-    public String id;
+    public String code;
     public String name;
-    public int amount;
+    public int activeCount;
+    public int lockCount;
 }

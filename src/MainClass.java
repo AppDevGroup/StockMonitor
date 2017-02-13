@@ -19,7 +19,7 @@ public class MainClass
     {
         Init();
         Timer timer = new Timer();
-        timer.schedule(new TaskQueryStock(), 0, 2000);
+        timer.schedule(new TaskQueryStock(), 0, 1000);
 
 //        Thread thread = new Thread(new TaskUpdatePolicy());
 //        thread.start();

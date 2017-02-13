@@ -77,7 +77,39 @@ public class UserInfo
         tradeInterface.Login(name, psw);
     }
     public  void FillUserAsset(){tradeInterface.FillUserAsset(this);}
-    public  void DoOrder(OrderInfo orderInfo){ tradeInterface.DoOrder(orderInfo);}
+    public  void DoOrder(OrderInfo orderInfo)
+    {
+        orderInfos.add(orderInfo);
+        tradeInterface.DoOrder(orderInfo);
+    }
     public void RevokeOrder(OrderInfo orderInfo){tradeInterface.RevokeOrder(orderInfo);};
     public void CheckOrderStatus(){tradeInterface.UpdateOrderStatus (orderInfos);}
+
+    public OrderInfo DoTrade(String code, int tradeFlag, float price, int count)
+    {
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.id = Utils.GetId();
+        orderInfo.code = code;
+        orderInfo.tradeFlag = tradeFlag;
+        orderInfo.count = count;
+
+        DoOrder(orderInfo);
+        return orderInfo;
+    }
+
+    public Asset GetAsset(String code)
+    {
+        int i;
+        Asset asset;
+        for(i=0; i<assets.size(); ++i)
+        {
+            asset = assets.get(i);
+            if (asset.code == code)
+            {
+                return asset;
+            }
+        }
+
+        return null;
+    }
 }
