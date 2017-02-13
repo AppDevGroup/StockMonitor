@@ -138,13 +138,15 @@ public class PolicyStepAll extends PolicyBase
                 {
                     sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
                     sellLastPrice = priceLast + priceUnit * unitCount;
-                } else if (unitCount > 1)
+                    StoreSellOrder(sellOrder.platOrderId);
+                }
+                else if (unitCount > 1)
                 {
                     unitCount = unitCount - 1;
                     tradePrice = priceLast + unitCount * priceUnit + sellOffset;
                     sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
-                    priceLast = priceLast + priceUnit * unitCount;
                     sellLastPrice = priceLast + priceUnit * unitCount;
+                    StoreSellOrder(sellOrder.platOrderId);
                 }
             }
         }
@@ -169,6 +171,7 @@ public class PolicyStepAll extends PolicyBase
                     {
                         buyOrder = userInfo.DoTrade(code, StockConst.TradeBuy, tradePrice, tradeCount);
                         buyLastPrice = priceLast - priceUnit * unitCount;
+                        StoreBuyOrderId(buyOrder.platOrderId);
                     }
                     else
                     {
