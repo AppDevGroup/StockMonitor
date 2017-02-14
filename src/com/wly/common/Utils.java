@@ -92,26 +92,4 @@ public class Utils
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
         return df.format(new Date());// new Date()为获取当前系统时间
     }
-
-    static public int GetLastInserId()
-    {
-        try
-        {
-            int ret = 0;
-            DBPool dbPool = DBPool.GetInstance();
-            DBQuery dbQuery = dbPool.ExecuteQuerySync("select LAST_INSERT_ID()");
-            ResultSet rs = dbQuery.resultSet;
-            while (rs.next())
-            {
-                ret = rs.getInt(0);
-            }
-            dbQuery.Close();
-            return ret;
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-            return 0;
-        }
-    }
 }

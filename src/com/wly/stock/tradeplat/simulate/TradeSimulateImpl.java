@@ -45,11 +45,10 @@ public class TradeSimulateImpl implements ITradeInterface
             orderInfo.platOrderId = GetOrderId();
 
             final String UpdateFormat = "insert into trade_book(user_id, plat_id, plat_order_id, code, trade_flag, " +
-                    "price, count, counter_fee, transfer_fee, stamp_tax, time, stat) " +
-                    "values(%d, '%s', '%s', %d, %.2f, %d, %.2f, %.2f, %.2f, '%s', %d)";
-            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, userInfo.id, userInfo.platId, orderInfo.platOrderId,
-                    orderInfo.code,  orderInfo.tradeFlag, orderInfo.orderPrice, orderInfo.count, 0, 0, 0, Utils.GetDate(), orderInfo.GetStat()));
-            orderInfo.id = Utils.GetLastInserId();
+                    "order_price, count, counter_fee, transfer_fee, stamp_tax, time, stat) " +
+                    "values(%d, %d, '%s', '%s', %d, %.2f, %d, %.2f, %.2f, %.2f, '%s', %d)";
+            orderInfo.id = DBPool.GetInstance().ExecuteNoQuerySqlSync(String.format(UpdateFormat, userInfo.id, userInfo.platId, orderInfo.platOrderId,
+                    orderInfo.code,  orderInfo.tradeFlag, orderInfo.orderPrice, orderInfo.count, 0f, 0f, 0f, Utils.GetDate(), OrderInfo.OderStat_Order), true);
 //            orderInfo.platOrderId = Utils.GetId();
         }
         catch (Exception ex)

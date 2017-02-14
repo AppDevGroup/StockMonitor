@@ -114,16 +114,19 @@ public class PolicyStepAll extends PolicyBase
         }
 
         Asset asset = userInfo.GetAsset(code);
+        asset = new Asset();
+        asset.code = code;
+        asset.activeCount = 999999999;
         buyTradeInfo = stockMarketInfo.buyInfo.get(0);
         if(stockMarketInfo.TestDeal(StockConst.TradeSell, maxPrice, asset.activeCount))
         {
-
             OrderInfo sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, maxPrice, asset.activeCount);
             policyStat = PolicyStat_Finish;
             return;
         }
 
-        if(sellOrderId == null || sellOrderId.equals("0"))
+//        if(sellOrderId == null || sellOrderId.equals("0"))
+        if(!HasSellOrder())
         {
             if (buyTradeInfo.price >= priceSell)
             {
@@ -138,7 +141,8 @@ public class PolicyStepAll extends PolicyBase
                 {
                     orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
                     sellLastPrice = priceLast + priceUnit * unitCount;
-                    StoreSellOrder(orderInfo.platOrderId);
+                    sellOrderId = orderInfo.platOrderId;
+                    StoreSellOrder(sellOrderId);
                 }
                 else if (unitCount > 1)
                 {
@@ -146,7 +150,8 @@ public class PolicyStepAll extends PolicyBase
                     tradePrice = priceLast + unitCount * priceUnit + sellOffset;
                     orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
                     sellLastPrice = priceLast + priceUnit * unitCount;
-                    StoreSellOrder(orderInfo.platOrderId);
+                    sellOrderId = orderInfo.platOrderId;
+                    StoreSellOrder(sellOrderId);
                 }
             }
         }
@@ -155,7 +160,8 @@ public class PolicyStepAll extends PolicyBase
             CheckSellOrder();
         }
 
-        if(buyOrderId == null || buyOrderId.equals("0"))
+//        if(buyOrderId == null || buyOrderId.equals("0"))
+        if(!HasBuyOrder())
         {
             if(sellTradeInfo.price <= priceBuy)
             {
@@ -171,7 +177,8 @@ public class PolicyStepAll extends PolicyBase
                     {
                         orderInfo = userInfo.DoTrade(code, StockConst.TradeBuy, tradePrice, tradeCount);
                         buyLastPrice = priceLast - priceUnit * unitCount;
-                        StoreBuyOrderId(orderInfo.platOrderId);
+                        buyOrderId = orderInfo.platOrderId;
+                        StoreBuyOrderId(buyOrderId);
                     }
                     else
                     {
@@ -189,10 +196,16 @@ public class PolicyStepAll extends PolicyBase
 
     private void ProcessInit(StockMarketInfo stockMarketInfo)
     {
+        if(HasBuyOrder())
+        {
+            return;
+        }
+
         if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceInit, initCount))
         {
-            userInfo.DoTrade(code, StockConst.TradeBuy, priceInit, initCount);
-            policyStat = PolicyStat_Step;
+            OrderInfo orderInfo = userInfo.DoTrade(code, StockConst.TradeBuy, priceInit, initCount);
+            buyOrderId = orderInfo.platOrderId;
+            StoreBuyOrderId(buyOrderId);
         }
     }
 
@@ -204,6 +217,7 @@ public class PolicyStepAll extends PolicyBase
             {
                 policyStat = PolicyStat_Step;
                 priceLast = priceInit;
+                StorePolicyStat();
             }
             else
             {
@@ -231,6 +245,7 @@ public class PolicyStepAll extends PolicyBase
             {
                 policyStat = PolicyStat_Init;
                 priceLast = 0f;
+                StorePolicyStat();
             }
 
             priceLast = sellLastPrice;
@@ -251,7 +266,7 @@ public class PolicyStepAll extends PolicyBase
     private void StoreBuyOrderId(String buyId)
     {
         try {
-            final String UpdateFormat = "update policy_step SET sellorder_id = %s, sellorder_date WHERE id = %d";
+            final String UpdateFormat = "update policy_step SET sellorder_id = '%s', sellorder_date='%s' WHERE id = %d";
             DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, buyId, Utils.GetDate(), id));
         }
         catch (Exception ex)
@@ -296,5 +311,15 @@ public class PolicyStepAll extends PolicyBase
         {
             Utils.LogException(ex);
         }
+    }
+
+    private boolean HasBuyOrder()
+    {
+        return buyOrderId != null && !buyOrderId.equals("0");
+    }
+
+    private boolean HasSellOrder()
+    {
+        return sellOrderId != null && !sellOrderId.equals("0");
     }
 }

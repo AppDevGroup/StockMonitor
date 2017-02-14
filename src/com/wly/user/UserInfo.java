@@ -46,8 +46,6 @@ public class UserInfo
         orderInfo.count = 100;
         orderInfo.orderPrice = 3.0f;
         orderInfo.tradeFlag = StockConst.TradeBuy;
-        //uInfo.DoOrder(orderInfo);
-//        uInfo.RevokeOrder(orderInfo);
         uInfo.CheckOrderStatus();
     }
 
@@ -69,6 +67,7 @@ public class UserInfo
                 tradeInterface = new TradeSimulateImpl();
                 break;
         }
+        tradeInterface.SetUserInfo(this);
 //        tradeInterface = new TradeEastmoneyImpl();
         InitPolicySteps();
         Login(platAcct, platPsw);
@@ -119,34 +118,6 @@ public class UserInfo
         }
     }
 
-    public int AddOrder(OrderInfo orderInfo)
-    {
-        if(orderInfo.id == 0)
-        {
-            orderInfo.id = Utils.GetId();
-        }
-        orderInfos.add(orderInfo);
-        return orderInfo.id;
-    }
-
-    public void RemoveOrder(int id)
-    {
-        if(id == 0)
-        {
-            return;
-        }
-
-        int i;
-        for(i=0; i<orderInfos.size(); ++i)
-        {
-            if(orderInfos.get(i).id == id)
-            {
-                orderInfos.remove(i);
-                break;
-            }
-        }
-    }
-
     public void Login(String name, String psw)
     {
         tradeInterface.Login(name, psw);
@@ -155,13 +126,6 @@ public class UserInfo
     public  void DoOrder(OrderInfo orderInfo)
     {
         try {
-            final String UpdateFormat = "insert into trade_book(user_id, plat_id, code, trade_flag, " +
-                    "order_price, deal_price, count, counter_fee, transfer_fee, stamp_tax, time, stat) " +
-                    "values(%d, '%s', '%s', %d, %.2f, %.2f, %d, %.2f, %.2f, %.2f, '%s', %d)";
-            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, id, platId, orderInfo.code,  orderInfo.tradeFlag,
-                    orderInfo.orderPrice, orderInfo.dealPrice, orderInfo.count, 0f, 0f, 0f, Utils.GetDate(), orderInfo.GetStat()));
-
-            orderInfo.id = Utils.GetLastInserId();
             orderInfos.add(orderInfo);
             tradeInterface.DoOrder(orderInfo);
         }
@@ -190,9 +154,8 @@ public class UserInfo
         orderInfo.tradeFlag = tradeFlag;
         orderInfo.count = count;
         orderInfo.orderPrice = price;
-        orderInfo.orderPrice = 0;
+        orderInfo.dealPrice = 0;
         orderInfo.platId = platId;
-
         DoOrder(orderInfo);
         return orderInfo;
     }
@@ -263,7 +226,7 @@ public class UserInfo
     {
         try
         {
-            final String UpdateFormat = "update trade_book SET plat_order_id = %d WHERE id = %s";
+            final String UpdateFormat = "update trade_book SET plat_order_id = %d WHERE id = %d";
             DBPool.GetInstance().ExecuteNoQuerySqlAsync(String.format(UpdateFormat, orderInfo.id, orderInfo.platOrderId));
         }
         catch (Exception ex)

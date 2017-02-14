@@ -50,9 +50,14 @@ public class DBPool implements Runnable
         taskQueue.offer(query);
     }
 
-    public  int ExecuteNoQuerySqlSync(String sqlStr)
+    public  int ExecuteNoQuerySqlSync(String sqlStr, boolean getLastId)
     {
-        return dbOper.Execute(sqlStr);
+        return dbOper.Execute(sqlStr, getLastId);
+    }
+
+    public int ExecuteNoQuerySqlSync(String sqlStr)
+    {
+        return ExecuteNoQuerySqlSync(sqlStr, false);
     }
 
     public  void ExecuteNoQuerySqlAsync(String sqlStr)
@@ -87,7 +92,7 @@ public class DBPool implements Runnable
             }
 
             try {
-                Thread.sleep(300);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 Utils.LogException(e);
             }

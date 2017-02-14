@@ -43,7 +43,7 @@ public class OrderInfo
     @Override
     public String toString()
     {
-        final String strFormat = "id=%s code=%s name=%s tradeFlag=%s count=%d orderPrice=%.2f dealPrice=%.2f orderStat=%d\n";
-        return String.format(strFormat, id, code, name, tradeFlag, count, orderPrice, dealPrice, orderStat);
+        final String strFormat = "id=%d code=%s name=%s tradeFlag=%s count=%d orderPrice=%.2f dealPrice=%.2f orderStat=%d\n";
+        return String.format(strFormat, 0, code, name, tradeFlag, count, orderPrice, dealPrice, orderStat);
     }
 }

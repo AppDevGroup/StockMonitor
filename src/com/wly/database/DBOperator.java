@@ -65,15 +65,43 @@ public class DBOperator
 
     public int Execute(String str)
     {
-        Utils.Log("=====DBOperator Execute: "+ str+"=====");
+        return Execute(str, false);
+    }
+
+    public int Execute(String str, boolean getLastId)
+    {
+        Utils.Log("=====DBOperator Execute: " + str + "=====");
         int ret = 0;
         try
         {
             Connection con = ds.getConnection();
             Statement stmt = con.createStatement();
-            ret = stmt.executeUpdate(str);
+            if(getLastId)
+            {
+                ret = stmt.executeUpdate(str, Statement.RETURN_GENERATED_KEYS);
+            }
+            else
+            {
+                ret = stmt.executeUpdate(str);
+            }
+            ResultSet rs;
+            if (getLastId)
+            {
+                rs = stmt.getGeneratedKeys(); //获取结果
+                if (rs.next())
+                {
+                    ret = rs.getInt(1);//取得ID
+                }
+                else
+                {
+                    // throw an exception from here
+                    System.out.println("Get Last id failed! "+str);
+                }
+            }
+
             stmt.close();
             con.close();
+
         }
         catch (Exception ex)
         {
