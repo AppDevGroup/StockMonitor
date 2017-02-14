@@ -156,10 +156,10 @@ public class UserInfo
     {
         try {
             final String UpdateFormat = "insert into trade_book(user_id, plat_id, code, trade_flag, " +
-                    "order_price, 'deal_price', count, counter_fee, transfer_fee, stamp_tax, time) " +
-                    "values(%d, '%s', '%s', %d, %.2f, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
+                    "order_price, deal_price, count, counter_fee, transfer_fee, stamp_tax, time, stat) " +
+                    "values(%d, '%s', '%s', %d, %.2f, %.2f, %d, %.2f, %.2f, %.2f, '%s', %d)";
             DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, id, platId, orderInfo.code,  orderInfo.tradeFlag,
-                    orderInfo.orderPrice, orderInfo.dealPrice, orderInfo.count, 0, 0, 0, Utils.GetDate()));
+                    orderInfo.orderPrice, orderInfo.dealPrice, orderInfo.count, 0f, 0f, 0f, Utils.GetDate(), orderInfo.GetStat()));
 
             orderInfo.id = Utils.GetLastInserId();
             orderInfos.add(orderInfo);

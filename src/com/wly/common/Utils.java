@@ -97,11 +97,14 @@ public class Utils
     {
         try
         {
-            int ret;
+            int ret = 0;
             DBPool dbPool = DBPool.GetInstance();
             DBQuery dbQuery = dbPool.ExecuteQuerySync("select LAST_INSERT_ID()");
             ResultSet rs = dbQuery.resultSet;
-            ret = rs.getInt(0);
+            while (rs.next())
+            {
+                ret = rs.getInt(0);
+            }
             dbQuery.Close();
             return ret;
         }
