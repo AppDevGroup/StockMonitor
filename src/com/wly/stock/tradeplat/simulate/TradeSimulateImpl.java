@@ -102,6 +102,6 @@ public class TradeSimulateImpl implements ITradeInterface
     private String GetOrderId()
     {
         Random random = new Random();
-        return String.format("%02d%s%06d%04d", 0, Utils.GetDateTime(), Utils.GetId(),  random.nextInt(10000));
+        return String.format("%02d%s%04d", 0, Utils.GetDateTime(), random.nextInt(10000));
     }
 }
