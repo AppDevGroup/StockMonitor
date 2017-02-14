@@ -21,6 +21,6 @@ public interface ITradeInterface
   //  void UpdateOrderStatus(ArrayList<OrderInfo> orderInfos);          //检查订单成交状态
     int GetOrderStatus(String platOrderId);            //检查订单状态
     List<TradeBook> GetTradeHis();      //获取订单
-    List<StockAsset> GetAssetList();    //获取持仓列表
+    int GetStockAssetCount(String code);            //获取可用数量
     float CacuTradeFee(int tradeFlag, String code, float price, int count); //计算交易手续费
 }

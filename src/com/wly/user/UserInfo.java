@@ -147,22 +147,6 @@ public class UserInfo
         return orderInfo;
     }
 
-    public Asset GetAsset(String code)
-    {
-        int i;
-        Asset asset;
-        for(i=0; i<assets.size(); ++i)
-        {
-            asset = assets.get(i);
-            if (asset.code == code)
-            {
-                return asset;
-            }
-        }
-
-        return null;
-    }
-
     public void RevokeOrderByPlatId(String platOrderId)
     {
         RevokeOrder(GetOrderInfoByPlatId(platOrderId));

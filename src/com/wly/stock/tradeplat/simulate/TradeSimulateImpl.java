@@ -99,9 +99,9 @@ public class TradeSimulateImpl implements ITradeInterface
     }
 
     @Override
-    public List<StockAsset> GetAssetList()
+    public int GetStockAssetCount(String code)
     {
-        return null;
+        return 20000;
     }
 
     @Override

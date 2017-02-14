@@ -300,9 +300,9 @@ public class TradeEastmoneyImpl implements ITradeInterface
     }
 
     @Override
-    public List<StockAsset> GetAssetList()
+    public int GetStockAssetCount(String code)
     {
-        return null;
+        return 0;
     }
 
     @Override

@@ -113,14 +113,11 @@ public class PolicyStepAll extends PolicyBase
             return;
         }
 
-        Asset asset = userInfo.GetAsset(code);
-        asset = new Asset();
-        asset.code = code;
-        asset.activeCount = 999999999;
+        int stockCount = userInfo.tradeInterface.GetStockAssetCount(code);
         buyTradeInfo = stockMarketInfo.buyInfo.get(0);
-        if(stockMarketInfo.TestDeal(StockConst.TradeSell, maxPrice, asset.activeCount))
+        if(stockMarketInfo.TestDeal(StockConst.TradeSell, maxPrice, stockCount))
         {
-            OrderInfo sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, maxPrice, asset.activeCount);
+            OrderInfo sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, maxPrice, stockCount);
             policyStat = PolicyStat_Finish;
             return;
         }
@@ -134,7 +131,7 @@ public class PolicyStepAll extends PolicyBase
                 offset = buyTradeInfo.price - priceLast;
                 unitCount = (int) ((offset - sellOffset) / priceUnit);
                 tradeCount = stepUnit * unitCount;
-                tradeCount = tradeCount >= asset.activeCount ? asset.activeCount : tradeCount;
+                tradeCount = tradeCount >= stockCount ? stockCount : tradeCount;
                 tradePrice = priceLast + unitCount * priceUnit + sellOffset;
 
                 if (stockMarketInfo.TestDeal(StockConst.TradeSell, tradePrice, tradeCount))
