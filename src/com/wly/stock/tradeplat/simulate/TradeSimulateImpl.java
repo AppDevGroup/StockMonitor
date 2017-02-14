@@ -1,9 +1,8 @@
-package com.wly.stock.eastmoney;
+package com.wly.stock.tradeplat.simulate;
 
-import com.mysql.jdbc.Util;
 import com.wly.common.Utils;
-import com.wly.stock.StockConst;
-import com.wly.stock.common.ITradeInterface;
+import com.wly.database.DBPool;
+import com.wly.stock.tradeplat.ITradeInterface;
 import com.wly.stock.common.OrderInfo;
 import com.wly.stock.common.StockAsset;
 import com.wly.stock.common.TradeBook;
@@ -16,7 +15,7 @@ import java.util.Random;
 /**
  * Created by wuly on 2017/2/13.
  */
-public class TradeTestImpl implements ITradeInterface
+public class TradeSimulateImpl implements ITradeInterface
 {
     private ArrayList<OrderInfo> orderInfos = new ArrayList<>();
 
@@ -42,6 +41,22 @@ public class TradeTestImpl implements ITradeInterface
     @Override
     public void DoOrder(OrderInfo orderInfo)
     {
+        try {
+            orderInfo.platOrderId = GetOrderId();
+
+            final String UpdateFormat = "insert into trade_book(user_id, plat_id, plat_order_id, code, trade_flag, " +
+                    "price, count, counter_fee, transfer_fee, stamp_tax, time, stat) " +
+                    "values('%s', '%s', '%s', %d, %.2f, %d, %.2f, %.2f, %.2f, '%s', %d)";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, userInfo.id, userInfo.platId, orderInfo.platOrderId,
+                    orderInfo.code,  orderInfo.tradeFlag, orderInfo.orderPrice, orderInfo.count, 0, 0, 0, Utils.GetDate(), orderInfo.GetStat()));
+            orderInfo.id = Utils.GetLastInserId();
+//            orderInfo.platOrderId = Utils.GetId();
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
+
         orderInfo.platOrderId = GetOrderId();
         orderInfos.add(orderInfo);
     }

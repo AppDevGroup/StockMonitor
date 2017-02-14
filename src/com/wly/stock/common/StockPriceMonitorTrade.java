@@ -2,6 +2,7 @@ package com.wly.stock.common;
 
 import com.wly.stock.StockConst;
 import com.wly.stock.StockMarketInfo;
+import com.wly.stock.tradeplat.ITradeInterface;
 
 /**
  * Created by Administrator on 2017/2/10.

@@ -1,14 +1,13 @@
-package com.wly.stock.eastmoney;
+package com.wly.stock.tradeplat.eastmoney;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mysql.fabric.xmlrpc.base.Array;
 import com.wly.common.Utils;
-import com.wly.database.DBPool;
 import com.wly.stock.StockConst;
 import com.wly.stock.StockUtils;
 import com.wly.stock.common.*;
+import com.wly.stock.tradeplat.ITradeInterface;
 import com.wly.user.UserInfo;
 import org.apache.http.*;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -26,9 +25,7 @@ import org.apache.http.protocol.HTTP;
 
 import sun.misc.BASE64Encoder;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.net.URLEncoder;
 
@@ -219,11 +216,11 @@ public class TradeEastmoneyImpl implements ITradeInterface
     {
         try
         {
-            SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
-            String date = df.format(new Date());// new Date()为获取当前系统时间
+            String date = Utils.GetDate();// new Date()为获取当前系统时间
 
             final String RevokeUrl = "/Trade/RevokeOrders?validatekey=";
-            String revokeId = "20170213_140266";String.format("%s_%s", date, orderInfo.platOrderId);
+            //"20170213_140266"
+            String revokeId = String.format("%s_%s", date, orderInfo.platOrderId);
 
             HttpPost httpPost = new HttpPost(RootUrl + RevokeUrl + validatekey);
             List<NameValuePair> params = new ArrayList<NameValuePair>();

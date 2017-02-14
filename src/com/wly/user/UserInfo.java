@@ -5,17 +5,14 @@ import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
 import com.wly.stock.StockConst;
 import com.wly.stock.common.*;
-import com.wly.stock.eastmoney.TradeEastmoneyImpl;
-import com.wly.stock.eastmoney.TradeTestImpl;
+import com.wly.stock.tradeplat.eastmoney.TradeEastmoneyImpl;
+import com.wly.stock.tradeplat.simulate.TradeSimulateImpl;
 import com.wly.stock.policy.PolicyBase;
-import com.wly.stock.policy.PolicyStep;
 import com.wly.stock.policy.PolicyStepAll;
-import io.netty.handler.codec.string.StringDecoder;
+import com.wly.stock.tradeplat.ITradeInterface;
 
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -67,7 +64,7 @@ public class UserInfo
                 tradeInterface = new TradeEastmoneyImpl();
                 break;
             default:
-                tradeInterface = new TradeTestImpl();
+                tradeInterface = new TradeSimulateImpl();
                 break;
         }
 //        tradeInterface = new TradeEastmoneyImpl();
