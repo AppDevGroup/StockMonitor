@@ -46,7 +46,7 @@ public class PolicyStepAll extends PolicyBase
         super(uInfo);
     }
 
-    public  void PrcessPrice(StockMarketInfo stockMarketInfo)
+    public  void OnNewPirce(StockMarketInfo stockMarketInfo)
     {
         if(stockMarketInfo.priceNew < 0.1f)
         {

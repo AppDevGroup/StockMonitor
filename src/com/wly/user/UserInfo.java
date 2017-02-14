@@ -4,6 +4,8 @@ import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
 import com.wly.stock.StockConst;
+import com.wly.stock.StockMarketInfoManager;
+import com.wly.stock.StockPriceMonitorManager;
 import com.wly.stock.common.*;
 import com.wly.stock.tradeplat.eastmoney.TradeEastmoneyImpl;
 import com.wly.stock.tradeplat.simulate.TradeSimulateImpl;
@@ -109,6 +111,9 @@ public class UserInfo
                 }
 
                 policySteps.add(policy);
+
+                StockMarketInfoManager.GetInstance().AddMonitorCode(policy.code);
+                StockPriceMonitorManager.GetInstance().AddMonitor(policy);
             }
             dbQuery.Close();
             return true;
@@ -157,10 +162,10 @@ public class UserInfo
     {
         try {
             final String UpdateFormat = "insert into trade_book(user_id, plat_id, code, trade_flag, " +
-                    "price, count, counter_fee, transfer_fee, stamp_tax, time) " +
-                    "values('%s', '%s', '%s', %d, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
+                    "order_price, 'deal_price', count, counter_fee, transfer_fee, stamp_tax, time) " +
+                    "values('%s', '%s', '%s', %d, %.2f, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
             DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, id, platId, orderInfo.code,  orderInfo.tradeFlag,
-                    orderInfo.orderPrice, orderInfo.count, 0, 0, 0, Utils.GetDate()));
+                    orderInfo.orderPrice, orderInfo.dealPrice, orderInfo.count, 0, 0, 0, Utils.GetDate()));
 
             orderInfo.id = Utils.GetLastInserId();
             orderInfos.add(orderInfo);
@@ -191,6 +196,8 @@ public class UserInfo
         orderInfo.tradeFlag = tradeFlag;
         orderInfo.count = count;
         orderInfo.orderPrice = price;
+        orderInfo.orderPrice = 0;
+        orderInfo.platId = platId;
 
         DoOrder(orderInfo);
         return orderInfo;

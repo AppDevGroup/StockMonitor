@@ -20,6 +20,7 @@ public class OrderInfo
     public int count;
     public float orderPrice;    //订单价格
     public float dealPrice;     //成交价格
+    public int platId;
     public String platOrderId;       //交易平台订单id
 
     private int orderStat = OderStat_None;   //订单状态
