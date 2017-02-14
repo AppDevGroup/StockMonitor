@@ -22,7 +22,7 @@ public class Utils
 {
     static  public  void Log(Object obj)
     {
-        System.out.println(GetTimestampNow().toString()+" "+ obj);
+       // System.out.println(GetTimestampNow().toString()+" "+ obj);
     }
     static  public  void LogException(Exception ex)
     {

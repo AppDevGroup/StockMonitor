@@ -20,19 +20,20 @@ public class AddUserInfo
             PolicyStepAll policyStepAll;
             policyStepAll = new PolicyStepAll(null);
             policyStepAll.userId = 1;
-            policyStepAll.code = "300586";
-            policyStepAll.priceInit = 39f;
+            policyStepAll.code = "603031";
+            policyStepAll.priceInit = 50;
             policyStepAll.initCount = 1600;
-            policyStepAll.stepUnit = 200;
+            policyStepAll.stepUnit = 100;
             policyStepAll.priceUnit = 1f;
-            policyStepAll.minPrice = 30f;
-            policyStepAll.maxPrice =  50f;
+            policyStepAll.minPrice = 40f;
+            policyStepAll.maxPrice =  65f;
             policyStepAll.buyOffset = -0.09f;
             policyStepAll.buyOffset = -0.01f;
             policyStepAll.policyStat = PolicyStepAll.PolicyStat_Init;
             policyStepAll.buyOrderId = "0";
             policyStepAll.sellOrderId = "0";
             InsertPolicy(policyStepAll);
+            System.out.println("insert finish!");
         }
         catch (Exception ex)
         {
