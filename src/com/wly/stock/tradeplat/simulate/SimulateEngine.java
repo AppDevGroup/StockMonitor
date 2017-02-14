@@ -50,6 +50,7 @@ public class SimulateEngine extends TimerTask
 
                 orderInfos.add(orderInfo);
             }
+            dbQuery.Close();
 
             int i;
             for(i=0; i<orderInfos.size(); ++i)

@@ -74,6 +74,7 @@ public class DBPool implements Runnable
         {
             while ((query = taskQueue.poll()) != null) {
                 dbOper.Query(query);
+                dbOper.Close();
                 resultQueue.offer(query);
             }
 

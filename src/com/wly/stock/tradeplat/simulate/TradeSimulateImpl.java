@@ -36,10 +36,9 @@ public class TradeSimulateImpl implements ITradeInterface
     }
 
     @Override
-    public boolean UpdateUserAsset()
+    public float GetRmbAsset()
     {
-        userInfo.rmbAsset.activeAmount = 999999999;
-        return false;
+       return 99999999f;
     }
 
     @Override

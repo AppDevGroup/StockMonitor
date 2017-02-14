@@ -69,11 +69,11 @@ public class PolicyStepAll extends PolicyBase
         float change = stockMarketInfo.priceNew- stockMarketInfo.priceLast;
         float changeRatio = change/ stockMarketInfo.priceLast;
 
-        if(Math.abs(changeRatio) > 0.11)
-        {
-            Utils.Log("exception price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
-            return;
-        }
+//        if(Math.abs(changeRatio) > 0.11)
+//        {
+//            Utils.Log("exception price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
+//            return;
+//        }
 
        switch (policyStat)
        {
@@ -173,7 +173,7 @@ public class PolicyStepAll extends PolicyBase
                 if(stockMarketInfo.TestDeal(StockConst.TradeBuy, tradePrice, tradeCount))
                 {
                     tradeFee = userInfo.tradeInterface.CacuTradeFee(StockConst.TradeBuy, code, tradePrice, tradeCount);
-                    if(userInfo.rmbAsset.activeAmount >= tradePrice*tradeCount+tradeFee)
+                    if(userInfo.tradeInterface.GetRmbAsset() >= tradePrice*tradeCount+tradeFee)
                     {
                         orderInfo = userInfo.DoTrade(code, StockConst.TradeBuy, tradePrice, tradeCount);
                         buyLastPrice = priceLast - priceUnit * unitCount;

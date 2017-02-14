@@ -1,6 +1,7 @@
 package com.wly;
 
 import com.wly.database.DBPool;
+import com.wly.stock.StockInfoProviderSimulator;
 import com.wly.stock.StockInfoProviderSina;
 import com.wly.stock.StockMarketInfoManager;
 import com.wly.stock.StockPriceMonitorManager;
@@ -18,7 +19,7 @@ public class PolicyMain
         dbPool.Init("jdbc:mysql://127.0.0.1/stockmonitor?useSSL=true", "root", "123456");
 
         StockMarketInfoManager stockMarketInfoManager = StockMarketInfoManager.GetInstance();
-        stockMarketInfoManager.SetStockInfoProvider(new StockInfoProviderSina());
+        stockMarketInfoManager.SetStockInfoProvider(new StockInfoProviderSimulator());
         stockMarketInfoManager.Start();
 
         StockPriceMonitorManager stockPriceMonitorManager = StockPriceMonitorManager.GetInstance();

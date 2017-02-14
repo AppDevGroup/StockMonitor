@@ -122,7 +122,6 @@ public class UserInfo
     {
         tradeInterface.Login(name, psw);
     }
-    public  void UpdateUserAsset(){tradeInterface.UpdateUserAsset();}
     public  void DoOrder(OrderInfo orderInfo)
     {
         try {

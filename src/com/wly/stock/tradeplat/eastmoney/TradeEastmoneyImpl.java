@@ -122,9 +122,8 @@ public class TradeEastmoneyImpl implements ITradeInterface
     }
 
     @Override
-    public boolean UpdateUserAsset()
+    public float GetRmbAsset()
     {
-        float money = 0;
         try
         {
             final String GetRmbAssetPage = "/Com/GetAssets?validatekey=";
@@ -144,20 +143,18 @@ public class TradeEastmoneyImpl implements ITradeInterface
             if(stat != 0)
             {
                 System.out.println("get asset failed! "+jsonObject.get("Message").getAsString());
-                return false;
+                return 0;
             }
             JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
-            userInfo.rmbAsset.activeAmount = jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
+            return  jsonDataArray.get(0).getAsJsonObject().get("Kyzj").getAsFloat();
 
-            System.out.println(retStr);
-            return true;
         }
         catch (Exception ex)
         {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
-        return false;
+        return 0;
     }
 
     @Override
@@ -274,7 +271,6 @@ public class TradeEastmoneyImpl implements ITradeInterface
             JsonObject newOrderInfo;
             OrderInfo orderInfo;
             int orderStat;
-            boolean needUpdateAsset = false;
             for(i=0; i<jsonDataArray.size(); ++i)
             {
                 newOrderInfo = jsonDataArray.get(i).getAsJsonObject();
@@ -285,20 +281,8 @@ public class TradeEastmoneyImpl implements ITradeInterface
                     if(newOrderInfo.get("Wtbh").equals(orderInfo.platOrderId) && orderStat != orderInfo.GetStat())
                     {
                         orderInfo.SetStat(orderStat);
-                        if((orderStat == OrderInfo.OderStat_Order && orderInfo.tradeFlag == StockConst.TradeBuy)
-                            ||(orderStat == OrderInfo.OderStat_Cancel && orderInfo.tradeFlag == StockConst.TradeBuy)
-                                ||(orderStat == OrderInfo.OderStat_Deal && orderInfo.tradeFlag == StockConst.TradeBuy)
-                                ||(orderStat == OrderInfo.OderStat_Half && orderInfo.tradeFlag == StockConst.TradeBuy))
-                        {
-                            needUpdateAsset = true;
-                        }
                     }
                 }
-            }
-
-            if(needUpdateAsset)
-            {
-                userInfo.UpdateUserAsset();
             }
         }
         catch (Exception ex)
