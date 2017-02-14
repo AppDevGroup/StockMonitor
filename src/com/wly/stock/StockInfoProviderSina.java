@@ -1,6 +1,7 @@
 package com.wly.stock;
 
 import com.wly.common.Utils;
+import com.wly.stock.common.eStockPlate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -55,10 +56,10 @@ public class StockInfoProviderSina implements IStockInfoProvider
             switch (plate)
             {
                 case PlateSH:
-                    prefix = StockUtils.PrefixSH;
+                    prefix = StockConst.PrefixSH;
                     break;
                 case PlateSZ:
-                    prefix = StockUtils.PrefixSZ;
+                    prefix = StockConst.PrefixSZ;
                     break;
             }
 

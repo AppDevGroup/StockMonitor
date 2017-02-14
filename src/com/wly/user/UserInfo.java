@@ -6,13 +6,16 @@ import com.wly.database.DBQuery;
 import com.wly.stock.StockConst;
 import com.wly.stock.common.*;
 import com.wly.stock.eastmoney.TradeEastmoneyImpl;
+import com.wly.stock.eastmoney.TradeTestImpl;
 import com.wly.stock.policy.PolicyBase;
 import com.wly.stock.policy.PolicyStep;
 import com.wly.stock.policy.PolicyStepAll;
 import io.netty.handler.codec.string.StringDecoder;
 
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,7 +61,16 @@ public class UserInfo
 
     public void Init()
     {
-        tradeInterface = new TradeEastmoneyImpl();
+        switch (platId)
+        {
+            case 1:
+                tradeInterface = new TradeEastmoneyImpl();
+                break;
+            default:
+                tradeInterface = new TradeTestImpl();
+                break;
+        }
+//        tradeInterface = new TradeEastmoneyImpl();
         InitPolicySteps();
         Login(platAcct, platPsw);
     }
@@ -88,6 +100,17 @@ public class UserInfo
                 policy.buyOrderId = rs.getString("buyorder_id");
                 policy.sellOrderId = rs.getString("sellOrder_id");
                 policy.lastDate = rs.getString("last_date");
+
+                if(!policy.buyOrderId.equals("0") && !rs.getString("buyorder_date").equals(Utils.GetDate()))
+                {
+                    policy.buyOrderId = "0";
+                }
+
+                if(!policy.sellOrderId.equals("0") && !rs.getString("sellorder_date").equals(Utils.GetDate()))
+                {
+                    policy.sellOrderId = "0";
+                }
+
                 policySteps.add(policy);
             }
             dbQuery.Close();
@@ -135,16 +158,38 @@ public class UserInfo
     public  void UpdateUserAsset(){tradeInterface.UpdateUserAsset();}
     public  void DoOrder(OrderInfo orderInfo)
     {
-        orderInfos.add(orderInfo);
-        tradeInterface.DoOrder(orderInfo);
+        try {
+            final String UpdateFormat = "insert into trade_book(user_id, plat_id, code, trade_flag, " +
+                    "price, count, counter_fee, transfer_fee, stamp_tax, time) " +
+                    "values('%s', '%s', '%s', %d, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, id, platId, orderInfo.code,  orderInfo.tradeFlag,
+                    orderInfo.orderPrice, orderInfo.count, 0, 0, 0, Utils.GetDate()));
+
+            orderInfo.id = Utils.GetLastInserId();
+            orderInfos.add(orderInfo);
+            tradeInterface.DoOrder(orderInfo);
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
     }
-    public void RevokeOrder(OrderInfo orderInfo){tradeInterface.RevokeOrder(orderInfo);};
+    public void RevokeOrder(OrderInfo orderInfo)
+    {
+        if(orderInfo != null)
+        {
+            tradeInterface.RevokeOrder(orderInfo);
+        }
+        else
+        {
+            System.out.println("try to revoke null order!");
+        }
+    }
     public void CheckOrderStatus(){tradeInterface.UpdateOrderStatus (orderInfos);}
 
     public OrderInfo DoTrade(String code, int tradeFlag, float price, int count)
     {
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.id = Utils.GetId();
         orderInfo.code = code;
         orderInfo.tradeFlag = tradeFlag;
         orderInfo.count = count;
@@ -168,5 +213,64 @@ public class UserInfo
         }
 
         return null;
+    }
+
+    public void RevokeOrderByPlatId(String platOrderId)
+    {
+        RevokeOrder(GetOrderInfoByPlatId(platOrderId));
+    }
+
+    public int GetOrderStatByPlatId(String orderId)
+    {
+        int i;
+        int ret = OrderInfo.OderStat_None;
+        OrderInfo orderInfo = GetOrderInfoByPlatId(orderId);
+        if (orderInfo != null)
+        {
+            ret = orderInfo.GetStat();
+        }
+
+        return ret;
+    }
+
+    public OrderInfo GetOrderInfoByPlatId(String orderId)
+    {
+        int i;
+        OrderInfo ret = null;
+        for(i=0; i<orderInfos.size(); ++i)
+        {
+            if(orderId == orderInfos.get(i).platOrderId)
+            {
+                ret = orderInfos.get(i);
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+    public void UpdateOrderStat(OrderInfo orderInfo)
+    {
+        try {
+            final String UpdateFormat = "update trade_book SET policy_stat = %d WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync(String.format(UpdateFormat, orderInfo.id, orderInfo.GetStat()));
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
+    }
+
+    public void UpdateOrderPlatOrderId(OrderInfo orderInfo)
+    {
+        try
+        {
+            final String UpdateFormat = "update trade_book SET plat_order_id = %d WHERE id = %s";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync(String.format(UpdateFormat, orderInfo.id, orderInfo.platOrderId));
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
     }
 }

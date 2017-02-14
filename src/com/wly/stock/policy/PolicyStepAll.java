@@ -38,9 +38,7 @@ public class PolicyStepAll extends PolicyBase
     public String sellOrderId;
     public String lastDate;
 
-    private OrderInfo sellOrder;    //买入订单
     private float buyLastPrice;     //买入成交更新参考价格
-    private OrderInfo buyOrder;     //卖出订单
     private float sellLastPrice;    //卖出成交更新参考价格
 
     public PolicyStepAll(UserInfo uInfo)
@@ -103,6 +101,7 @@ public class PolicyStepAll extends PolicyBase
         int tradeCount;
         float tradePrice;
         float tradeFee;
+        OrderInfo orderInfo;
 
         StockMarketInfo.TradeInfo sellTradeInfo;
         StockMarketInfo.TradeInfo buyTradeInfo;
@@ -118,12 +117,12 @@ public class PolicyStepAll extends PolicyBase
         if(stockMarketInfo.TestDeal(StockConst.TradeSell, maxPrice, asset.activeCount))
         {
 
-            sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, maxPrice, asset.activeCount);
+            OrderInfo sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, maxPrice, asset.activeCount);
             policyStat = PolicyStat_Finish;
             return;
         }
 
-        if(sellOrder == null)
+        if(sellOrderId == null || sellOrderId.equals("0"))
         {
             if (buyTradeInfo.price >= priceSell)
             {
@@ -136,17 +135,17 @@ public class PolicyStepAll extends PolicyBase
 
                 if (stockMarketInfo.TestDeal(StockConst.TradeSell, tradePrice, tradeCount))
                 {
-                    sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
+                    orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
                     sellLastPrice = priceLast + priceUnit * unitCount;
-                    StoreSellOrder(sellOrder.platOrderId);
+                    StoreSellOrder(orderInfo.platOrderId);
                 }
                 else if (unitCount > 1)
                 {
                     unitCount = unitCount - 1;
                     tradePrice = priceLast + unitCount * priceUnit + sellOffset;
-                    sellOrder = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
+                    orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
                     sellLastPrice = priceLast + priceUnit * unitCount;
-                    StoreSellOrder(sellOrder.platOrderId);
+                    StoreSellOrder(orderInfo.platOrderId);
                 }
             }
         }
@@ -155,7 +154,7 @@ public class PolicyStepAll extends PolicyBase
             CheckSellOrder();
         }
 
-        if(buyOrder == null)
+        if(buyOrderId == null || buyOrderId.equals("0"))
         {
             if(sellTradeInfo.price <= priceBuy)
             {
@@ -169,9 +168,9 @@ public class PolicyStepAll extends PolicyBase
                     tradeFee = userInfo.tradeInterface.CacuTradeFee(StockConst.TradeBuy, code, tradePrice, tradeCount);
                     if(userInfo.rmbAsset.activeAmount >= tradePrice*tradeCount+tradeFee)
                     {
-                        buyOrder = userInfo.DoTrade(code, StockConst.TradeBuy, tradePrice, tradeCount);
+                        orderInfo = userInfo.DoTrade(code, StockConst.TradeBuy, tradePrice, tradeCount);
                         buyLastPrice = priceLast - priceUnit * unitCount;
-                        StoreBuyOrderId(buyOrder.platOrderId);
+                        StoreBuyOrderId(orderInfo.platOrderId);
                     }
                     else
                     {
@@ -198,7 +197,7 @@ public class PolicyStepAll extends PolicyBase
 
     private void CheckBuyOrder()
     {
-        if(buyOrder.isNewStat && buyOrder.GetStat() == OrderInfo.OderStat_Deal)
+        if(userInfo.GetOrderStatByPlatId(buyOrderId) == OrderInfo.OderStat_Deal)
         {
             if(policyStat == PolicyStat_Init)
             {
@@ -211,20 +210,21 @@ public class PolicyStepAll extends PolicyBase
                 buyLastPrice = 0f;
             }
             StoreLastPrice();
-            StoreBuyOrderId("null");
+            buyOrderId = "0";
+            StoreBuyOrderId(buyOrderId);
 
-            if(sellOrder != null)
+            if(sellOrderId != null || !sellOrderId.equals("0"))
             {
-                userInfo.RevokeOrder(sellOrder);
-                sellOrder = null;
-                StoreSellOrder("null");
+                userInfo.RevokeOrderByPlatId(sellOrderId);
+                sellOrderId = "0";
+                StoreSellOrder(sellOrderId);
             }
         }
     }
 
     private void CheckSellOrder()
     {
-        if(sellOrder.isNewStat && sellOrder.GetStat() == OrderInfo.OderStat_Deal)
+        if(userInfo.GetOrderStatByPlatId(sellOrderId) == OrderInfo.OderStat_Deal)
         {
             if(policyStat == PolicyStat_Finish)
             {
@@ -235,12 +235,14 @@ public class PolicyStepAll extends PolicyBase
             priceLast = sellLastPrice;
             sellLastPrice = 0f;
             StoreLastPrice();
-            StoreSellOrder("null");
+            sellOrderId = "0";
+            StoreSellOrder(sellOrderId);
 
-            if(buyOrder != null)
+            if(buyOrderId != null && !buyOrderId.equals("0"))
             {
-                userInfo.RevokeOrder(buyOrder);
-                StoreBuyOrderId("null");
+                userInfo.RevokeOrderByPlatId(buyOrderId);
+                buyOrderId = "0";
+                StoreBuyOrderId(buyOrderId);
             }
         }
     }
@@ -248,8 +250,8 @@ public class PolicyStepAll extends PolicyBase
     private void StoreBuyOrderId(String buyId)
     {
         try {
-            final String UpdateFormat = "update policy_step SET sellorder_id = %s WHERE id = %d";
-            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, buyId, id));
+            final String UpdateFormat = "update policy_step SET sellorder_id = %s, sellorder_date WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, buyId, Utils.GetDate(), id));
         }
         catch (Exception ex)
         {
@@ -260,8 +262,8 @@ public class PolicyStepAll extends PolicyBase
     private void StoreSellOrder(String sellId)
     {
         try {
-            final String UpdateFormat = "update policy_step SET buyorder_id = %s WHERE id = %d";
-            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, sellId, id));
+            final String UpdateFormat = "update policy_step SET buyorder_id = %s, buyorder_date='%s' WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, sellId, Utils.GetDate(),id));
         }
         catch (Exception ex)
         {

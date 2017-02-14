@@ -1,5 +1,6 @@
 package com.wly.stock.eastmoney;
 
+import com.mysql.jdbc.Util;
 import com.wly.common.Utils;
 import com.wly.stock.StockConst;
 import com.wly.stock.common.ITradeInterface;
@@ -10,6 +11,7 @@ import com.wly.user.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by wuly on 2017/2/13.
@@ -40,7 +42,7 @@ public class TradeTestImpl implements ITradeInterface
     @Override
     public void DoOrder(OrderInfo orderInfo)
     {
-        orderInfo.platOrderId = Integer.toString(Utils.GetId());
+        orderInfo.platOrderId = GetOrderId();
         orderInfos.add(orderInfo);
     }
 
@@ -81,5 +83,11 @@ public class TradeTestImpl implements ITradeInterface
     public float CacuTradeFee(int tradeFlag, String code, float price, int count)
     {
         return 0;
+    }
+
+    private String GetOrderId()
+    {
+        Random random = new Random();
+        return String.format("%02d%s%06d%04d", 0, Utils.GetDateTime(), Utils.GetId(),  random.nextInt(10000));
     }
 }
