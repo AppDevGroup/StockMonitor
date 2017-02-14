@@ -2,12 +2,16 @@ package com.wly.stock.tradeplat.simulate;
 
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
+import com.wly.database.DBQuery;
+import com.wly.stock.StockUtils;
+import com.wly.stock.policy.PolicyStep;
 import com.wly.stock.tradeplat.ITradeInterface;
 import com.wly.stock.common.OrderInfo;
 import com.wly.stock.common.StockAsset;
 import com.wly.stock.common.TradeBook;
 import com.wly.user.UserInfo;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -56,7 +60,6 @@ public class TradeSimulateImpl implements ITradeInterface
             Utils.LogException(ex);
         }
 
-        orderInfo.platOrderId = GetOrderId();
         orderInfos.add(orderInfo);
     }
 
@@ -84,7 +87,25 @@ public class TradeSimulateImpl implements ITradeInterface
     @Override
     public int GetOrderStatus(String platOrderId)
     {
-        return 0;
+        int ret = OrderInfo.OderStat_None;
+        try {
+            final String QueryFormat = "select stat from trade_book where plat_order_id='%s'and user_id=%d";
+            DBPool dbPool = DBPool.GetInstance();
+            DBQuery dbQuery = dbPool.ExecuteQuerySync(String.format(QueryFormat, platOrderId, userInfo.id));
+            ResultSet rs = dbQuery.resultSet;
+            while (rs.next())
+            {
+                ret = rs.getInt("stat");
+                break;
+            }
+            dbQuery.Close();
+        }
+        catch (Exception ex)
+        {
+            Utils.LogException(ex);
+        }
+
+        return ret;
     }
 
     @Override

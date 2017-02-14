@@ -198,6 +198,7 @@ public class PolicyStepAll extends PolicyBase
     {
         if(HasBuyOrder())
         {
+            CheckBuyOrder();
             return;
         }
 
@@ -211,7 +212,7 @@ public class PolicyStepAll extends PolicyBase
 
     private void CheckBuyOrder()
     {
-        if(userInfo.GetOrderStatByPlatId(buyOrderId) == OrderInfo.OderStat_Deal)
+        if(userInfo.tradeInterface.GetOrderStatus(buyOrderId) == OrderInfo.OderStat_Deal)
         {
             if(policyStat == PolicyStat_Init)
             {
@@ -239,7 +240,7 @@ public class PolicyStepAll extends PolicyBase
 
     private void CheckSellOrder()
     {
-        if(userInfo.GetOrderStatByPlatId(sellOrderId) == OrderInfo.OderStat_Deal)
+        if(userInfo.tradeInterface.GetOrderStatus(sellOrderId) == OrderInfo.OderStat_Deal)
         {
             if(policyStat == PolicyStat_Finish)
             {
@@ -304,8 +305,8 @@ public class PolicyStepAll extends PolicyBase
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
             String date = df.format(new Date());// new Date()为获取当前系统时间
-            final String UpdateFormat = "update policy_step SET price_last = %.2f last_date=%s  WHERE id = %d";
-            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, priceLast, date, id));
+            final String UpdateFormat = "update policy_step SET price_last = %.2f WHERE id = %d";
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, priceLast, id));
         }
         catch (Exception ex)
         {
