@@ -43,6 +43,12 @@ public class StockInfoProviderSina implements IStockInfoProvider
     @Override
     public ArrayList<StockMarketInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception
     {
+        if(codeList == null || codeList.size()==0)
+        {
+            System.out.println("not code for query!");
+            return null;
+        }
+
         StringBuilder sb = new StringBuilder("http://hq.sinajs.cn/list=");
         int i;
         String code;

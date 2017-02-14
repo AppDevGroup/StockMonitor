@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class UserInfo
 {
-    public String id;
+    public int id;
     public String name;
     public int platId;
     public String platAcct;
@@ -79,7 +79,7 @@ public class UserInfo
         try {
             PolicyStepAll policy;
             DBPool dbPool = DBPool.GetInstance();
-            DBQuery dbQuery = dbPool.ExecuteQuerySync(String.format("select * from policy_step where user_id='%s'", id));
+            DBQuery dbQuery = dbPool.ExecuteQuerySync(String.format("select * from policy_step where user_id=%d", id));
             ResultSet rs = dbQuery.resultSet;
             while (rs.next())
             {
@@ -95,15 +95,9 @@ public class UserInfo
                 policy.minPrice = rs.getFloat("min_price");
                 policy.maxPrice = rs.getFloat("max_price");
                 policy.policyStat = rs.getInt("policy_stat");
-                policy.priceLast = rs.getFloat("pirce_last");
+                policy.priceLast = rs.getFloat("price_last");
                 policy.buyOrderId = rs.getString("buyorder_id");
                 policy.sellOrderId = rs.getString("sellOrder_id");
-                policy.lastDate = rs.getString("last_date");
-
-                if(!policy.buyOrderId.equals("0") && !rs.getString("buyorder_date").equals(Utils.GetDate()))
-                {
-                    policy.buyOrderId = "0";
-                }
 
                 if(!policy.sellOrderId.equals("0") && !rs.getString("sellorder_date").equals(Utils.GetDate()))
                 {
@@ -163,7 +157,7 @@ public class UserInfo
         try {
             final String UpdateFormat = "insert into trade_book(user_id, plat_id, code, trade_flag, " +
                     "order_price, 'deal_price', count, counter_fee, transfer_fee, stamp_tax, time) " +
-                    "values('%s', '%s', '%s', %d, %.2f, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
+                    "values(%d, '%s', '%s', %d, %.2f, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
             DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, id, platId, orderInfo.code,  orderInfo.tradeFlag,
                     orderInfo.orderPrice, orderInfo.dealPrice, orderInfo.count, 0, 0, 0, Utils.GetDate()));
 

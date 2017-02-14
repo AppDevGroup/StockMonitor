@@ -19,7 +19,7 @@ public class GetStockDesc
         }
 
         StockMarketInfoManager stockMarketInfoManager = StockMarketInfoManager.GetInstance();
-        stockMarketInfoManager.StockInfoProvider(new StockInfoProviderSina());
+        stockMarketInfoManager.SetStockInfoProvider(new StockInfoProviderSina());
         StockPriceMonitorManager stockPriceMonitorManager = StockPriceMonitorManager.GetInstance();
         int i;
         for(i=0; i<args.length; ++i)

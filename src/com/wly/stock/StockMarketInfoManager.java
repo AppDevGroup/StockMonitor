@@ -28,7 +28,7 @@ public class StockMarketInfoManager extends TimerTask
         return sInstance;
     }
 
-    public void StockInfoProvider(IStockInfoProvider stockInfoProvider)
+    public void SetStockInfoProvider(IStockInfoProvider stockInfoProvider)
     {
         infoProvider = stockInfoProvider;
     }
@@ -70,6 +70,11 @@ public class StockMarketInfoManager extends TimerTask
 
     private void ProcessNewStockInfo(List<StockMarketInfo> infoList)
     {
+        if(infoList == null)
+        {
+            return;
+        }
+
         int i,j;
         boolean bIsNew = true;
         StockMarketInfo newMarketInfo;

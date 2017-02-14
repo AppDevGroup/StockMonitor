@@ -17,11 +17,12 @@ import java.util.Date;
  */
 public class PolicyStepAll extends PolicyBase
 {
-    private final  int PolicyStat_None = 0; //未启用
-    private final  int PolicyStat_Init = 1; //待初始化
-    private final  int PolicyStat_Step = 2; //区间执行
-    private final  int PolicyStat_Finish = 3; //全部卖完
+    public static final  int PolicyStat_None = 0; //未启用
+    public static final  int PolicyStat_Init = 1; //待初始化
+    public static final  int PolicyStat_Step = 2; //区间执行
+    public static final  int PolicyStat_Finish = 3; //全部卖完
 
+    public int userId;
     public  float priceInit;    //初始买入价格
     public int initCount;       //初始买入数量
     public  float priceUnit;    //价格区间
@@ -36,7 +37,6 @@ public class PolicyStepAll extends PolicyBase
 
     public String buyOrderId;
     public String sellOrderId;
-    public String lastDate;
 
     private float buyLastPrice;     //买入成交更新参考价格
     private float sellLastPrice;    //卖出成交更新参考价格
@@ -48,6 +48,7 @@ public class PolicyStepAll extends PolicyBase
 
     public  void OnNewPirce(StockMarketInfo stockMarketInfo)
     {
+        System.out.println("PolicyStepAll:\\n"+stockMarketInfo.toDesc());
         if(stockMarketInfo.priceNew < 0.1f)
         {
             Utils.Log("error price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);

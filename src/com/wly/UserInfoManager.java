@@ -29,7 +29,7 @@ public class UserInfoManager
         return s_instance;
     }
 
-    public HashMap<String, UserInfo> userInfoHashMap = new HashMap<>();
+    public HashMap<Integer, UserInfo> userInfoHashMap = new HashMap<>();
 
     public boolean Init()
     {
@@ -48,8 +48,8 @@ public class UserInfoManager
             while (rs.next())
             {
                 userInfo = new UserInfo();
-                userInfo.id = rs.getString("id");
-                userInfo.platId = rs.getInt("platId");
+                userInfo.id = rs.getInt("id");
+                userInfo.platId = rs.getInt("plat_id");
                 userInfo.platAcct = rs.getString("plat_acct");
                 userInfo.platPsw = rs.getString("plat_psw");
                 userInfoHashMap.put(userInfo.id, userInfo);
