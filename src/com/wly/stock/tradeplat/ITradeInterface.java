@@ -19,6 +19,7 @@ public interface ITradeInterface
     void DoOrder(OrderInfo orderInfo);                      //申请挂单
     void RevokeOrder(OrderInfo orderInfo);                  //撤销挂单
     void UpdateOrderStatus(ArrayList<OrderInfo> orderInfos);          //检查订单成交状态
+    int GetOrderStatus(String platOrderId);            //检查订单状态
     List<TradeBook> GetTradeHis();      //获取订单
     List<StockAsset> GetAssetList();    //获取持仓列表
     float CacuTradeFee(int tradeFlag, String code, float price, int count); //计算交易手续费

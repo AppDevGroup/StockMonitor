@@ -82,6 +82,12 @@ public class TradeSimulateImpl implements ITradeInterface
     }
 
     @Override
+    public int GetOrderStatus(String platOrderId)
+    {
+        return 0;
+    }
+
+    @Override
     public List<TradeBook> GetTradeHis()
     {
         return null;
