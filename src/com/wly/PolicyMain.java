@@ -19,7 +19,8 @@ public class PolicyMain
         dbPool.Init("jdbc:mysql://127.0.0.1/stockmonitor?useSSL=true", "root", "123456");
 
         StockMarketInfoManager stockMarketInfoManager = StockMarketInfoManager.GetInstance();
-        stockMarketInfoManager.SetStockInfoProvider(new StockInfoProviderSimulator());
+//        stockMarketInfoManager.SetStockInfoProvider(new StockInfoProviderSimulator());
+        stockMarketInfoManager.SetStockInfoProvider(new StockInfoProviderSina());
         stockMarketInfoManager.Start();
 
         StockPriceMonitorManager stockPriceMonitorManager = StockPriceMonitorManager.GetInstance();

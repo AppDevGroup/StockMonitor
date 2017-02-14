@@ -69,21 +69,6 @@ public class TradeSimulateImpl implements ITradeInterface
     }
 
     @Override
-    public void UpdateOrderStatus(ArrayList<OrderInfo> orderInfos)
-    {
-        int i;
-        OrderInfo orderInfo;
-        for(i=0; i<orderInfos.size(); ++i)
-        {
-            orderInfo = orderInfos.get(i);
-            if(orderInfo.GetStat() == OrderInfo.OderStat_Order)
-            {
-                orderInfo.SetStat(OrderInfo.OderStat_Deal);
-            }
-        }
-    }
-
-    @Override
     public int GetOrderStatus(String platOrderId)
     {
         int ret = OrderInfo.OderStat_None;

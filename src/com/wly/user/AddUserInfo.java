@@ -17,17 +17,21 @@ public class AddUserInfo
             DBPool dbPool = DBPool.GetInstance();
             dbPool.Init("jdbc:mysql://127.0.0.1/stockmonitor", "root", "123456");
 
-            PolicyStepAll policyStepAll = new PolicyStepAll(null);
-            policyStepAll.code = "603858";
-            policyStepAll.priceInit = 86.00f;
-            policyStepAll.initCount = 600;
-            policyStepAll.stepUnit = 100;
-            policyStepAll.priceUnit = 3.00f;
-            policyStepAll.minPrice = 70.00f;
-            policyStepAll.maxPrice = 105f;
+            PolicyStepAll policyStepAll;
+            policyStepAll = new PolicyStepAll(null);
+            policyStepAll.userId = 1;
+            policyStepAll.code = "300586";
+            policyStepAll.priceInit = 39f;
+            policyStepAll.initCount = 1600;
+            policyStepAll.stepUnit = 200;
+            policyStepAll.priceUnit = 1f;
+            policyStepAll.minPrice = 30f;
+            policyStepAll.maxPrice =  50f;
             policyStepAll.buyOffset = -0.09f;
             policyStepAll.buyOffset = -0.01f;
             policyStepAll.policyStat = PolicyStepAll.PolicyStat_Init;
+            policyStepAll.buyOrderId = "0";
+            policyStepAll.sellOrderId = "0";
             InsertPolicy(policyStepAll);
         }
         catch (Exception ex)

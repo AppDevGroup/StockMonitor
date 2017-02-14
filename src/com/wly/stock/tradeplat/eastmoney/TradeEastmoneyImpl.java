@@ -237,8 +237,9 @@ public class TradeEastmoneyImpl implements ITradeInterface
     }
 
     @Override
-    public void UpdateOrderStatus(ArrayList<OrderInfo> orderInfos)
+    public int GetOrderStatus(String platOrderId)
     {
+        int orderStatus = OrderInfo.OderStat_None;
         try
         {
             final String RevokeUrl = "/Search/GetOrdersData?validatekey=";
@@ -263,7 +264,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             if(stat != 0)
             {
                 System.out.println("UpdateOrderStatus failed! "+jsonObject.get("Message").getAsString());
-                return;
+                return orderStatus;
             }
 
             JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
@@ -274,15 +275,13 @@ public class TradeEastmoneyImpl implements ITradeInterface
             for(i=0; i<jsonDataArray.size(); ++i)
             {
                 newOrderInfo = jsonDataArray.get(i).getAsJsonObject();
-                orderStat =  GetStatByPlatStat(newOrderInfo.get("Wtzt").getAsString());
-                for(j=0; j<orderInfos.size(); ++j)
+
+                if(!newOrderInfo.get("Wtzt").getAsString().equals(platOrderId))
                 {
-                    orderInfo = orderInfos.get(j);
-                    if(newOrderInfo.get("Wtbh").equals(orderInfo.platOrderId) && orderStat != orderInfo.GetStat())
-                    {
-                        orderInfo.SetStat(orderStat);
-                    }
+                    continue;
                 }
+
+                orderStatus = GetStatByPlatStat(newOrderInfo.get("Wtbh").getAsString());
             }
         }
         catch (Exception ex)
@@ -290,12 +289,8 @@ public class TradeEastmoneyImpl implements ITradeInterface
             System.out.print(ex.getMessage());
             ex.printStackTrace();
         }
-    }
 
-    @Override
-    public int GetOrderStatus(String platOrderId)
-    {
-        return 0;
+        return orderStatus;
     }
 
     @Override

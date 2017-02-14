@@ -1,6 +1,5 @@
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
-import com.wly.log.LogManager;
 import com.wly.stock.StockMarketInfo;
 import com.wly.stock.StockInfoProviderSina;
 import com.wly.stock.StockUtils;
@@ -29,13 +28,10 @@ public class MainClass
     {
         try
         {
-            LogManager.GetInstance().Init();
-
             DBPool dbPool = DBPool.GetInstance();
             dbPool.Init("jdbc:mysql://db4free.net/wuly", "wuliangyue7", "wly19870120");
 
             PolicyStep.Init();
-            LogManager.GetInstance().GetLogger().info("Init Complete!");
         } catch (Exception ex)
         {
             Utils.LogException(ex);

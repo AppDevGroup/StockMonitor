@@ -36,17 +36,6 @@ public class UserInfo
 
     public static void main(String[] args)
     {
-        UserInfo uInfo = new UserInfo();
-        uInfo.Login("514230600166072", "1251233321212");
-       // uInfo.UpdateUserAsset();
-
-        OrderInfo orderInfo = new OrderInfo();
-        orderInfo.code = "601288";
-        orderInfo.name = "农业银行";
-        orderInfo.count = 100;
-        orderInfo.orderPrice = 3.0f;
-        orderInfo.tradeFlag = StockConst.TradeBuy;
-        uInfo.CheckOrderStatus();
     }
 
     public UserInfo()
@@ -144,7 +133,6 @@ public class UserInfo
             System.out.println("try to revoke null order!");
         }
     }
-    public void CheckOrderStatus(){tradeInterface.UpdateOrderStatus (orderInfos);}
 
     public OrderInfo DoTrade(String code, int tradeFlag, float price, int count)
     {
