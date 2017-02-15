@@ -138,33 +138,36 @@ public class PolicyStepAll extends PolicyBase
         }
 
 //        if(sellOrderId == null || sellOrderId.equals("0"))
-        if(!HasSellOrder())
+        if (!HasSellOrder())
         {
+            unitCount = 0;
             if (buyTradeInfo.price >= priceSell)
             {
                 //doSell
                 offset = buyTradeInfo.price - priceLast;
                 unitCount = (int) ((offset - sellOffset) / priceUnit);
-                tradeCount = stepUnit * unitCount;
-                tradeCount = tradeCount >= stockCount ? stockCount : tradeCount;
-                tradePrice = priceLast + unitCount * priceUnit + sellOffset;
+            }
+            unitCount = unitCount < 1 ? 1 : unitCount;
 
-                if (stockMarketInfo.TestDeal(StockConst.TradeSell, tradePrice, tradeCount))
-                {
-                    orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
-                    sellLastPrice = priceLast + priceUnit * unitCount;
-                    sellOrderId = orderInfo.platOrderId;
-                    StoreSellOrder(sellOrderId);
-                }
-                else if (unitCount > 1)
-                {
-                    unitCount = unitCount - 1;
-                    tradePrice = priceLast + unitCount * priceUnit + sellOffset;
-                    orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
-                    sellLastPrice = priceLast + priceUnit * unitCount;
-                    sellOrderId = orderInfo.platOrderId;
-                    StoreSellOrder(sellOrderId);
-                }
+            tradeCount = stepUnit * unitCount;
+            tradeCount = tradeCount >= stockCount ? stockCount : tradeCount;
+            tradePrice = priceLast + unitCount * priceUnit + sellOffset;
+
+            if (unitCount == 1 || stockMarketInfo.TestDeal(StockConst.TradeSell, tradePrice, tradeCount))
+            {
+                orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
+                sellLastPrice = priceLast + priceUnit * unitCount;
+                sellOrderId = orderInfo.platOrderId;
+                StoreSellOrder(sellOrderId);
+            }
+            else if (unitCount > 1)
+            {
+                unitCount = unitCount - 1;
+                tradePrice = priceLast + unitCount * priceUnit + sellOffset;
+                orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
+                sellLastPrice = priceLast + priceUnit * unitCount;
+                sellOrderId = orderInfo.platOrderId;
+                StoreSellOrder(sellOrderId);
             }
         }
         else
