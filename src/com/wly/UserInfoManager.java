@@ -30,9 +30,11 @@ public class UserInfoManager
     }
 
     public HashMap<Integer, UserInfo> userInfoHashMap = new HashMap<>();
+    public ArrayList<Integer> platList = null;
 
-    public boolean Init()
+    public boolean Init(ArrayList<Integer> platList)
     {
+        this.platList = platList;
         GetUserInfo();
         FillUserPolicy();
         return true;
@@ -41,9 +43,29 @@ public class UserInfoManager
     public boolean GetUserInfo()
     {
         try {
+            String queryStr = "";
+            if(platList == null || platList.size()==0)
+            {
+                queryStr = "select * from userinfo";
+            }
+            else
+            {
+                queryStr = "select * from userinfo where plat_id in(";
+                int i;
+                for(i=0; i<platList.size(); ++i)
+                {
+                    if(i!=0)
+                    {
+                        queryStr+=", ";
+                    }
+                    queryStr += platList.get(i);
+                }
+                queryStr += ")";
+            }
+
             UserInfo userInfo;
             DBPool dbPool = DBPool.GetInstance();
-            DBQuery dbQuery = dbPool.ExecuteQuerySync("select * from userinfo");
+            DBQuery dbQuery = dbPool.ExecuteQuerySync(queryStr);
             ResultSet rs = dbQuery.resultSet;
             while (rs.next())
             {

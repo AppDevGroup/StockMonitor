@@ -75,6 +75,7 @@ public class SimulateEngine extends TimerTask
                 if(val == 0)
                 {
                     needUpdate =true;
+                    orderInfo.dealPrice = orderInfo.orderPrice;
                     orderInfo.SetStat(OrderInfo.OderStat_Deal);
                 }
                 else if(val == 1)
@@ -88,6 +89,7 @@ public class SimulateEngine extends TimerTask
                 if(val == 0)
                 {
                     needUpdate =true;
+                    orderInfo.dealPrice = orderInfo.orderPrice;
                     orderInfo.SetStat(OrderInfo.OderStat_Deal);
                 }
                 break;
@@ -101,8 +103,8 @@ public class SimulateEngine extends TimerTask
         {
             try
             {
-                final String UpdateFormat = "update trade_book SET stat = %d WHERE id = %d";
-                DBPool.GetInstance().ExecuteNoQuerySqlAsync(String.format(UpdateFormat, orderInfo.GetStat(),  orderInfo.id));
+                final String UpdateFormat = "update trade_book SET stat = %d, deal_price=%.2f WHERE id = %d";
+                DBPool.GetInstance().ExecuteNoQuerySqlAsync(String.format(UpdateFormat, orderInfo.GetStat(), orderInfo.dealPrice,  orderInfo.id));
             }
             catch (Exception ex)
             {

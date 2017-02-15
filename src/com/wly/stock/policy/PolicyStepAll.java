@@ -51,7 +51,7 @@ public class PolicyStepAll extends PolicyBase
     {
         if(policyStat == PolicyStat_None)
         {
-            System.out.println("policy is stop "+id);
+//            System.out.println("policy is stop "+id);
             return;
         }
 

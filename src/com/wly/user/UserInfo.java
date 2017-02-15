@@ -7,6 +7,7 @@ import com.wly.stock.StockConst;
 import com.wly.stock.StockMarketInfoManager;
 import com.wly.stock.StockPriceMonitorManager;
 import com.wly.stock.common.*;
+import com.wly.stock.policy.PolicyStep;
 import com.wly.stock.tradeplat.eastmoney.TradeEastmoneyImpl;
 import com.wly.stock.tradeplat.simulate.TradeSimulateImpl;
 import com.wly.stock.policy.PolicyBase;
@@ -90,6 +91,11 @@ public class UserInfo
                 if(!policy.sellOrderId.equals("0") && !rs.getString("sellorder_date").equals(Utils.GetDate()))
                 {
                     policy.sellOrderId = "0";
+                }
+
+                if(policy.policyStat == PolicyStepAll.PolicyStat_None)
+                {
+                    System.out.println("policy is stop "+id);
                 }
 
                 policySteps.add(policy);
