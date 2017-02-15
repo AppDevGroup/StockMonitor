@@ -48,10 +48,20 @@ public class PolicyStepAll extends PolicyBase
 
     public  void OnNewPirce(StockMarketInfo stockMarketInfo)
     {
-        System.out.println("PolicyStepAll:\\n"+stockMarketInfo.toDesc());
+        if(policyStat == PolicyStat_None)
+        {
+            return;
+        }
+
         if(stockMarketInfo.priceNew < 0.1f)
         {
             Utils.Log("error price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
+            return;
+        }
+
+        if(stockMarketInfo.buyInfo.get(0).price == stockMarketInfo.sellInfo.get(0).price)
+        {
+            Utils.Log("time of bidding! ");
             return;
         }
 
@@ -61,19 +71,14 @@ public class PolicyStepAll extends PolicyBase
             return;
         }
 
-        if(policyStat == PolicyStat_None)
-        {
-            return;
-        }
-
         float change = stockMarketInfo.priceNew- stockMarketInfo.priceLast;
         float changeRatio = change/ stockMarketInfo.priceLast;
 
-//        if(Math.abs(changeRatio) > 0.11)
-//        {
-//            Utils.Log("exception price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
-//            return;
-//        }
+        if(Math.abs(changeRatio) > 0.11)
+        {
+            Utils.Log("exception price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
+            return;
+        }
 
        switch (policyStat)
        {
@@ -94,7 +99,7 @@ public class PolicyStepAll extends PolicyBase
         float priceBuy = priceLast-priceUnit+buyOffset;
         float priceSell = priceLast+priceUnit+sellOffset;
 
-        System.out.println(String.format("PrcessPrice code:%s  priceLast:%.2f priceBuy:%.2f priceSell:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
+        System.out.println(String.format("PrcessPrice step code:%s  priceLast:%.2f priceBuy:%.2f priceSell:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
                 code, priceLast, priceBuy, priceSell, stockMarketInfo.priceNew, change, changeRatio*100 ));
 
         float offset;
@@ -198,6 +203,9 @@ public class PolicyStepAll extends PolicyBase
             CheckBuyOrder();
             return;
         }
+
+        System.out.println(String.format("PrcessPrice init code:%s  priceBuy:%.2f priceSellNow:%.2f",
+                code, priceInit, stockMarketInfo.sellInfo.get(0).price));
 
         if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceInit, initCount))
         {

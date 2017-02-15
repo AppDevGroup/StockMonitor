@@ -14,7 +14,7 @@ public class GetStockDesc
     {
         if(args.length == 0)
         {
-            Utils.Log("please input stock code");
+            System.out.println("please input stock code");
             return;
         }
 
@@ -43,7 +43,7 @@ class StockPriceMonitorDesc extends StockPriceMonitor
     @Override
     public void OnNewPirce(StockMarketInfo stockMarketInfo)
     {
-        Utils.Log(stockMarketInfo.toDesc());
+        System.out.println(stockMarketInfo.toDesc());
     }
 }
 
