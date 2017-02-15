@@ -15,24 +15,9 @@ public class AddUserInfo
         try
         {
             DBPool dbPool = DBPool.GetInstance();
-            dbPool.Init("jdbc:mysql://127.0.0.1/stockmonitor", "root", "123456");
-
-            PolicyStepAll policyStepAll;
-            policyStepAll = new PolicyStepAll(null);
-            policyStepAll.userId = 1;
-            policyStepAll.code = "603858";
-            policyStepAll.priceInit = 86.5f;
-            policyStepAll.initCount = 600;
-            policyStepAll.stepUnit = 100;
-            policyStepAll.priceUnit = 1.5f;
-            policyStepAll.minPrice = 75f;
-            policyStepAll.maxPrice =  95f;
-            policyStepAll.buyOffset = -0.09f;
-            policyStepAll.sellOffset = -0.01f;
-            policyStepAll.policyStat = PolicyStepAll.PolicyStat_Init;
-            policyStepAll.buyOrderId = "0";
-            policyStepAll.sellOrderId = "0";
-            InsertPolicy(policyStepAll);
+            dbPool.Init("jdbc:mysql://127.0.0.1/stockmonitor?useSSL=true", "root", "123456");
+            InsertPolicy();
+            //InsertUser();
             System.out.println("insert finish!");
         }
         catch (Exception ex)
@@ -41,15 +26,31 @@ public class AddUserInfo
         }
     }
 
-    static private  void InsertPolicy(PolicyStepAll policy)
+    static private  void InsertPolicy()
     {
         try
         {
-            final String SqlFomat = "insert into policy_step (user_id, code, price_init, count_init," +
+            PolicyStepAll policy;
+            policy = new PolicyStepAll(null);
+            policy.userId = 2;
+            policy.code = "603639";
+            policy.priceInit = 48f;
+            policy.initCount = 600;
+            policy.stepUnit = 200;
+            policy.priceUnit = 2f;
+            policy.minPrice = 40f;
+            policy.maxPrice =  60f;
+            policy.buyOffset = -0.09f;
+            policy.sellOffset = -0.01f;
+            policy.policyStat = PolicyStepAll.PolicyStat_Init;
+            policy.buyOrderId = "0";
+            policy.sellOrderId = "0";
+
+            final String SqlFormat = "insert into policy_step (user_id, code, price_init, count_init," +
                     "price_unit, step_unit, buy_offset, sell_offset, min_price, max_price,  policy_stat," +
                     "price_last, buyorder_id, buyorder_date, sellorder_id, sellorder_date)" +
                     "values(%d, '%s', %.2f, %d, %.2f, %d, %.2f, %.2f, %.2f, %.2f, %d, %.2f, '%s', '%s', '%s', '%s')";
-            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(SqlFomat, policy.userId, policy.code, policy.priceInit, policy.initCount,
+            DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(SqlFormat, policy.userId, policy.code, policy.priceInit, policy.initCount,
                     policy.priceUnit, policy.stepUnit, policy.buyOffset, policy.sellOffset, policy.minPrice, policy.maxPrice, policy.policyStat,
                     policy.priceLast, policy.buyOrderId, "0", policy.sellOrderId, "0"));
 
@@ -58,5 +59,17 @@ public class AddUserInfo
         {
             ex.printStackTrace();
         }
+    }
+
+    static private void InsertUser()
+    {
+        UserInfo userInfo = new UserInfo();
+        userInfo.platId = 0;
+        userInfo.platAcct = "122323";
+        userInfo.platPsw = "121323";
+
+        final String SqlFormat = "insert into userinfo(plat_id, plat_acct, plat_psw) " +
+                "values(%d, '%s', '%s')";
+        DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(SqlFormat, userInfo.platId, userInfo.platAcct, userInfo.platPsw));
     }
 }

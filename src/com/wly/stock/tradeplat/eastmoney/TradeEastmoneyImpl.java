@@ -76,7 +76,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             params.add(new BasicNameValuePair("password", psw));
             params.add(new BasicNameValuePair("randNumber", ""));
             params.add(new BasicNameValuePair("identifyCode", ""));
-            params.add(new BasicNameValuePair("duration", "30"));
+            params.add(new BasicNameValuePair("duration", "5400"));
             params.add(new BasicNameValuePair("authCode", ""));
             params.add(new BasicNameValuePair("type", "Z"));
             httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));

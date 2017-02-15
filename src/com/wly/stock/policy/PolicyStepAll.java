@@ -21,6 +21,7 @@ public class PolicyStepAll extends PolicyBase
     public static final  int PolicyStat_Init = 1; //待初始化
     public static final  int PolicyStat_Step = 2; //区间执行
     public static final  int PolicyStat_Finish = 3; //全部卖完
+    public static final  int PolicyStat_Exception = 4; //异常 停止策略
 
     public int userId;
     public  float priceInit;    //初始买入价格
@@ -50,6 +51,13 @@ public class PolicyStepAll extends PolicyBase
     {
         if(policyStat == PolicyStat_None)
         {
+            System.out.println("policy is stop "+id);
+            return;
+        }
+
+        if(policyStat == PolicyStat_Exception)
+        {
+            System.out.println("policy is Exception "+id);
             return;
         }
 
@@ -77,6 +85,8 @@ public class PolicyStepAll extends PolicyBase
         if(Math.abs(changeRatio) > 0.11)
         {
             Utils.Log("exception price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
+            policyStat = PolicyStat_Exception;
+            StorePolicyStat();
             return;
         }
 
