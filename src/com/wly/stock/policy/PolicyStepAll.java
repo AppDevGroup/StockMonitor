@@ -53,6 +53,12 @@ public class PolicyStepAll extends PolicyBase
             return;
         }
 
+        if(!stockMarketInfo.code.equals(code))
+        {
+            Utils.Log(String.format("code mismatch! policyCode=%s stockMarketInfo code=%s", code, stockMarketInfo.code));
+            return;
+        }
+
         if(stockMarketInfo.priceNew < 0.1f)
         {
             Utils.Log("error price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
@@ -62,12 +68,6 @@ public class PolicyStepAll extends PolicyBase
         if(stockMarketInfo.buyInfo.get(0).price == stockMarketInfo.sellInfo.get(0).price)
         {
             Utils.Log("time of bidding! ");
-            return;
-        }
-
-        if(!stockMarketInfo.code.equals(code))
-        {
-            Utils.Log(String.format("code mismatch! policyCode=%s stockMarketInfo code=%s", code, stockMarketInfo.code));
             return;
         }
 

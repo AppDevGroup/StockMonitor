@@ -85,7 +85,7 @@ public class StockMarketInfoManager extends TimerTask
             newMarketInfo = infoList.get(i);
             for(j=0; j<stockMarketInfos.size(); ++j)
             {
-                if(stockMarketInfos.get(j).code == newMarketInfo.code)
+                if(stockMarketInfos.get(j).code.equals(newMarketInfo.code))
                 {
                     bIsNew =false;
                     stockMarketInfos.get(j).CopyFrom(newMarketInfo);
