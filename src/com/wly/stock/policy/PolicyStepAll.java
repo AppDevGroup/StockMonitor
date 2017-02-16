@@ -73,9 +73,14 @@ public class PolicyStepAll extends PolicyBase
             return;
         }
 
-        if(stockMarketInfo.buyInfo.get(0).price == stockMarketInfo.sellInfo.get(0).price)
+        if(stockMarketInfo.GetMarketInfoStat() == StockMarketInfo.MarketInfoStat_Bidding)
         {
             Utils.Log("time of bidding! ");
+            return;
+        }
+       else if(stockMarketInfo.GetMarketInfoStat() == StockMarketInfo.MarketInfoStat_None)
+        {
+            Utils.Log("unkonw marketinfo none stat!");
             return;
         }
 

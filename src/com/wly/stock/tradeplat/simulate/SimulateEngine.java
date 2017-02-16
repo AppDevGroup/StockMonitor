@@ -3,6 +3,8 @@ package com.wly.stock.tradeplat.simulate;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
+import com.wly.stock.StockMarketInfo;
+import com.wly.stock.StockMarketInfoManager;
 import com.wly.stock.common.OrderInfo;
 import com.wly.stock.policy.PolicyStepAll;
 
@@ -67,36 +69,12 @@ public class SimulateEngine extends TimerTask
     private void Simulator(OrderInfo orderInfo)
     {
         boolean needUpdate = false;
-        int val;
-        switch (orderInfo.GetStat())
+        StockMarketInfo stockMarketInfo = StockMarketInfoManager.GetInstance().GetStockMarketInfoByCode(orderInfo.code);
+        if(stockMarketInfo != null && stockMarketInfo.TestDeal(orderInfo.tradeFlag, orderInfo.orderPrice, orderInfo.count))
         {
-            case OrderInfo.OderStat_Order:
-                val = GetRamdomDeal();
-                if(val == 0)
-                {
-                    needUpdate =true;
-                    orderInfo.dealPrice = orderInfo.orderPrice;
-                    orderInfo.SetStat(OrderInfo.OderStat_Deal);
-                }
-                else if(val == 1)
-                {
-                    needUpdate =true;
-                    orderInfo.SetStat(OrderInfo.OderStat_Half);
-                }
-                break;
-            case OrderInfo.OderStat_Half:
-                val = GetRamdomDeal();
-                if(val == 0)
-                {
-                    needUpdate =true;
-                    orderInfo.dealPrice = orderInfo.orderPrice;
-                    orderInfo.SetStat(OrderInfo.OderStat_Deal);
-                }
-                break;
-            case OrderInfo.OderStat_WaitForCancel:
-                needUpdate =true;
-                orderInfo.SetStat(OrderInfo.OderStat_Cancel);
-                break;
+            needUpdate =true;
+            orderInfo.dealPrice = orderInfo.orderPrice;
+            orderInfo.SetStat(OrderInfo.OderStat_Deal);
         }
 
         if(needUpdate)
@@ -111,25 +89,5 @@ public class SimulateEngine extends TimerTask
                 Utils.LogException(ex);
             }
         }
-    }
-
-    //0-成交 1-部分成交 2-未成交
-    private int GetRamdomDeal()
-    {
-        int ret = 0;
-        int val = new Random().nextInt(10000);
-        if(val< 3000)
-        {
-            ret = 0;
-        }
-        else if(val < 7000)
-        {
-            ret = 1;
-        }
-        else
-        {
-            ret = 2;
-        }
-        return  ret;
     }
 }

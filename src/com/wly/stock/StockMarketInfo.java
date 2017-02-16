@@ -7,6 +7,14 @@ import java.util.ArrayList;
  */
 public class StockMarketInfo
 {
+    public static final int MarketInfoStat_None = 0;
+    public static final int MarketInfoStat_Normal = 1;
+    public static final int MarketInfoStat_Bidding = 2;
+    public static final int MarketInfoStat_Max = 3;
+    public static final int MarketInfoStat_Min = 4;
+
+    private int marketInfoStat = MarketInfoStat_None;
+
     static public  class TradeInfo
     {
         public float price;
@@ -50,6 +58,7 @@ public class StockMarketInfo
         this.priceSell = src.priceSell;
         this.tradeCount = src.tradeCount;
         this.tradeMoney = src.tradeMoney;
+        this.marketInfoStat = src.GetMarketInfoStat();
         this.buyInfo.clear();
         this.buyInfo.addAll(src.buyInfo);
         this.sellInfo.clear();
@@ -91,6 +100,35 @@ public class StockMarketInfo
         }
 
         return  ret;
+    }
+
+    public void CacuStat()
+    {
+        float buyPrice = buyInfo.get(0).price;
+        float sellPrice = sellInfo.get(0).price;
+        if(buyPrice< 0.01f && sellPrice < 0.01f)
+        {
+            marketInfoStat = MarketInfoStat_None;
+        }
+        else if(buyPrice < 0.01f)
+        {
+            System.out.println(String.format("%s is min price %.2f !", code, sellPrice));
+            marketInfoStat = MarketInfoStat_Min;
+        }
+        else if(sellPrice < 0.01f)
+        {
+            System.out.println(String.format("%s is max price %.2f !", code, buyPrice));
+            marketInfoStat = MarketInfoStat_Max;
+        }
+        else
+        {
+            marketInfoStat = MarketInfoStat_Normal;
+        }
+    }
+
+    public int GetMarketInfoStat()
+    {
+        return marketInfoStat;
     }
 
     public String toDesc()

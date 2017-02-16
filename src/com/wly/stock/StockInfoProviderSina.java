@@ -153,6 +153,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
             info.sellInfo.add(tradeInfo);
         }
         //System.out.println(info.toString());
+        info.CacuStat();
         return  info;
     }
 }

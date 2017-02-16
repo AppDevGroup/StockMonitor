@@ -33,14 +33,14 @@ public class AddUserInfo
             PolicyStepAll policy;
             policy = new PolicyStepAll(null);
             policy.userId = 2;
-            policy.code = "603639";
-            policy.priceInit = 48f;
-            policy.initCount = 600;
-            policy.stepUnit = 200;
-            policy.priceUnit = 2f;
-            policy.minPrice = 40f;
-            policy.maxPrice =  60f;
-            policy.buyOffset = -0.09f;
+            policy.code = "603116";
+            policy.priceInit = 19.5f;
+            policy.initCount = 2000;
+            policy.stepUnit = 300;
+            policy.priceUnit = 0.5f;
+            policy.minPrice = 18f;
+            policy.maxPrice =  26f;
+            policy.buyOffset = -0.04f;
             policy.sellOffset = -0.01f;
             policy.policyStat = PolicyStepAll.PolicyStat_Init;
             policy.buyOrderId = "0";
@@ -65,7 +65,7 @@ public class AddUserInfo
     {
         UserInfo userInfo = new UserInfo();
         userInfo.platId = 0;
-        userInfo.platAcct = "122323";
+        userInfo.platAcct = "121323";
         userInfo.platPsw = "121323";
 
         final String SqlFormat = "insert into userinfo(plat_id, plat_acct, plat_psw) " +

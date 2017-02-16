@@ -39,12 +39,7 @@ public class PolicyMain
         SimulateEngine simulateEngine = new SimulateEngine();
         simulateEngine.Start();
 
-        ArrayList<Integer> platList = new ArrayList<>();
-        if(args.length > 0 && args[0].equals("0"))
-        {
-            platList.add(0);
-        }
         UserInfoManager userInfoManager = UserInfoManager.GetInstance();
-        userInfoManager.Init(platList);
+        userInfoManager.Init(null);
     }
 }
