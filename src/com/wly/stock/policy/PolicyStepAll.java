@@ -114,8 +114,8 @@ public class PolicyStepAll extends PolicyBase
         float priceBuy = priceLast-priceUnit+buyOffset;
         float priceSell = priceLast+priceUnit+sellOffset;
 
-        System.out.println(String.format("PrcessPrice step code:%s  priceLast:%.2f priceBuy:%.2f priceSell:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
-                code, priceLast, priceBuy, priceSell, stockMarketInfo.priceNew, change, changeRatio*100 ));
+        System.out.println(String.format("PrcessPrice step pilicy:%d code:%s  priceLast:%.2f priceBuy:%.2f priceSell:%.2f priceNew:%.2f change:%+.2f changeRatio:%+.2f",
+                id, code, priceLast, priceBuy, priceSell, stockMarketInfo.priceNew, change, changeRatio*100 ));
 
         float offset;
         int unitCount, i, maxUnitCount;
@@ -134,6 +134,7 @@ public class PolicyStepAll extends PolicyBase
         }
 
         int stockCount = userInfo.tradeInterface.GetStockAssetCount(code);
+
         buyTradeInfo = stockMarketInfo.buyInfo.get(0);
         if(stockMarketInfo.TestDeal(StockConst.TradeSell, maxPrice, stockCount))
         {
@@ -143,41 +144,47 @@ public class PolicyStepAll extends PolicyBase
         }
 
 //        if(sellOrderId == null || sellOrderId.equals("0"))
-        if (!HasSellOrder())
+        if(stockCount > 0)
         {
-            unitCount = 0;
-            if (buyTradeInfo.price >= priceSell)
+            if (!HasSellOrder())
             {
-                //doSell
-                offset = buyTradeInfo.price - priceLast;
-                unitCount = (int) ((offset - sellOffset) / priceUnit);
-            }
-            unitCount = unitCount < 1 ? 1 : unitCount;
 
-            tradeCount = stepUnit * unitCount;
-            tradeCount = tradeCount >= stockCount ? stockCount : tradeCount;
-            tradePrice = priceLast + unitCount * priceUnit + sellOffset;
+                unitCount = 0;
+                if (buyTradeInfo.price >= priceSell)
+                {
+                    //doSell
+                    offset = buyTradeInfo.price - priceLast;
+                    unitCount = (int) ((offset - sellOffset) / priceUnit);
+                }
+                unitCount = unitCount < 1 ? 1 : unitCount;
 
-            if (unitCount == 1 || stockMarketInfo.TestDeal(StockConst.TradeSell, tradePrice, tradeCount))
-            {
-                orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
-                sellLastPrice = priceLast + priceUnit * unitCount;
-                sellOrderId = orderInfo.platOrderId;
-                StoreSellOrder(sellOrderId);
-            }
-            else if (unitCount > 1)
-            {
-                unitCount = unitCount - 1;
+                tradeCount = stepUnit * unitCount;
+                tradeCount = tradeCount >= stockCount ? stockCount : tradeCount;
                 tradePrice = priceLast + unitCount * priceUnit + sellOffset;
-                orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
-                sellLastPrice = priceLast + priceUnit * unitCount;
-                sellOrderId = orderInfo.platOrderId;
-                StoreSellOrder(sellOrderId);
+
+                if (unitCount == 1 || stockMarketInfo.TestDeal(StockConst.TradeSell, tradePrice, tradeCount))
+                {
+                    orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
+                    sellLastPrice = priceLast + priceUnit * unitCount;
+                    sellOrderId = orderInfo.platOrderId;
+                    StoreSellOrder(sellOrderId);
+                } else if (unitCount > 1)
+                {
+                    unitCount = unitCount - 1;
+                    tradePrice = priceLast + unitCount * priceUnit + sellOffset;
+                    orderInfo = userInfo.DoTrade(code, StockConst.TradeSell, tradePrice, tradeCount);
+                    sellLastPrice = priceLast + priceUnit * unitCount;
+                    sellOrderId = orderInfo.platOrderId;
+                    StoreSellOrder(sellOrderId);
+                }
+            } else
+            {
+                CheckSellOrder();
             }
         }
         else
         {
-            CheckSellOrder();
+            System.out.println(String.format("policy:%d code=%s no stock can be sell", id, code));
         }
 
 //        if(buyOrderId == null || buyOrderId.equals("0"))
@@ -222,8 +229,8 @@ public class PolicyStepAll extends PolicyBase
             return;
         }
 
-        System.out.println(String.format("PrcessPrice init code:%s  priceBuy:%.2f priceSellNow:%.2f",
-                code, priceInit, stockMarketInfo.sellInfo.get(0).price));
+        System.out.println(String.format("PrcessPrice init policy:%d code:%s  priceBuy:%.2f priceSellNow:%.2f",
+                id, code, priceInit, stockMarketInfo.sellInfo.get(0).price));
 
         if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceInit+1.5f, initCount))
         {
@@ -237,6 +244,7 @@ public class PolicyStepAll extends PolicyBase
     {
         int stat = userInfo.tradeInterface.GetOrderStatus(buyOrderId);
         System.out.println( String.format("CheckBuyOrder policy:%d code=%s stat:%s ", id, code, OrderInfo.GetSOrderInfoStatDesc(stat)));
+
         if(stat == OrderInfo.OderStat_Deal)
         {
             if(policyStat == PolicyStat_Init)

@@ -67,6 +67,11 @@ public class StockMarketInfo
 
     public boolean TestDeal(int tradeFlag, float price, int count)
     {
+        if(count == 0)
+        {
+            return false;
+        }
+
         int i;
         TradeInfo tradeInfo;
         boolean ret = false;
