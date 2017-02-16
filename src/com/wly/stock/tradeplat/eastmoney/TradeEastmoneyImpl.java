@@ -162,7 +162,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
     {
         try
         {
-            if(!orderInfo.platOrderId.equals(null))
+            if(orderInfo.platOrderId!=null && !orderInfo.platOrderId.equals("0"))
             {
                 return;
             }
@@ -257,7 +257,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             // {"Wtsj":"111724","Zqdm":"601288","Zqmc":"农业银行","Mmsm":"证券买入","Mmlb":"B","Wtsl":"100","Wtzt":"已报","Wtjg":"3.000","Cjsl":"0","Cjje":".00","Cjjg":"0.000000","Market":"HA","Wtbh":"147719","Gddm":"A296011296","Dwc":"20170213|147719","Qqhs":null,"Wtrq":"20170213","Wtph":"147719","Khdm":"720600166011","Khxm":"张三","Zjzh":"720600166011","Jgbm":"5406","Bpsj":"111724","Cpbm":"","Cpmc":"","Djje":"305.01","Cdsl":"0","Jyxw":"33392","Cdbs":"F","Czrq":"20170213","Wtqd":"9","Bzxx":"","Sbhtxh":"1430024755","Mmlb_ex":"B","Mmlb_bs":"B"}
             // ]}
             String retStr = Utils.GetResponseContent(response);
-            System.out.println(retStr);
+           // System.out.println(retStr);
 
             JsonObject jsonObject = new JsonParser().parse(retStr).getAsJsonObject();
             int stat = jsonObject.get("Status").getAsInt();
@@ -272,16 +272,18 @@ public class TradeEastmoneyImpl implements ITradeInterface
             JsonObject newOrderInfo;
             OrderInfo orderInfo;
             int orderStat;
+            String strTmp;
             for(i=0; i<jsonDataArray.size(); ++i)
             {
                 newOrderInfo = jsonDataArray.get(i).getAsJsonObject();
 
-                if(!newOrderInfo.get("Wtzt").getAsString().equals(platOrderId))
+                strTmp = newOrderInfo.get("Wtbh").getAsString();
+                if(!newOrderInfo.get("Wtbh").getAsString().equals(platOrderId))
                 {
                     continue;
                 }
 
-                orderStatus = GetStatByPlatStat(newOrderInfo.get("Wtbh").getAsString());
+                orderStatus = GetStatByPlatStat(newOrderInfo.get("Wtzt").getAsString());
             }
         }
         catch (Exception ex)

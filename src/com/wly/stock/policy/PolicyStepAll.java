@@ -225,7 +225,7 @@ public class PolicyStepAll extends PolicyBase
         System.out.println(String.format("PrcessPrice init code:%s  priceBuy:%.2f priceSellNow:%.2f",
                 code, priceInit, stockMarketInfo.sellInfo.get(0).price));
 
-        if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceInit, initCount))
+        if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceInit+1.5f, initCount))
         {
             OrderInfo orderInfo = userInfo.DoTrade(code, StockConst.TradeBuy, priceInit, initCount);
             buyOrderId = orderInfo.platOrderId;
@@ -235,7 +235,9 @@ public class PolicyStepAll extends PolicyBase
 
     private void CheckBuyOrder()
     {
-        if(userInfo.tradeInterface.GetOrderStatus(buyOrderId) == OrderInfo.OderStat_Deal)
+        int stat = userInfo.tradeInterface.GetOrderStatus(buyOrderId);
+        System.out.println( String.format("CheckBuyOrder policy:%d code=%s stat:%s ", id, code, OrderInfo.GetSOrderInfoStatDesc(stat)));
+        if(stat == OrderInfo.OderStat_Deal)
         {
             if(policyStat == PolicyStat_Init)
             {
@@ -263,7 +265,9 @@ public class PolicyStepAll extends PolicyBase
 
     private void CheckSellOrder()
     {
-        if(userInfo.tradeInterface.GetOrderStatus(sellOrderId) == OrderInfo.OderStat_Deal)
+        int stat = userInfo.tradeInterface.GetOrderStatus(sellOrderId);
+        System.out.println( String.format("CheckSellOrder policy:%d code=%s stat:%s ", id, code, OrderInfo.GetSOrderInfoStatDesc(stat)));
+        if(stat == OrderInfo.OderStat_Deal)
         {
             if(policyStat == PolicyStat_Finish)
             {
@@ -290,7 +294,7 @@ public class PolicyStepAll extends PolicyBase
     private void StoreBuyOrderId(String buyId)
     {
         try {
-            final String UpdateFormat = "update policy_step SET sellorder_id = '%s', sellorder_date='%s' WHERE id = %d";
+            final String UpdateFormat = "update policy_step SET buyorder_id = '%s', buyorder_date='%s' WHERE id = %d";
             DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, buyId, Utils.GetDate(), id));
         }
         catch (Exception ex)
@@ -302,7 +306,7 @@ public class PolicyStepAll extends PolicyBase
     private void StoreSellOrder(String sellId)
     {
         try {
-            final String UpdateFormat = "update policy_step SET buyorder_id = %s, buyorder_date='%s' WHERE id = %d";
+            final String UpdateFormat = "update policy_step SET sellorder_id = %s, sellorder_date='%s' WHERE id = %d";
             DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, sellId, Utils.GetDate(),id));
         }
         catch (Exception ex)

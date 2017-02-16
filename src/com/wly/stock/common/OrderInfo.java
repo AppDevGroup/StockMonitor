@@ -13,6 +13,33 @@ public class OrderInfo
     static public final int OderStat_Cancel = 5; //已撤销
     static public final int OderStat_WaitForCancel = 6; //已报待撤销
 
+    public static String GetSOrderInfoStatDesc(int stat)
+    {
+        String statDesc = "None";
+        switch (stat)
+        {
+            case OderStat_Ready:
+                statDesc = "ready";
+                break;
+            case OderStat_Order:
+                statDesc = "order";
+                break;
+            case OderStat_Deal:
+                statDesc = "done";
+                break;
+            case OderStat_Half:
+                statDesc = "half";
+                break;
+            case OderStat_Cancel:
+                statDesc = "cancel";
+                break;
+            case OderStat_WaitForCancel:
+                statDesc = "waitForCancel";
+                break;
+        }
+        return statDesc;
+    }
+
     public int id;
     public String code;
     public String name;
