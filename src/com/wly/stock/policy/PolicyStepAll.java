@@ -232,7 +232,7 @@ public class PolicyStepAll extends PolicyBase
         System.out.println(String.format("PrcessPrice init policy:%d code:%s  priceBuy:%.2f priceSellNow:%.2f",
                 id, code, priceInit, stockMarketInfo.sellInfo.get(0).price));
 
-        if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceInit+1.5f, initCount))
+        if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceInit, initCount))
         {
             OrderInfo orderInfo = userInfo.DoTrade(code, StockConst.TradeBuy, priceInit, initCount);
             buyOrderId = orderInfo.platOrderId;
@@ -351,11 +351,11 @@ public class PolicyStepAll extends PolicyBase
 
     private boolean HasBuyOrder()
     {
-        return buyOrderId != null && !buyOrderId.equals("0");
+        return buyOrderId != null && !buyOrderId.equals("0") && !buyOrderId.equals("null");
     }
 
     private boolean HasSellOrder()
     {
-        return sellOrderId != null && !sellOrderId.equals("0");
+        return sellOrderId != null && !sellOrderId.equals("0") && !sellOrderId.equals("null");
     }
 }
