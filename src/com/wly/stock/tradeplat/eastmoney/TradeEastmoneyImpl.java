@@ -189,6 +189,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
             int stat = jsonObject.get("Status").getAsInt();
             if(stat != 0)
             {
+                orderInfo.SetStat(OrderInfo.OderStat_None);
                 System.out.println("DoOrder failed! "+jsonObject.get("Message").getAsString());
                 return;
             }
