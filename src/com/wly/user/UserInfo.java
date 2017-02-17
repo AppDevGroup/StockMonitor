@@ -93,9 +93,15 @@ public class UserInfo
                     policy.sellOrderId = "0";
                 }
 
+                if(!policy.buyOrderId.equals("0") && !rs.getString("buyorder_date").equals(Utils.GetDate()))
+                {
+                    policy.sellOrderId = "0";
+                }
+
                 if(policy.policyStat == PolicyStepAll.PolicyStat_None)
                 {
                     System.out.println("policy is stop "+id);
+                    continue;
                 }
 
                 policySteps.add(policy);
