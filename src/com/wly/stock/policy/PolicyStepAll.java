@@ -63,24 +63,24 @@ public class PolicyStepAll extends PolicyBase
 
         if(!stockMarketInfo.code.equals(code))
         {
-            Utils.Log(String.format("code mismatch! policyCode=%s stockMarketInfo code=%s", code, stockMarketInfo.code));
+            System.out.println(String.format("code mismatch! policyCode=%s stockMarketInfo code=%s", code, stockMarketInfo.code));
             return;
         }
 
         if(stockMarketInfo.priceNew < 0.1f)
         {
-            Utils.Log("error price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
+            System.out.println("error price for :"+ stockMarketInfo.code+" price: "+ stockMarketInfo.priceNew);
             return;
         }
 
         if(stockMarketInfo.GetMarketInfoStat() == StockMarketInfo.MarketInfoStat_Bidding)
         {
-            Utils.Log("time of bidding! ");
+            System.out.println("time of bidding! ");
             return;
         }
        else if(stockMarketInfo.GetMarketInfoStat() == StockMarketInfo.MarketInfoStat_None)
         {
-            Utils.Log("unkonw marketinfo none stat!");
+            System.out.println("unkonw marketinfo none stat!");
             return;
         }
 

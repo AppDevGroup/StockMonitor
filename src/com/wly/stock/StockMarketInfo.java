@@ -111,9 +111,10 @@ public class StockMarketInfo
     {
         float buyPrice = buyInfo.get(0).price;
         float sellPrice = sellInfo.get(0).price;
-        if(buyPrice< 0.01f && sellPrice < 0.01f)
+        if((buyPrice< 0.01f && sellPrice < 0.01f)
+        ||(buyPrice == sellPrice))
         {
-            marketInfoStat = MarketInfoStat_None;
+            marketInfoStat = MarketInfoStat_Bidding;
         }
         else if(buyPrice < 0.01f)
         {

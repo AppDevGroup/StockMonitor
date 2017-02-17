@@ -18,6 +18,9 @@ import java.util.Map;
  */
 public class UserInfoManager
 {
+    public static final int UserStat_Normal = 0;
+    public static final int UserStat_Stop = 0;
+
     static private UserInfoManager s_instance;
     static public UserInfoManager GetInstance()
     {
@@ -43,14 +46,10 @@ public class UserInfoManager
     public boolean GetUserInfo()
     {
         try {
-            String queryStr = "";
-            if(platList == null || platList.size()==0)
+            String queryStr = String.format("select * from userinfo where stat = %d ", UserStat_Normal);
+            if(platList != null && platList.size() > 0)
             {
-                queryStr = "select * from userinfo";
-            }
-            else
-            {
-                queryStr = "select * from userinfo where plat_id in(";
+                queryStr += " and plat_id in(";
                 int i;
                 for(i=0; i<platList.size(); ++i)
                 {

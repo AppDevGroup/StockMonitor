@@ -68,8 +68,8 @@ public class AddUserInfo
         userInfo.platAcct = "121323";
         userInfo.platPsw = "121323";
 
-        final String SqlFormat = "insert into userinfo(plat_id, plat_acct, plat_psw) " +
-                "values(%d, '%s', '%s')";
-        DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(SqlFormat, userInfo.platId, userInfo.platAcct, userInfo.platPsw));
+        final String SqlFormat = "insert into userinfo(plat_id, stat, plat_acct, plat_psw) " +
+                "values(%d, %d,'%s', '%s')";
+        DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(SqlFormat, userInfo.platId, 0, userInfo.platAcct, userInfo.platPsw));
     }
 }
