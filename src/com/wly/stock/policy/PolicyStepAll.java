@@ -315,7 +315,7 @@ public class PolicyStepAll extends PolicyBase
     private void StoreSellOrder(String sellId)
     {
         try {
-            final String UpdateFormat = "update policy_step SET sellorder_id = %s, sellorder_date='%s' WHERE id = %d";
+            final String UpdateFormat = "update policy_step SET sellorder_id = '%s', sellorder_date='%s' WHERE id = %d";
             DBPool.GetInstance().ExecuteNoQuerySqlAsync (String.format(UpdateFormat, sellId, Utils.GetDate(),id));
         }
         catch (Exception ex)
