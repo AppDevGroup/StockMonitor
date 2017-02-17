@@ -75,12 +75,12 @@ public class PolicyStepAll extends PolicyBase
 
         if(stockMarketInfo.GetMarketInfoStat() == StockMarketInfo.MarketInfoStat_Bidding)
         {
-            System.out.println("time of bidding! ");
+            System.out.println("time of bidding! "+stockMarketInfo.toDesc());
             return;
         }
        else if(stockMarketInfo.GetMarketInfoStat() == StockMarketInfo.MarketInfoStat_None)
         {
-            System.out.println("unkonw marketinfo none stat!");
+            System.out.println("unkonw marketinfo none stat!"+stockMarketInfo.toDesc());
             return;
         }
 
