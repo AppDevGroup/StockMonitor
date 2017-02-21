@@ -6,13 +6,10 @@ import com.wly.database.DBQuery;
 import com.wly.stock.StockMarketInfo;
 import com.wly.stock.StockMarketInfoManager;
 import com.wly.stock.common.OrderInfo;
-import com.wly.stock.policy.PolicyStepAll;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017/2/14.
@@ -34,11 +31,16 @@ public class SimulateEngine extends TimerTask
         {
             ArrayList<OrderInfo> orderInfos = new ArrayList<>();
             OrderInfo orderInfo;
+            String dateTime;
             DBPool dbPool = DBPool.GetInstance();
-            DBQuery dbQuery = dbPool.ExecuteQuerySync(String.format("select * from trade_book where plat_id= 0"));
+            DBQuery dbQuery = dbPool.ExecuteQuerySync(String.format("select * from trade_book where plat_id= 0 and stat in (%d, %d) " +
+                            "and UNIX_TIMESTAMP(time)>UNIX_TIMESTAMP('%s')",
+                    OrderInfo.OderStat_Order, OrderInfo.OderStat_Half,
+                    Utils.GetDate()));
             ResultSet rs = dbQuery.resultSet;
             while (rs.next())
             {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 orderInfo = new OrderInfo();
                 orderInfo.id = rs.getInt("id");
                 orderInfo.platId = rs.getInt("plat_id");

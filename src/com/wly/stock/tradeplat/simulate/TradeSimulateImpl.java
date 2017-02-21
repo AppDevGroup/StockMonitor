@@ -65,6 +65,8 @@ public class TradeSimulateImpl implements ITradeInterface
     @Override
     public void RevokeOrder(OrderInfo orderInfo)
     {
+        final String UpdateFormat = "update trade_book SET stat = %d WHERE id = %d";
+        DBPool.GetInstance().ExecuteNoQuerySqlSync(String.format(UpdateFormat, OrderInfo.OderStat_Cancel, orderInfo.id));
         orderInfo.SetStat(OrderInfo.OderStat_Cancel);
     }
 
