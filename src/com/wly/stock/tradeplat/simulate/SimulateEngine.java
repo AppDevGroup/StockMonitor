@@ -40,7 +40,6 @@ public class SimulateEngine extends TimerTask
             ResultSet rs = dbQuery.resultSet;
             while (rs.next())
             {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 orderInfo = new OrderInfo();
                 orderInfo.id = rs.getInt("id");
                 orderInfo.platId = rs.getInt("plat_id");
