@@ -33,12 +33,12 @@ public class AddUserInfo
             PolicyStepAll policy;
             policy = new PolicyStepAll(null);
             policy.userId = 2;
-            policy.code = "603726";
-            policy.priceInit = 40f;
-            policy.initCount = 1000;
-            policy.stepUnit = 100;
-            policy.priceUnit = 1.5f;
-            policy.minPrice = 36f;
+            policy.code = "603037";
+            policy.priceInit = 49.9f;
+            policy.initCount = 400;
+            policy.stepUnit = 200;
+            policy.priceUnit = 2f;
+            policy.minPrice = 42f;
             policy.maxPrice =  60f;
             policy.buyOffset = -0.09f;
             policy.sellOffset = -0.01f;

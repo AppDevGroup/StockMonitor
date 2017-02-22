@@ -40,7 +40,7 @@ class QueryStockDetailInfo extends TimerTask
     public void run() {
 
         try {
-            Utils.Log(provider.GetStockInfoByCode(code).toString());
+            System.out.println(provider.GetStockInfoByCode(code).toString());
         }
         catch (Exception ex)
         {
