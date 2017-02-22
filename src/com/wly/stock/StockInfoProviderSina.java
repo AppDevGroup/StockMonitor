@@ -1,5 +1,6 @@
 package com.wly.stock;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.stock.common.eStockPlate;
 
@@ -45,7 +46,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
     {
         if(codeList == null || codeList.size()==0)
         {
-            System.out.println("not code for query!");
+            LogUtils.GetLogger(LogUtils.LOG_CONSOLE).warn("not code for query!");
             return null;
         }
 
@@ -71,7 +72,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
 
             if(prefix == null)
             {
-                Utils.Log("ignore unknow stock "+code);
+                LogUtils.Log("ignore unknow stock "+code);
                 continue;
             }
 
@@ -95,7 +96,6 @@ public class StockInfoProviderSina implements IStockInfoProvider
         while((strTmp = bufferedReader.readLine()) != null)
         {
             infoList.add(GetStockInfoByString(strTmp));
-            GetStockInfoByString(strTmp);
         }
         return infoList;
     }
@@ -110,7 +110,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
         strListTmp = str.split("=");
         if(strListTmp[1].length() <= 3)
         {
-            Utils.Log("error info: "+str);
+            LogUtils.GetLogger(LogUtils.LOG_CONSOLE).error("error info: "+str);
             return null;
         }
 

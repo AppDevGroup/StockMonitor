@@ -1,5 +1,7 @@
 package com.wly.stock;
 
+import com.wly.common.LogUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -118,12 +120,12 @@ public class StockMarketInfo
         }
         else if(buyPrice < 0.01f)
         {
-            System.out.println(String.format("%s is min price %.2f !", code, sellPrice));
+            LogUtils.LogRealtime(String.format("%s is min price %.2f !", code, sellPrice));
             marketInfoStat = MarketInfoStat_Min;
         }
         else if(sellPrice < 0.01f)
         {
-            System.out.println(String.format("%s is max price %.2f !", code, buyPrice));
+            LogUtils.LogRealtime(String.format("%s is max price %.2f !", code, buyPrice));
             marketInfoStat = MarketInfoStat_Max;
         }
         else

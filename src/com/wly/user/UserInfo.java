@@ -1,5 +1,6 @@
 package com.wly.user;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
@@ -100,7 +101,7 @@ public class UserInfo
 
                 if(policy.policyStat == PolicyStepAll.PolicyStat_None)
                 {
-                    System.out.println("policy is stop "+id);
+                    LogUtils.LogRealtime("policy is stop "+id);
                     continue;
                 }
 
@@ -114,7 +115,7 @@ public class UserInfo
         }
         catch (Exception ex)
         {
-            Utils.LogException(ex);
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
             return  false;
         }
     }
@@ -131,7 +132,7 @@ public class UserInfo
         }
         catch (Exception ex)
         {
-            Utils.LogException(ex);
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
         }
     }
     public void RevokeOrder(OrderInfo orderInfo)
@@ -142,7 +143,7 @@ public class UserInfo
         }
         else
         {
-            System.out.println("try to revoke null order!");
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).warn("try to revoke null order!");
         }
     }
 
@@ -201,7 +202,7 @@ public class UserInfo
         }
         catch (Exception ex)
         {
-            Utils.LogException(ex);
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
         }
     }
 
@@ -214,7 +215,7 @@ public class UserInfo
         }
         catch (Exception ex)
         {
-            Utils.LogException(ex);
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
         }
     }
 }

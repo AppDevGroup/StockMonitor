@@ -1,5 +1,6 @@
 package com.wly.stock;
 
+import com.wly.common.LogUtils;
 import com.wly.stock.common.StockPriceMonitor;
 
 import java.util.*;
@@ -44,24 +45,11 @@ public class StockMarketInfoManager extends TimerTask
         timer.schedule(this, 0, 1000);
     }
 
-//    public void AddMonitor(StockPriceMonitor stockPriceMonitor)
-//    {
-//        stockPriceMonitors.add(stockPriceMonitor);
-//        if(!queryCodeList.contains(stockPriceMonitor.code))
-//        {
-//            queryCodeList.add(stockPriceMonitor.code);
-//        }
-//        else
-//        {
-//            System.out.println(stockPriceMonitor.code+" already in query list");
-//        }
-//    }
-
     public void AddMonitorCode(String code)
     {
         if(queryCodeList.contains(code))
         {
-            System.out.println(code+" already in query list");
+            LogUtils.Log(code+" already in query list");
             return;
         }
 
@@ -129,7 +117,7 @@ public class StockMarketInfoManager extends TimerTask
         }
         catch (Exception ex)
         {
-            System.out.println(ex.getMessage());
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
             ex.printStackTrace();
         }
     }

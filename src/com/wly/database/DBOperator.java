@@ -1,6 +1,7 @@
 package com.wly.database;
 
 import com.mchange.v2.c3p0.DataSources;
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 
 import javax.sql.DataSource;
@@ -30,7 +31,7 @@ public class DBOperator
         }
         catch (Exception ex)
         {
-            Utils.Log(ex.getMessage());
+            LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
             ex.printStackTrace();
             return false;
         }
@@ -47,7 +48,7 @@ public class DBOperator
 
     public DBQuery Query(DBQuery dbQuery)
     {
-        Utils.Log("=====DBOperator Query: "+ dbQuery.queryStr+"=====");
+        LogUtils.LogDB(dbQuery.queryStr);
         try
         {
             dbQuery.con = ds.getConnection();
@@ -56,7 +57,7 @@ public class DBOperator
         }
         catch (Exception ex)
         {
-            Utils.Log(ex.getMessage());
+            LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -70,7 +71,7 @@ public class DBOperator
 
     public int Execute(String str, boolean getLastId)
     {
-        Utils.Log("=====DBOperator Execute: " + str + "=====");
+        LogUtils.LogDB(str);
         int ret = 0;
         try
         {
@@ -95,7 +96,7 @@ public class DBOperator
                 else
                 {
                     // throw an exception from here
-                    System.out.println("Get Last id failed! "+str);
+                    Utils.Log("Get Last id failed! "+str);
                 }
             }
 
@@ -105,7 +106,7 @@ public class DBOperator
         }
         catch (Exception ex)
         {
-            Utils.Log(ex.getMessage());
+            LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
             ex.printStackTrace();
         }
 

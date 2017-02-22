@@ -1,5 +1,6 @@
 package com.wly;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.stock.StockInfoProviderSina;
 
@@ -13,12 +14,9 @@ import org.apache.log4j.BasicConfigurator;
  */
 public class QueryStockInfo
 {
-    static private Logger logger = Logger.getLogger("LogTest");
-
     static public void main(String[] args)
     {
-        BasicConfigurator.configure();
-
+        LogUtils.Init("config/log4j.properties");
         Timer timer = new Timer();
         if(args.length == 0)
         {

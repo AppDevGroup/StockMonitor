@@ -1,5 +1,6 @@
 package com.wly.database;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 
 import javax.management.Query;
@@ -88,14 +89,14 @@ public class DBPool implements Runnable
             while ((executeStr = taskQueueExecute.poll()) != null) {
                 ret = dbOper.Execute(executeStr);
                 if (ret == 0) {
-                    Utils.Log("dbOper Execute failed! " + executeStr);
+                    LogUtils.GetLogger(LogUtils.LOG_DB).error("dbOper Execute failed! " + executeStr);
                 }
             }
 
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
-                Utils.LogException(e);
+            } catch (InterruptedException ex) {
+                LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
             }
         }
     }

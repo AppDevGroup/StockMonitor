@@ -1,5 +1,6 @@
 package com.wly.database;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 
 import java.sql.Connection;
@@ -29,7 +30,7 @@ public class DBQuery
             }
             catch (Exception ex)
             {
-                Utils.LogException(ex);
+                LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
             }
         }
 
@@ -42,7 +43,7 @@ public class DBQuery
             }
             catch (Exception ex)
             {
-                Utils.LogException(ex);
+                LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
             }
         }
 
@@ -55,7 +56,7 @@ public class DBQuery
             }
             catch (Exception ex)
             {
-                Utils.LogException(ex);
+                LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.wly.stock;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.stock.common.eStockPlate;
@@ -85,8 +86,8 @@ public class StockUtils
         float transferFee = GetTransferFee(code, amount, num);
         float stampTax = GetStampTax(amount);
         float remain = amount-counterFee-transferFee-stampTax;
-        Utils.Log(String.format("DoTradeBuy %s %.2f %d %.2f %.2f %.2f %.2f\n", code, price, num, amount, counterFee, transferFee, stampTax));
-        Utils.Log("remain: "+remain);
+        LogUtils.Log(String.format("DoTradeBuy %s %.2f %d %.2f %.2f %.2f %.2f\n", code, price, num, amount, counterFee, transferFee, stampTax));
+        LogUtils.Log("remain: "+remain);
         final String InsterFormat = "INSERT INTO trade_book (code, trade_flag, price, number, counter_fee, transfer_fee, stamp_tax, time) " +
                 "                                  VALUES('%s', 1, %.2f, %d, %.2f, %.2f, %.2f, '%s')";
         String sqlstr = String.format(InsterFormat, code, price, num, counterFee, transferFee, stampTax, Utils.GetTimestampNow().toString());
@@ -99,8 +100,8 @@ public class StockUtils
         float amount = price*num;
         float counterFee = GetCountFee(amount, num);    //佣金
         float transferFee = GetTransferFee(code, amount, num);
-        Utils.Log(String.format("DoTradeBuy %s %.2f %d %.2f %.2f %.2f\n", code, price, num, amount, counterFee, transferFee));
-        Utils.Log("cost: "+(amount+counterFee+transferFee));
+        LogUtils.Log(String.format("DoTradeBuy %s %.2f %d %.2f %.2f %.2f\n", code, price, num, amount, counterFee, transferFee));
+        LogUtils.Log("cost: "+(amount+counterFee+transferFee));
 
         final String InsterFormat = "INSERT INTO trade_book (code, trade_flag, price, number, counter_fee, transfer_fee, time) " +
                 "                                  VALUES('%s', 0, %.2f, %d, %.2f, %.2f, '%s')";
