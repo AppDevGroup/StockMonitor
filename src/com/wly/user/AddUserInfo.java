@@ -1,5 +1,6 @@
 package com.wly.user;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.stock.StockConst;
@@ -14,6 +15,7 @@ public class AddUserInfo
     {
         try
         {
+            LogUtils.Init("config/log4j.properties");
             DBPool dbPool = DBPool.GetInstance();
             dbPool.Init("jdbc:mysql://127.0.0.1/stockmonitor?useSSL=true", "root", "123456");
             InsertPolicy();
