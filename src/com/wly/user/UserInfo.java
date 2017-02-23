@@ -87,7 +87,9 @@ public class UserInfo
                 policy.policyStat = rs.getInt("policy_stat");
                 policy.priceLast = rs.getFloat("price_last");
                 policy.buyOrderId = rs.getString("buyorder_id");
+                policy.buyLastPrice = rs.getFloat("buylast_price");
                 policy.sellOrderId = rs.getString("sellOrder_id");
+                policy.sellLastPrice = rs.getFloat("selllast_price");
 
                 if(!policy.sellOrderId.equals("0") && !rs.getString("sellorder_date").equals(Utils.GetDate()))
                 {

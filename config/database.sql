@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50716
 File Encoding         : 65001
 
-Date: 2017-02-22 17:47:55
+Date: 2017-02-23 17:13:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,14 +34,16 @@ CREATE TABLE `policy_step` (
 `min_price`  float NOT NULL ,
 `max_price`  float NOT NULL ,
 `buyorder_id`  char(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ,
+`buylast_price`  float NULL DEFAULT NULL ,
 `buyorder_date`  char(8) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ,
 `sellorder_id`  char(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ,
+`selllast_price`  float NULL DEFAULT NULL ,
 `sellorder_date`  char(8) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ,
 PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=latin1 COLLATE=latin1_swedish_ci
-AUTO_INCREMENT=8
+AUTO_INCREMENT=9
 
 ;
 
@@ -68,7 +70,7 @@ PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=latin1 COLLATE=latin1_swedish_ci
-AUTO_INCREMENT=23
+AUTO_INCREMENT=31
 
 ;
 
@@ -89,3 +91,18 @@ DEFAULT CHARACTER SET=latin1 COLLATE=latin1_swedish_ci
 AUTO_INCREMENT=3
 
 ;
+
+-- ----------------------------
+-- Auto increment value for policy_step
+-- ----------------------------
+ALTER TABLE `policy_step` AUTO_INCREMENT=9;
+
+-- ----------------------------
+-- Auto increment value for trade_book
+-- ----------------------------
+ALTER TABLE `trade_book` AUTO_INCREMENT=31;
+
+-- ----------------------------
+-- Auto increment value for userinfo
+-- ----------------------------
+ALTER TABLE `userinfo` AUTO_INCREMENT=3;
