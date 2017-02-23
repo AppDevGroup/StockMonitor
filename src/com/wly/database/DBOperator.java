@@ -48,7 +48,7 @@ public class DBOperator
 
     public DBQuery Query(DBQuery dbQuery)
     {
-        LogUtils.LogDB(dbQuery.queryStr);
+        //LogUtils.LogDB(dbQuery.queryStr);
         try
         {
             dbQuery.con = ds.getConnection();
