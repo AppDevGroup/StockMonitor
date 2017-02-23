@@ -122,12 +122,12 @@ public class StockMarketInfo
         }
         else if(buyPrice < 0.01f)
         {
-            LogUtils.LogRealtime(String.format("%s is min price %.2f sellCount=%d", code, sellPrice, (minSellInfo.amount+50)/100));
+            LogUtils.LogRealtime(String.format("%s is min price %.2f sellCount=%dh", code, sellPrice, (minSellInfo.amount+50)/100));
             marketInfoStat = MarketInfoStat_Min;
         }
         else if(sellPrice < 0.01f)
         {
-            LogUtils.LogRealtime(String.format("%s is max price %.2f buyCount=%d", code, buyPrice, (maxBuyInfo.amount+50)/100));
+            LogUtils.LogRealtime(String.format("%s is max price %.2f buyCount=%dh", code, buyPrice, (maxBuyInfo.amount+50)/100));
             marketInfoStat = MarketInfoStat_Max;
         }
         else
