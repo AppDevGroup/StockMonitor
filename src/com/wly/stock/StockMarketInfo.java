@@ -111,8 +111,10 @@ public class StockMarketInfo
 
     public void CacuStat()
     {
-        float buyPrice = buyInfo.get(0).price;
-        float sellPrice = sellInfo.get(0).price;
+        TradeInfo maxBuyInfo = buyInfo.get(0);
+        float buyPrice = maxBuyInfo.price;
+        TradeInfo minSellInfo = sellInfo.get(0);
+        float sellPrice = minSellInfo.price;
         if((buyPrice< 0.01f && sellPrice < 0.01f)
         ||(buyPrice == sellPrice))
         {
@@ -120,12 +122,12 @@ public class StockMarketInfo
         }
         else if(buyPrice < 0.01f)
         {
-            LogUtils.LogRealtime(String.format("%s is min price %.2f !", code, sellPrice));
+            LogUtils.LogRealtime(String.format("%s is min price %.2f sellCount=%d", code, sellPrice, (minSellInfo.amount+50)/100));
             marketInfoStat = MarketInfoStat_Min;
         }
         else if(sellPrice < 0.01f)
         {
-            LogUtils.LogRealtime(String.format("%s is max price %.2f !", code, buyPrice));
+            LogUtils.LogRealtime(String.format("%s is max price %.2f buyCount=%d", code, buyPrice, (maxBuyInfo.amount+50)/100));
             marketInfoStat = MarketInfoStat_Max;
         }
         else
