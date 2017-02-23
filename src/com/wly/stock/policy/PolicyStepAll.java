@@ -1,5 +1,6 @@
 package com.wly.stock.policy;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.stock.StockConst;
@@ -130,7 +131,7 @@ public class PolicyStepAll extends PolicyBase
         sellTradeInfo = stockMarketInfo.sellInfo.get(0);
         if(sellTradeInfo.price < minPrice)
         {
-            System.out.println(String.format("policy:%d code=%s stock sell price:%.2f lower than min:%.2f ", id, code, sellTradeInfo.price , minPrice));
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).info(String.format("policy:%d code=%s stock sell price:%.2f lower than min:%.2f ", id, code, sellTradeInfo.price , minPrice));
             return;
         }
 
@@ -144,12 +145,17 @@ public class PolicyStepAll extends PolicyBase
             return;
         }
 
+        if(priceLast <= 0.01f)
+        {
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(String.format("priceLast exception %d %.2f", id, priceLast));
+            return;
+        }
+
 //        if(sellOrderId == null || sellOrderId.equals("0"))
         if(stockCount > 0)
         {
             if (!HasSellOrder())
             {
-
                 unitCount = 0;
                 if (buyTradeInfo.price >= priceSell)
                 {
@@ -185,7 +191,7 @@ public class PolicyStepAll extends PolicyBase
         }
         else
         {
-            System.out.println(String.format("policy:%d code=%s no stock can be sell", id, code));
+            LogUtils.GetLogger(LogUtils.LOG_REALTIME).warn(String.format("policy:%d code=%s no stock can be sell", id, code));
         }
 
 //        if(buyOrderId == null || buyOrderId.equals("0"))
