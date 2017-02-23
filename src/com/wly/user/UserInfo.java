@@ -128,6 +128,7 @@ public class UserInfo
     {
         try {
             orderInfos.add(orderInfo);
+            LogUtils.LogTrade(String.format("DoTrade %d %s %d %.2f %d", id, orderInfo.code, orderInfo.tradeFlag, orderInfo.orderPrice, orderInfo.count));
             tradeInterface.DoOrder(orderInfo);
         }
         catch (Exception ex)

@@ -1,5 +1,6 @@
 package com.wly.stock.tradeplat.simulate;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
@@ -63,7 +64,7 @@ public class SimulateEngine extends TimerTask
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
         }
     }
 
@@ -87,7 +88,7 @@ public class SimulateEngine extends TimerTask
             }
             catch (Exception ex)
             {
-                Utils.LogException(ex);
+                LogUtils.GetLogger(LogUtils.LOG_DB).error(ex.getMessage());
             }
         }
     }
