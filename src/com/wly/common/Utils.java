@@ -83,9 +83,15 @@ public class Utils
 
     static public String GetDate()
     {
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
+        return GetDate("yyyyMMdd");// new Date()为获取当前系统时间
+    }
+
+    static public String GetDate(String format)
+    {
+        SimpleDateFormat df = new SimpleDateFormat(format);//设置日期格式
         return df.format(new Date());// new Date()为获取当前系统时间
     }
+
 
     static public String GetDateTime()
     {

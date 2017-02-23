@@ -35,9 +35,9 @@ public class SimulateEngine extends TimerTask
             String dateTime;
             DBPool dbPool = DBPool.GetInstance();
             DBQuery dbQuery = dbPool.ExecuteQuerySync(String.format("select * from trade_book where plat_id= 0 and stat in (%d, %d) " +
-                            "and UNIX_TIMESTAMP(time)>UNIX_TIMESTAMP('%s')",
+                            "and time >= '%s'",
                     OrderInfo.OderStat_Order, OrderInfo.OderStat_Half,
-                    Utils.GetDate()));
+                    Utils.GetDate("yyyy-MM-dd")));
             ResultSet rs = dbQuery.resultSet;
             while (rs.next())
             {
