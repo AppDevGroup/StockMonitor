@@ -230,7 +230,7 @@ public class PolicyStepAll extends PolicyBase
             return;
         }
 
-        System.out.println(String.format("PrcessPrice init policy:%d code:%s  priceBuy:%.2f priceNow:%.2f",
+        System.out.println(String.format("PrcessPrice init policy:%d code:%s  priceBuy:%.2f priceSellNow:%.2f",
                 id, code, priceInit, stockMarketInfo.sellInfo.get(0).price));
 
         if(stockMarketInfo.TestDeal(StockConst.TradeBuy, priceInit, initCount))
