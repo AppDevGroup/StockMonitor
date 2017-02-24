@@ -94,11 +94,13 @@ public class UserInfo
                 if(!policy.sellOrderId.equals("0") && !rs.getString("sellorder_date").equals(Utils.GetDate()))
                 {
                     policy.sellOrderId = "0";
+                    policy.sellLastPrice = 0f;
                 }
 
                 if(!policy.buyOrderId.equals("0") && !rs.getString("buyorder_date").equals(Utils.GetDate()))
                 {
-                    policy.sellOrderId = "0";
+                    policy.buyOrderId = "0";
+                    policy.buyLastPrice = 0f;
                 }
 
                 if(policy.policyStat == PolicyStepAll.PolicyStat_None)
