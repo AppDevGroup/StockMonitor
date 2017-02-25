@@ -159,4 +159,13 @@ public class StockInfoProviderSina implements IStockInfoProvider
         info.CacuStat();
         return  info;
     }
+
+    /*获取所有股票信息
+    http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData?page=1&num=3000&sort=symbol&asc=1&node=hs_a&symbol=&_s_r_a=init
+    http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData?page=1&num=10&sort=symbol&asc=1&node=hs_a
+    */
+
+    /* 获取股票历史数据
+        http://quotes.money.163.com/service/chddata.html?code=0603040&fields=TCLOSE;HIGH;LOW;TOPEN;LCLOSE;CHG;PCHG;VOTURNOVER;VATURNOVER
+    */
 }
