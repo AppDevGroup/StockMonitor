@@ -1,4 +1,6 @@
-package com.wly.stock;
+package com.wly.stock.infoplat;
+
+import com.wly.stock.common.StockMarketInfo;
 
 import java.util.ArrayList;
 

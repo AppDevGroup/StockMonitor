@@ -1,7 +1,9 @@
 package com.wly.stock;
 
 import com.wly.common.Utils;
+import com.wly.stock.common.StockMarketInfo;
 import com.wly.stock.common.StockPriceMonitor;
+import com.wly.stock.infoplat.sina.StockInfoProviderSina;
 
 import java.util.TimerTask;
 

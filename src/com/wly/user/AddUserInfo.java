@@ -1,9 +1,7 @@
 package com.wly.user;
 
 import com.wly.common.LogUtils;
-import com.wly.common.Utils;
 import com.wly.database.DBPool;
-import com.wly.stock.StockConst;
 import com.wly.stock.policy.PolicyStepAll;
 
 /**
@@ -35,13 +33,13 @@ public class AddUserInfo
             PolicyStepAll policy;
             policy = new PolicyStepAll(null);
             policy.userId = 2;
-            policy.code = "603037";
-            policy.priceInit = 49.9f;
+            policy.code = "603330";
+            policy.priceInit = 61.78f;
             policy.initCount = 400;
             policy.stepUnit = 200;
             policy.priceUnit = 2f;
-            policy.minPrice = 42f;
-            policy.maxPrice =  60f;
+            policy.minPrice = 56f;
+            policy.maxPrice =  76f;
             policy.buyOffset = -0.09f;
             policy.sellOffset = -0.01f;
             policy.policyStat = PolicyStepAll.PolicyStat_Init;

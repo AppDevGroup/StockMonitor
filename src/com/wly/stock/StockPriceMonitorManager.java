@@ -1,5 +1,6 @@
 package com.wly.stock;
 
+import com.wly.stock.common.StockMarketInfo;
 import com.wly.stock.common.StockPriceMonitor;
 
 import java.util.*;

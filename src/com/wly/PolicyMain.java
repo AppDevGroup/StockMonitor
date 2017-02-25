@@ -2,14 +2,10 @@ package com.wly;
 
 import com.wly.common.LogUtils;
 import com.wly.database.DBPool;
-import com.wly.stock.StockInfoProviderSimulator;
-import com.wly.stock.StockInfoProviderSina;
+import com.wly.stock.infoplat.sina.StockInfoProviderSina;
 import com.wly.stock.StockMarketInfoManager;
 import com.wly.stock.StockPriceMonitorManager;
 import com.wly.stock.tradeplat.simulate.SimulateEngine;
-import com.wly.user.UserInfo;
-
-import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/2/13.

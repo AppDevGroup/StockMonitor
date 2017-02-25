@@ -2,12 +2,10 @@ package com.wly;
 
 import com.wly.common.LogUtils;
 import com.wly.common.Utils;
-import com.wly.stock.StockInfoProviderSina;
+import com.wly.stock.infoplat.sina.StockInfoProviderSina;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import org.apache.log4j.Logger;
-import org.apache.log4j.BasicConfigurator;
 
 /**
  * Created by Administrator on 2016/11/30.

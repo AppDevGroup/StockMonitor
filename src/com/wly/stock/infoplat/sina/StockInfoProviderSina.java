@@ -1,8 +1,11 @@
-package com.wly.stock;
+package com.wly.stock.infoplat.sina;
 
 import com.wly.common.LogUtils;
-import com.wly.common.Utils;
+import com.wly.stock.common.StockConst;
+import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockUtils;
 import com.wly.stock.common.eStockPlate;
+import com.wly.stock.infoplat.IStockInfoProvider;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

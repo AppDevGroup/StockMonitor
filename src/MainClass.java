@@ -1,8 +1,8 @@
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
-import com.wly.stock.StockMarketInfo;
-import com.wly.stock.StockInfoProviderSina;
-import com.wly.stock.StockUtils;
+import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.infoplat.sina.StockInfoProviderSina;
+import com.wly.stock.common.StockUtils;
 import com.wly.stock.policy.PolicyStep;
 
 import java.util.ArrayList;

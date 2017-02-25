@@ -1,4 +1,8 @@
-package com.wly.stock;
+package com.wly.stock.infoplat.simulate;
+
+import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.infoplat.IStockInfoProvider;
+import com.wly.stock.infoplat.sina.StockInfoProviderSina;
 
 import java.util.ArrayList;
 import java.util.Random;

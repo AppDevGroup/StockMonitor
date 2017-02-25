@@ -1,7 +1,8 @@
 package com.wly.stock;
 
 import com.wly.common.LogUtils;
-import com.wly.stock.common.StockPriceMonitor;
+import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.infoplat.IStockInfoProvider;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;

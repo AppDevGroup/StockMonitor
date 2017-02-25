@@ -1,15 +1,10 @@
-package com.wly.stock;
+package com.wly.stock.common;
 
 import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
-import com.wly.stock.common.eStockPlate;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.StringJoiner;
 
 /**
  * Created by Administrator on 2016/11/22.

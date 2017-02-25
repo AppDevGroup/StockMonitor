@@ -3,11 +3,8 @@ package com.wly.stock.tradeplat.simulate;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
-import com.wly.stock.StockUtils;
-import com.wly.stock.policy.PolicyStep;
 import com.wly.stock.tradeplat.ITradeInterface;
 import com.wly.stock.common.OrderInfo;
-import com.wly.stock.common.StockAsset;
 import com.wly.stock.common.TradeBook;
 import com.wly.user.UserInfo;
 

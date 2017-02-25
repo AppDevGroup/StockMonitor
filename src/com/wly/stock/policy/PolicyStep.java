@@ -3,8 +3,8 @@ package com.wly.stock.policy;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
-import com.wly.stock.StockMarketInfo;
-import com.wly.stock.StockUtils;
+import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockUtils;
 
 import java.sql.ResultSet;
 import java.util.HashMap;

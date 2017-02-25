@@ -1,6 +1,5 @@
 package com.wly.stock.policy;
 
-import com.wly.stock.StockMarketInfo;
 import com.wly.stock.common.StockPriceMonitor;
 import com.wly.user.UserInfo;
 

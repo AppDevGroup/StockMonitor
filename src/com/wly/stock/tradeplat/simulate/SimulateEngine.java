@@ -1,15 +1,13 @@
 package com.wly.stock.tradeplat.simulate;
 
 import com.wly.common.LogUtils;
-import com.wly.common.Utils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
-import com.wly.stock.StockMarketInfo;
+import com.wly.stock.common.StockMarketInfo;
 import com.wly.stock.StockMarketInfoManager;
 import com.wly.stock.common.OrderInfo;
 
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**

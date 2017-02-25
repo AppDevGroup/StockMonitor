@@ -1,4 +1,4 @@
-package com.wly.stock;
+package com.wly.stock.common;
 
 import com.wly.common.LogUtils;
 

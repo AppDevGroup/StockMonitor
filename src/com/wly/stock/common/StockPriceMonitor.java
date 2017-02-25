@@ -1,7 +1,5 @@
 package com.wly.stock.common;
 
-import com.wly.stock.StockMarketInfo;
-
 /**
  * Created by Administrator on 2017/2/10.
  */
