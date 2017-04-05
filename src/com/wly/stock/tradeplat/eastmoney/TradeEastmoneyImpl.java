@@ -305,7 +305,55 @@ public class TradeEastmoneyImpl implements ITradeInterface
     @Override
     public int GetStockAssetCount(String code)
     {
-        return 0;
+        int count = 0;
+        try
+        {
+            final String RevokeUrl = "/Search/GetStockList?validatekey=";
+            HttpPost httpPost = new HttpPost(RootUrl + RevokeUrl + validatekey);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("qqhs", "20"));
+            params.add(new BasicNameValuePair("wc", ""));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            CloseableHttpResponse response = httpclient.execute(httpPost, localContext);
+            /*{"Message":null,"Status":0,"Data":[
+                {"Zqdm":"603960","Zqmc":"克来机电","Zqsl":"500","Zqlx":"0","Kysl":"0","Djsl":"0","Cbjg":"48.523","Zxjg":"50.870","Ykbl":"0.048369","Ljyk":"1173.45","Zxsz":"25435.00","Dwc":"A29601129654061603960","Qqhs":null,"Cwbl":"0.61765","Bz":"RMB","Khdm":"540600166725","Gddm":"A296011296","Market":"HA","Zccsl":null}
+                ]}
+            */
+            String retStr = Utils.GetResponseContent(response);
+            // System.out.println(retStr);
+
+            JsonObject jsonObject = new JsonParser().parse(retStr).getAsJsonObject();
+            int stat = jsonObject.get("Status").getAsInt();
+            if(stat != 0)
+            {
+                System.out.println("GetStockAssetCount failed! "+jsonObject.get("Message").getAsString());
+                count = -1;
+                return count;
+            }
+
+            JsonArray jsonDataArray = jsonObject.get("Data").getAsJsonArray();
+            int i,j;
+            JsonObject newOrderInfo;
+            for(i=0; i<jsonDataArray.size(); ++i)
+            {
+                newOrderInfo = jsonDataArray.get(i).getAsJsonObject();
+                if(!newOrderInfo.get("Zqdm").getAsString().equals(code))
+                {
+                    continue;
+                }
+
+                count = newOrderInfo.get("Kysl").getAsInt();
+            }
+        }
+        catch (Exception ex)
+        {
+            count = -1;
+            System.out.print(ex.getMessage());
+            ex.printStackTrace();
+        }
+        return count;
     }
 
     @Override
