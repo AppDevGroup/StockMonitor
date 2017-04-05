@@ -28,6 +28,7 @@ import sun.misc.BASE64Encoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.net.URLEncoder;
+import java.util.Random;
 
 /**
  * Created by Administrator on 2017/1/21.
@@ -70,12 +71,18 @@ public class TradeEastmoneyImpl implements ITradeInterface
     {
         try
         {
+            String vcode = "";
+            String dRandomVal = String.format("%.17f", (new Random()).nextDouble());
+
+            GetLoginYzm(dRandomVal);
+            vcode= Utils.GetInput("Please input Verification Code:");
+
             HttpPost httpPost = new HttpPost(RootUrl + LoginPage);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("userId", acct));
             params.add(new BasicNameValuePair("password", psw));
-            params.add(new BasicNameValuePair("randNumber", ""));
-            params.add(new BasicNameValuePair("identifyCode", ""));
+            params.add(new BasicNameValuePair("randNumber", dRandomVal));
+            params.add(new BasicNameValuePair("identifyCode", vcode));
             params.add(new BasicNameValuePair("duration", "5400"));
             params.add(new BasicNameValuePair("authCode", ""));
             params.add(new BasicNameValuePair("type", "Z"));
@@ -113,6 +120,13 @@ public class TradeEastmoneyImpl implements ITradeInterface
             int startIdex = pageContent.indexOf(FindString)+FindString.length();
             validatekey = pageContent.substring(startIdex, startIdex+36);
             System.out.println("validatekey: "+validatekey);
+
+            //userInfo.DoTrade("603960", StockConst.TradeSell, 55.7f, 500);
+//            StockUtils.DoTradeSell(0, "603960", 55.7f, 500);
+            //for test
+//            int stockCount = GetStockAssetCount("603960");
+//            System.out.println("get stockCount: "+stockCount);
+
         }
         catch (Exception ex)
         {
@@ -454,5 +468,24 @@ public class TradeEastmoneyImpl implements ITradeInterface
     public float GetStampTax(float amount)
     {
         return TrimValueRound(StampTaxRate * amount);
+    }
+
+    private String GetLoginYzm(String random)
+    {
+        try
+        {
+            final String PageYzm = "/Login/YZM?randNum=";
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(RootUrl + PageYzm + random);
+            CloseableHttpResponse response = httpclient.execute(httpGet, localContext);
+            byte[] pageContent = Utils.GetResponseBytes(response);
+            Utils.WriteFile("yzm.png",pageContent);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return "";
     }
 }

@@ -8,12 +8,19 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Logger;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Scanner;
 
 /**
  * Created by Administrator on 2016/11/22.
@@ -75,6 +82,21 @@ public class Utils
         }
     }
 
+    public static byte[] GetResponseBytes(HttpResponse httpResponse)
+    {
+        try
+        {
+            HttpEntity entity = httpResponse.getEntity();
+            return EntityUtils.toByteArray(entity);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
     public static volatile int IdIndex = 0;
     static public int GetId()
     {
@@ -97,5 +119,51 @@ public class Utils
     {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
         return df.format(new Date());// new Date()为获取当前系统时间
+    }
+
+    static public String GetVerifyCode()
+    {
+        return "";
+    }
+
+    static public String GetInput(String msg)
+    {
+        Scanner in=new Scanner(System.in);
+        System.out.println(msg);
+        PrintStream psBak = System.out;
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) {
+                // do nothing
+            }
+        }));
+        Logger logger = LogUtils.GetLogger(LogUtils.LOG_REALTIME);
+        Enumeration appenders =  logger.getAllAppenders();
+        logger.removeAllAppenders();
+
+        System.out.println(msg);
+        String input = in.nextLine();
+
+        while(appenders.hasMoreElements())
+        {
+            logger.addAppender((Appender)appenders.nextElement());
+        }
+
+        System.setOut(psBak);
+        return input;
+    }
+
+    static public void WriteFile(String filePath, byte[] bytes)
+    {
+        try
+        {
+            OutputStream os = new FileOutputStream(filePath);
+            os.write(bytes, 0, bytes.length);
+            os.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 }
