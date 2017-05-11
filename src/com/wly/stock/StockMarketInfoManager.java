@@ -118,7 +118,7 @@ public class StockMarketInfoManager extends TimerTask
         }
         catch (Exception ex)
         {
-            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
+//            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
             ex.printStackTrace();
         }
     }

@@ -1,5 +1,6 @@
 package com.wly.stock;
 
+import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.stock.common.StockMarketInfo;
 import com.wly.stock.common.StockPriceMonitor;
@@ -20,6 +21,7 @@ public class GetStockDesc
             return;
         }
 
+        LogUtils.Init("config/log4j.properties");
         StockMarketInfoManager stockMarketInfoManager = StockMarketInfoManager.GetInstance();
         stockMarketInfoManager.SetStockInfoProvider(new StockInfoProviderSina());
         StockPriceMonitorManager stockPriceMonitorManager = StockPriceMonitorManager.GetInstance();
