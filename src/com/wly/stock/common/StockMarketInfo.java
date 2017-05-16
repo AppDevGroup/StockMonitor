@@ -154,7 +154,7 @@ public class StockMarketInfo
         sb.append(String.format("Code:%s Name:%s\n", this.code, name));
         sb.append(String.format("Init:%.2f Last:%.2f\n", this.priceInit, this.priceLast));
         sb.append(String.format("Max :%.2f Min :%.2f\n", this.priceMax, this.priceMin));
-        sb.append(String.format("Num :%d Rmb :%.2f\n", this.tradeCount, this.tradeMoney));
+        sb.append(String.format("Num :%d Rmb :%.2f万\n", this.tradeCount, this.tradeMoney/10000));
         sb.append(String.format("Trade Price: %.2f change;%.2f ratio:%.2f%%\n", this.priceNew, GetChange(), GetRatio()));
         int i;
         for(i=sellInfo.size()-1; i>= 0; --i)
