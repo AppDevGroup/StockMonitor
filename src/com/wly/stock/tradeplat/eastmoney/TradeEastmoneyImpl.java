@@ -35,12 +35,6 @@ import java.util.Random;
  */
 public class TradeEastmoneyImpl implements ITradeInterface
 {
-    public final String OrderStat_Order = "已报";
-    public final String OrderStat_Cancle = "已撤";
-    public final String OrderStat_WaitForCancel = "已报待撤";
-    public final String OrderStat_Half = "部成";
-    public final String OrderStat_Done = "成交";
-
     public final float FeeRate = 0.00025f;  //券商交易费率万分之二点五
     public final float ChangeUnit = 0.045f; //上证每100股 0.45
     public final float StampTaxRate = 0.001f; //交易印花税 交易总额的千分之一
@@ -298,7 +292,7 @@ public class TradeEastmoneyImpl implements ITradeInterface
                     continue;
                 }
 
-                orderStatus = GetStatByPlatStat(newOrderInfo.get("Wtzt").getAsString());
+                orderStatus = EastmoneyUtils.GetStatByPlatStat(newOrderInfo.get("Wtzt").getAsString());
             }
         }
         catch (Exception ex)
@@ -384,30 +378,6 @@ public class TradeEastmoneyImpl implements ITradeInterface
                 tradeFeeTotal = CacuSellFee(code, price, count);
         }
         return tradeFeeTotal;
-    }
-
-    private int GetStatByPlatStat(String str)
-    {
-        int stat = OrderInfo.OderStat_None;
-        switch (str)
-        {
-            case OrderStat_Order:
-                stat = OrderInfo.OderStat_Order;
-                break;
-            case OrderStat_Cancle:
-                stat = OrderInfo.OderStat_Cancel;
-                break;
-            case OrderStat_Half:
-                stat = OrderInfo.OderStat_Half;
-                break;
-            case OrderStat_WaitForCancel:
-                stat = OrderInfo.OderStat_WaitForCancel;
-                break;
-            case OrderStat_Done:
-                stat = OrderInfo.OderStat_Deal;
-                break;
-        }
-        return  stat;
     }
 
     public  float CacuSellFee(String code, float price, int num)

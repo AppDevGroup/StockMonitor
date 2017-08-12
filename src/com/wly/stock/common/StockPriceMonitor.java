@@ -7,5 +7,5 @@ public abstract class StockPriceMonitor
 {
     public String code;
 
-    public abstract void OnNewPirce(StockMarketInfo stockMarketInfo);
+    public abstract void OnNewPirce(StockRuntimeInfo stockMarketInfo);
 }

@@ -2,7 +2,7 @@ package com.wly.user;
 
 import com.wly.common.LogUtils;
 import com.wly.database.DBPool;
-import com.wly.stock.policy.PolicyStepAll;
+import com.wly.stock.strategy.StrategyStepAll;
 
 /**
  * Created by Administrator on 2017/2/14.
@@ -30,8 +30,8 @@ public class AddUserInfo
     {
         try
         {
-            PolicyStepAll policy;
-            policy = new PolicyStepAll(null);
+            StrategyStepAll policy;
+            policy = new StrategyStepAll(null);
             policy.userId = 2;
             policy.code = "603330";
             policy.priceInit = 61.78f;
@@ -42,7 +42,7 @@ public class AddUserInfo
             policy.maxPrice =  76f;
             policy.buyOffset = -0.09f;
             policy.sellOffset = -0.01f;
-            policy.policyStat = PolicyStepAll.PolicyStat_Init;
+            policy.policyStat = StrategyStepAll.PolicyStat_Init;
             policy.buyOrderId = "0";
             policy.sellOrderId = "0";
 

@@ -1,6 +1,6 @@
 package com.wly.stock.infoplat;
 
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 
 import java.util.ArrayList;
 
@@ -9,6 +9,6 @@ import java.util.ArrayList;
  */
 public interface IStockInfoProvider
 {
-    StockMarketInfo GetStockInfoByCode(String code) throws Exception;
-    ArrayList<StockMarketInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception;
+    StockRuntimeInfo GetStockInfoByCode(String code) throws Exception;
+    ArrayList<StockRuntimeInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception;
 }

@@ -1,7 +1,7 @@
 package com.wly.stock;
 
 import com.wly.common.LogUtils;
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 import com.wly.stock.infoplat.IStockInfoProvider;
 
 import java.util.*;
@@ -15,7 +15,7 @@ public class StockMarketInfoManager extends TimerTask
 {
     private IStockInfoProvider infoProvider;
     private ArrayList<String> queryCodeList = new ArrayList<>();
-    private List<StockMarketInfo> stockMarketInfos = new ArrayList<>();
+    private List<StockRuntimeInfo> stockMarketInfos = new ArrayList<>();
     private Lock infoLock = new ReentrantLock();
     private boolean hasInited = false;
 
@@ -57,7 +57,7 @@ public class StockMarketInfoManager extends TimerTask
         queryCodeList.add(code);
     }
 
-    private void ProcessNewStockInfo(List<StockMarketInfo> infoList)
+    private void ProcessNewStockInfo(List<StockRuntimeInfo> infoList)
     {
         if(infoList == null)
         {
@@ -66,7 +66,7 @@ public class StockMarketInfoManager extends TimerTask
 
         int i,j;
         boolean bIsNew = true;
-        StockMarketInfo newMarketInfo;
+        StockRuntimeInfo newMarketInfo;
         infoLock.lock();
         for(i=0; i<infoList.size(); ++i)
         {
@@ -94,10 +94,10 @@ public class StockMarketInfoManager extends TimerTask
         }
     }
 
-    public  StockMarketInfo GetStockMarketInfoByCode(String code)
+    public StockRuntimeInfo GetStockMarketInfoByCode(String code)
     {
         int i;
-        StockMarketInfo stockMarketInfo = null;
+        StockRuntimeInfo stockMarketInfo = null;
         for(i=0; i<stockMarketInfos.size(); ++i)
         {
             if(stockMarketInfos.get(i).code.equals(code))
@@ -115,10 +115,9 @@ public class StockMarketInfoManager extends TimerTask
         try
         {
             ProcessNewStockInfo(infoProvider.GetStockInfoByCode(queryCodeList));
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
-//            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
+            //            LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
             ex.printStackTrace();
         }
     }

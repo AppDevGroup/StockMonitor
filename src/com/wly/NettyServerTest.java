@@ -1,5 +1,6 @@
 package com.wly;
 
+import com.wly.common.LogUtils;
 import com.wly.network.NetworkManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -25,7 +26,7 @@ public class NettyServerTest
     static public void main(String[] args)
     {
      //   TestXml();
-
+        LogUtils.Init("config/log4j.properties");
         NetworkManager.GetInstance().Init("./config/network.xml");
 //        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 //        EventLoopGroup workerGroup = new NioEventLoopGroup();

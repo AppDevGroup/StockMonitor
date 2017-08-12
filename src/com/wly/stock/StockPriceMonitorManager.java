@@ -1,6 +1,6 @@
 package com.wly.stock;
 
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 import com.wly.stock.common.StockPriceMonitor;
 
 import java.util.*;
@@ -57,7 +57,7 @@ public class StockPriceMonitorManager extends TimerTask
         int i;
         Map.Entry entry;
         ArrayList<StockPriceMonitor> monotorList;
-        StockMarketInfo stockMarketInfo;
+        StockRuntimeInfo stockMarketInfo;
         while (iter.hasNext())
         {
             entry = (Map.Entry) iter.next();

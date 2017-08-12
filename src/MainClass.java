@@ -1,9 +1,9 @@
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 import com.wly.stock.infoplat.sina.StockInfoProviderSina;
 import com.wly.stock.common.StockUtils;
-import com.wly.stock.policy.PolicyStep;
+import com.wly.stock.strategy.PolicyStep;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -38,7 +38,7 @@ public class MainClass
         }
     }
 
-    static public void PrccessStockInfo(ArrayList<StockMarketInfo> ArrayList)
+    static public void PrccessStockInfo(ArrayList<StockRuntimeInfo> ArrayList)
     {
         int i;
         PolicyStep policyStep;

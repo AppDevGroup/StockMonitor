@@ -11,7 +11,7 @@ public class StockPriceMonitorTrade extends StockPriceMonitor
     public OrderInfo orderInfo;
 
     @Override
-    public void OnNewPirce(StockMarketInfo stockMarketInfo)
+    public void OnNewPirce(StockRuntimeInfo stockMarketInfo)
     {
         //竞价时间 不执行交易
         if(stockMarketInfo.sellInfo.get(0).price == stockMarketInfo.buyInfo.get(0).price)

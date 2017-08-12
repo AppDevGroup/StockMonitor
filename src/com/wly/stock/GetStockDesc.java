@@ -2,7 +2,7 @@ package com.wly.stock;
 
 import com.wly.common.LogUtils;
 import com.wly.common.Utils;
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 import com.wly.stock.common.StockPriceMonitor;
 import com.wly.stock.infoplat.sina.StockInfoProviderSina;
 
@@ -45,7 +45,7 @@ class StockPriceMonitorDesc extends StockPriceMonitor
     }
 
     @Override
-    public void OnNewPirce(StockMarketInfo stockMarketInfo)
+    public void OnNewPirce(StockRuntimeInfo stockMarketInfo)
     {
         System.out.println(stockMarketInfo.toDesc());
     }

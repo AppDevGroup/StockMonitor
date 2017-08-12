@@ -1,7 +1,6 @@
 package com.wly.stock.tradeplat;
 
 import com.wly.stock.common.OrderInfo;
-import com.wly.stock.common.StockAsset;
 import com.wly.stock.common.TradeBook;
 import com.wly.user.UserInfo;
 

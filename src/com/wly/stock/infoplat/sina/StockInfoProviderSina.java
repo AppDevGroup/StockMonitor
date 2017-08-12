@@ -2,7 +2,7 @@ package com.wly.stock.infoplat.sina;
 
 import com.wly.common.LogUtils;
 import com.wly.stock.common.StockConst;
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 import com.wly.stock.common.StockUtils;
 import com.wly.stock.common.eStockPlate;
 import com.wly.stock.infoplat.IStockInfoProvider;
@@ -36,16 +36,16 @@ public class StockInfoProviderSina implements IStockInfoProvider
     private  static final int TradeInfoCount = 5;
 
     @Override
-    public StockMarketInfo GetStockInfoByCode(String code) throws Exception
+    public StockRuntimeInfo GetStockInfoByCode(String code) throws Exception
     {
         ArrayList<String> queryList = new ArrayList<>();
         queryList.add(code);
-        ArrayList<StockMarketInfo> retList = GetStockInfoByCode(queryList);
+        ArrayList<StockRuntimeInfo> retList = GetStockInfoByCode(queryList);
         return  retList.get(0);
     }
 
     @Override
-    public ArrayList<StockMarketInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception
+    public ArrayList<StockRuntimeInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception
     {
         if(codeList == null || codeList.size()==0)
         {
@@ -95,7 +95,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
         sb.delete( 0, sb.length() );
         //string
         String strTmp;
-        ArrayList<StockMarketInfo> infoList = new ArrayList<StockMarketInfo>();
+        ArrayList<StockRuntimeInfo> infoList = new ArrayList<StockRuntimeInfo>();
         while((strTmp = bufferedReader.readLine()) != null)
         {
             infoList.add(GetStockInfoByString(strTmp));
@@ -105,7 +105,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
 
     ///var hq_str_sh603020="爱普股份,22.820,22.790,23.380,23.440,22.710,23.370,23.380,6680397,154655134.000,5200,23.370,8000,23.360,9700,23.350,1000,
     /// 23.340,4300,23.330,43600,23.380,6900,23.400,6100,23.410,14300,23.420,17900,23.430,2016-11-22,14:44:09,00";
-    static  public StockMarketInfo GetStockInfoByString(String str)
+    static  public StockRuntimeInfo GetStockInfoByString(String str)
     {
         //Utils.Log(str);
         String[] strListTmp;
@@ -123,7 +123,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
         String[] infoList = strListTmp[1].substring(1, strListTmp[1].length()-1).split(",");
        // Utils.Log("get info  : "+code+" "+infoList[0]+" "+infoList[3]);
 
-        StockMarketInfo info = new StockMarketInfo();
+        StockRuntimeInfo info = new StockRuntimeInfo();
         info.code = code;
         info.name = infoList[eInfoIdx.Name.ordinal()];
         info.priceInit = Float.parseFloat(infoList[eInfoIdx.PriceInit.ordinal()]);
@@ -137,11 +137,11 @@ public class StockInfoProviderSina implements IStockInfoProvider
         info.tradeMoney = Float.parseFloat(infoList[eInfoIdx.TradeTotalMoney.ordinal()]);
 
         int i;
-        StockMarketInfo.TradeInfo tradeInfo;
+        StockRuntimeInfo.TradeInfo tradeInfo;
         int startIdx = eInfoIdx.TradeInfoStart.ordinal();
         for(i=0; i<TradeInfoCount; ++i)
         {
-            tradeInfo = new StockMarketInfo.TradeInfo();
+            tradeInfo = new StockRuntimeInfo.TradeInfo();
             tradeInfo.amount = Long.parseLong(infoList[startIdx+2*i]);
             tradeInfo.price = Float.parseFloat(infoList[startIdx+2*i+1]);
             info.buyInfo.add(tradeInfo);
@@ -150,7 +150,7 @@ public class StockInfoProviderSina implements IStockInfoProvider
         startIdx = eInfoIdx.TradeInfoStart.ordinal()+2*TradeInfoCount;
         for(i=0; i<TradeInfoCount; ++i)
         {
-            tradeInfo = new StockMarketInfo.TradeInfo();
+            tradeInfo = new StockRuntimeInfo.TradeInfo();
             tradeInfo.amount = Long.parseLong(infoList[startIdx+2*i]);
             tradeInfo.price = Float.parseFloat(infoList[startIdx+2*i+1]);
             info.sellInfo.add(tradeInfo);

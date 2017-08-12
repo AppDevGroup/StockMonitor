@@ -1,6 +1,6 @@
 package com.wly.stock.infoplat.eastmoney;
 
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 import com.wly.stock.infoplat.IStockInfoProvider;
 
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ public class StockInfoProviderEastmoney implements IStockInfoProvider
     final String Token = "beb0a0047196124721f56b0f0ff5a27c";
 
     @Override
-    public StockMarketInfo GetStockInfoByCode(String code) throws Exception
+    public StockRuntimeInfo GetStockInfoByCode(String code) throws Exception
     {
         return null;
     }
 
     @Override
-    public ArrayList<StockMarketInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception
+    public ArrayList<StockRuntimeInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception
     {
         return null;
     }

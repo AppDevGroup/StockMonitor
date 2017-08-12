@@ -1,5 +1,6 @@
 package com.wly.user;
 
+import com.wly.common.IAsyncCallBack;
 import com.wly.common.LogUtils;
 import com.wly.common.Utils;
 import com.wly.database.DBPool;
@@ -10,8 +11,8 @@ import com.wly.stock.StockPriceMonitorManager;
 import com.wly.stock.common.*;
 import com.wly.stock.tradeplat.eastmoney.TradeEastmoneyImpl;
 import com.wly.stock.tradeplat.simulate.TradeSimulateImpl;
-import com.wly.stock.policy.PolicyBase;
-import com.wly.stock.policy.PolicyStepAll;
+import com.wly.stock.strategy.StrategyBase;
+import com.wly.stock.strategy.StrategyStepAll;
 import com.wly.stock.tradeplat.ITradeInterface;
 
 import java.sql.ResultSet;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/2/8.
  */
-public class UserInfo
+public class UserInfo implements IAsyncCallBack
 {
     public int id;
     public String name;
@@ -30,7 +31,7 @@ public class UserInfo
     public String platPsw;
     public RmbAsset rmbAsset;
     public List<Asset> assets = new ArrayList<>();
-    public List<PolicyBase> policySteps = new ArrayList<>();
+    public List<StrategyBase> policySteps = new ArrayList<>();
     private ArrayList<OrderInfo> orderInfos = new ArrayList<>();
 
     public ITradeInterface tradeInterface;
@@ -50,15 +51,14 @@ public class UserInfo
     {
         switch (platId)
         {
-            case 1:
+            case StockConst.PlatEastmoney:
                 tradeInterface = new TradeEastmoneyImpl();
                 break;
-            default:
+            case StockConst.PlatSimulate:
                 tradeInterface = new TradeSimulateImpl();
                 break;
         }
         tradeInterface.SetUserInfo(this);
-//        tradeInterface = new TradeEastmoneyImpl();
         InitPolicySteps();
         Login(platAcct, platPsw);
     }
@@ -66,13 +66,13 @@ public class UserInfo
     private boolean InitPolicySteps()
     {
         try {
-            PolicyStepAll policy;
+            StrategyStepAll policy;
             DBPool dbPool = DBPool.GetInstance();
             DBQuery dbQuery = dbPool.ExecuteQuerySync(String.format("select * from policy_step where user_id=%d", id));
             ResultSet rs = dbQuery.resultSet;
             while (rs.next())
             {
-                policy = new PolicyStepAll(this);
+                policy = new StrategyStepAll(this);
                 policy.id = rs.getInt("id");
                 policy.code = rs.getString("code");
                 policy.priceInit = rs.getFloat("price_init");
@@ -102,16 +102,16 @@ public class UserInfo
                     policy.buyLastPrice = 0f;
                 }
 
-                if(policy.policyStat == PolicyStepAll.PolicyStat_None)
+                if(policy.policyStat == StrategyStepAll.PolicyStat_None)
                 {
-                    LogUtils.LogRealtime("policy is stop "+id);
+                    LogUtils.LogRealtime("strategy is stop "+id);
                     continue;
                 }
 
                 policySteps.add(policy);
 
                 StockMarketInfoManager.GetInstance().AddMonitorCode(policy.code);
-                StockPriceMonitorManager.GetInstance().AddMonitor(policy);
+                //StockPriceMonitorManager.GetInstance().AddMonitor(policy);
             }
             dbQuery.Close();
             return true;
@@ -221,5 +221,11 @@ public class UserInfo
         {
             LogUtils.GetLogger(LogUtils.LOG_REALTIME).error(ex.getMessage());
         }
+    }
+
+    @Override
+    public void OnCallback(int id, Object obj)
+    {
+
     }
 }

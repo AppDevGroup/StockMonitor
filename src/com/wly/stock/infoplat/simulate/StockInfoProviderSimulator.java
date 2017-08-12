@@ -1,6 +1,6 @@
 package com.wly.stock.infoplat.simulate;
 
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 import com.wly.stock.infoplat.IStockInfoProvider;
 import com.wly.stock.infoplat.sina.StockInfoProviderSina;
 
@@ -19,17 +19,17 @@ public class StockInfoProviderSimulator implements IStockInfoProvider
         stockInfoProviderSina = new StockInfoProviderSina();
     }
     @Override
-    public StockMarketInfo GetStockInfoByCode(String code) throws Exception
+    public StockRuntimeInfo GetStockInfoByCode(String code) throws Exception
     {
-        StockMarketInfo stockMarketInfo = stockInfoProviderSina.GetStockInfoByCode(code);
+        StockRuntimeInfo stockMarketInfo = stockInfoProviderSina.GetStockInfoByCode(code);
         ModifyMarketInfo(stockMarketInfo);
         return stockMarketInfo;
     }
 
     @Override
-    public ArrayList<StockMarketInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception
+    public ArrayList<StockRuntimeInfo> GetStockInfoByCode(ArrayList<String> codeList) throws Exception
     {
-        ArrayList<StockMarketInfo> stockMarketInfos = stockInfoProviderSina.GetStockInfoByCode(codeList);
+        ArrayList<StockRuntimeInfo> stockMarketInfos = stockInfoProviderSina.GetStockInfoByCode(codeList);
 
         if(stockMarketInfos == null)
         {
@@ -47,7 +47,7 @@ public class StockInfoProviderSimulator implements IStockInfoProvider
 
     private float oldPrice = 0f;
 
-    private void ModifyMarketInfo(StockMarketInfo stockMarketInfo)
+    private void ModifyMarketInfo(StockRuntimeInfo stockMarketInfo)
     {
         stockMarketInfo.priceLast = stockMarketInfo.priceNew;
         Random random = new Random();

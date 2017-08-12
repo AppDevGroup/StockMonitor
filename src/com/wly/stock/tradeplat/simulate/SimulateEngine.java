@@ -3,7 +3,7 @@ package com.wly.stock.tradeplat.simulate;
 import com.wly.common.LogUtils;
 import com.wly.database.DBPool;
 import com.wly.database.DBQuery;
-import com.wly.stock.common.StockMarketInfo;
+import com.wly.stock.common.StockRuntimeInfo;
 import com.wly.stock.StockMarketInfoManager;
 import com.wly.stock.common.OrderInfo;
 
@@ -68,7 +68,7 @@ public class SimulateEngine extends TimerTask
     private void Simulator(OrderInfo orderInfo)
     {
         boolean needUpdate = false;
-        StockMarketInfo stockMarketInfo = StockMarketInfoManager.GetInstance().GetStockMarketInfoByCode(orderInfo.code);
+        StockRuntimeInfo stockMarketInfo = StockMarketInfoManager.GetInstance().GetStockMarketInfoByCode(orderInfo.code);
         if(stockMarketInfo != null && stockMarketInfo.TestDeal(orderInfo.tradeFlag, orderInfo.orderPrice, orderInfo.count))
         {
             needUpdate =true;

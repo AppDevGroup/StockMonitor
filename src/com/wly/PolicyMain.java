@@ -7,6 +7,9 @@ import com.wly.stock.StockMarketInfoManager;
 import com.wly.stock.StockPriceMonitorManager;
 import com.wly.stock.tradeplat.simulate.SimulateEngine;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Created by Administrator on 2017/2/13.
  */
@@ -15,7 +18,7 @@ public class PolicyMain
     static public  void main(String[] args)
     {
         LogUtils.Init("config/log4j.properties");
-
+        ExecutorService threadpool = Executors.newCachedThreadPool();
         DBPool dbPool = DBPool.GetInstance();
         dbPool.Init("jdbc:mysql://127.0.0.1/stockmonitor?useSSL=true", "root", "123456");
 

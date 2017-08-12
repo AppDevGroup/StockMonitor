@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by Administrator on 2016/11/22.
  */
-public class StockMarketInfo
+public class StockRuntimeInfo
 {
     public static final int MarketInfoStat_None = 0;
     public static final int MarketInfoStat_Normal = 1;
@@ -47,7 +47,7 @@ public class StockMarketInfo
         return GetChange()/ priceLast *100;
     }
 
-    public  void CopyFrom(StockMarketInfo src)
+    public  void CopyFrom(StockRuntimeInfo src)
     {
         this.code = src.code;
         this.name = src.name;
